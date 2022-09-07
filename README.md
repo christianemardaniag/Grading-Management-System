@@ -12,6 +12,7 @@
 #### 2. Dashboard
 - Display total count of __Faculty__
 - Display total count of __Students__
+    - Per speciazation
 - Student Passing Rate
 - and more.. (to follow)
 
@@ -24,21 +25,25 @@
 - List of all faculty
 - Search Bar: Faculty name, Employee No, email address
 - List of handled students per faculty
+- List of handled subject
 - Can print individual faculty with handled students
 - Can add/edit/archive new faculty
-- Admin will provide provide email or username to faculty for login
+- Admin will provide email and username to faculty for login
 - The system will automatically send password to faculties email address after account creation
 - can upload excel file with __specific format__
 
+#### 5. Student
+- Upload and download list of students (excel file)
+- Add/Edit/Archive students
 
-#### 5. Subject
+#### 6. Subject
 - List of all subject per year, semester, and specialization
 - Admin can add/edit/delete subject
 - Search bar: Subject Title, Subject Code, Units
 - List of faculty teaching specific subject
 - Assign faculty to specific subject
 
-#### 6. Settings (Replacement to Criteria)
+#### 7. Settings (Replacement to Criteria)
 - __ANNOUNCEMENT__ (ADDITIONAL)
     - Add/Edit/Delete announcement to the page
     - Two different type of announcement
@@ -48,14 +53,14 @@
     - Add/Edit/Delete grading criteria
     - Grading criteria percentage total should not be exceed to 100%
 
-#### 7. Profile
+#### 8. Profile
 - Admin can edit their information (Username, Email, Password)
 
 
 ## FACULTY
 #### 1. Login
 - Faculty login page will be visible on the home page of the system as well as student login page 
-- Faculty can login using __employee number__ or __email address__
+- Faculty can login using __username__ or __email address__
 - Faculty can be block by the system after maximum of 3 login attempts
 - Faculty can be unblock by the admin
 - Faculty can use forgot password and enter their registered email to receive a new random password via email
@@ -68,8 +73,7 @@
 
 #### 3. Student
 - List of all students per year and semester
-- Upload and download list of students (excel file)
-- Add/Edit/Archive students
+- Faculty can change student status to drop
 - Print specific student
 
 #### 4. Grade
@@ -91,7 +95,7 @@
 ## Student
 #### 1. Login
 - Student login page will be visible on the home page of the system as well as faculty login page 
-- Student can login using __student number__ or __email address__
+- Student can login using __username__ or __email address__
 - Student can be block by the system after maximum of 3 login attempts
 - Student can be unblock by the admin
 - Student can use forgot password and enter their registered email to receive a new random password via email
@@ -113,10 +117,3 @@
 - Can upload and download file (max limit 3mb file size)
 - Refresh chat box every 1 second
 - View Contacts
-
-#### 5. Profile
-- Student can edit their information (Username, Email, Password)
-
-
-# Questions
-- What will happen to the handled students of the faculty when the admin archive the faculty?
