@@ -1,9 +1,13 @@
 # Grading Manegement System
+[ADMIN Prototype](https://www.canva.com/design/DAFCEEyCcrQ/672SjYj7Klssa7LMEWNzZA/edit#)
 
+[Faculty Prototype](https://www.canva.com/design/DAFB99XhFqo/U8Zw-RffFNYc748Dzy1o8g/edit?utm_content=DAFB99XhFqo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton#)
+
+[Student Prototype](https://www.canva.com/design/DAFCDf8idHE/xofDxLTk7EwPfY73NEkBZw/edit?utm_content=DAFCDf8idHE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 ### Features
 
 ## ADMIN
-#### 1. Login 
+#### **1. Login** 
 - Admin have different page for login and can be access via URL http://localhost/Grading-Management-System/gms-admin
 - Admin can sign in using their username or email address
 - Admin can use forgot password and enter the registered email to send a new random password to the email
@@ -52,6 +56,7 @@
 - __CRITERIA__
     - Add/Edit/Delete grading criteria
     - Grading criteria percentage total should not be exceed to 100%
+- Blocked User
 
 #### 8. Profile
 - Admin can edit their information (Username, Email, Password)

@@ -42,7 +42,7 @@ class Mail extends dbHandler
         } catch (Exception $e) {
             return (object) [
                 'status' => false,
-                'msg' => 'Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}'
+                'msg' => 'Message could not be sent. Mailer Error: {' . $this->mail->ErrorInfo . '}'
             ];
         }
     }

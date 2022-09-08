@@ -21,8 +21,7 @@ $(document).ready(function () {
             dataType: "JSON",
             success: function (response) {
                 if (response.status) {
-                    alert("Successfully Login!");
-                    // window.location.href = 'admin.php';
+                    window.location.href = '../gms-admin/dashboard';
                 } else {
                     $("#errorAlert").html(response.msg);
                     $("#errorAlert").fadeIn();

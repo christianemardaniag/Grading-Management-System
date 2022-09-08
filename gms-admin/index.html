@@ -12,34 +12,40 @@
 </head>
 
 <body>
+    <div class="d-flex align-items-center vh-100">
+        <main class="form-signin w-100 m-auto text-center">
+            <form id="loginForm">
+                <div class="text-light">
+                    <i class="fad fa-shield display-4 text-warning mb-2"></i>
+                    <h1 class="h3 m-1">ADMINISTRATOR</h1>
+                    <div class="text-muted m-0">GRADING MANAGEMENT SYSTEM</div>
+                    <hr>
+                    <h5 class="mb-3">LOGIN</h5>
+                </div>
 
-    <main class="form-signin w-100 m-auto text-center border rounded px-5">
-        <form id="loginForm">
-            <i class="far fa-university display-4"></i>
-            <h1 class="h3 mb-3 fw-normal">Administrator</h1>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="username" name="username"
+                        placeholder="name@example.com">
+                    <label for="username">Username</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <label for="password">Password</label>
+                </div>
 
-            <div class="form-floating">
-                <input type="text" class="form-control" id="username" name="username" placeholder="name@example.com">
-                <label for="username">Username</label>
-            </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                <label for="password">Password</label>
-            </div>
-
-            <button type="button" class="btn btn-link text-decoration-none" data-bs-toggle="modal"
-                data-bs-target="#forgotPasswordModal">
-                Forgot Password?
-            </button>
-            <div class="alert alert-danger my-1 p-2" role="alert" id="errorAlert">
-                {{ errorMessage }}
-            </div>
-            <button class="w-100 btn btn-lg btn-primary my-2" type="submit">Sign in</button>
-            <p class="mt-5 text-muted">GMS &copy; 2022</p>
-            <p class="mb-3 text-muted"></p>
-        </form>
-    </main>
-
+                <button type="button" class="btn btn-link link-light text-decoration-none" data-bs-toggle="modal"
+                    data-bs-target="#forgotPasswordModal">
+                    Forgot Password?
+                </button>
+                <div class="alert alert-danger my-1 p-2" role="alert" id="errorAlert">
+                    {{ errorMessage }}
+                </div>
+                <button class="w-100 btn btn-lg btn-warning my-2" type="submit">Sign in</button>
+                <p class="mt-5 text-muted">GMS &copy; 2022</p>
+                <p class="mb-3 text-muted"></p>
+            </form>
+        </main>
+    </div>
 
     <!-- Forgot Password Modal -->
     <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
@@ -51,7 +57,7 @@
                 </div>
                 <form id="forgotPasswordForm">
                     <div class="modal-body">
-                        <p>Enter your <span class="text-primary fw-bold">REGISTERED EMAIL</span></p>
+                        <p>Enter your <span class="fw-bold">REGISTERED EMAIL</span></p>
                         <p>We will send to your new password to your email.</p>
                         <input type="email" name="fpEmail" id="fpEmail" class="form-control"
                             placeholder="Registered Email" required>
@@ -64,7 +70,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="forgotbtn">
+                        <button type="submit" class="btn btn-success" id="forgotbtn">
                             Send Email
                             <div id="fPSpinner" class="spinner-border spinner-border-sm" role="status">
                                 <span class="visually-hidden">Loading...</span>
