@@ -21,7 +21,7 @@ $(document).ready(function () {
             dataType: "JSON",
             success: function (response) {
                 if (response.status) {
-                    window.location.href = '../gms-admin/dashboard';
+                    window.location.href = '../gms-admin/main?url=dashboard';
                 } else {
                     $("#errorAlert").html(response.msg);
                     $("#errorAlert").fadeIn();

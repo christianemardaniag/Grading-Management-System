@@ -49,9 +49,23 @@ class Mail extends dbHandler
 
     public function sendNewPassword($recipient)
     {
-        if ($this->isEmailRegistered($recipient)) {
-            $body = $this->generateRandomPassword();
-            $this->sendMail($recipient, "Forgot Password", $body);
+        if ($id = $this->isEmailRegistered($recipient)) {
+            $newPassword = $this->generateRandomPassword();
+            $body = " <table><tbody>";
+            $body .= "<tr><td style='background-color: rgb(58, 26, 14); color: white; padding: 10px 10px; font-size: 20px; font-weight: 600;'>Grading Management System</td></tr>";
+            $body .= "<tr><td>";
+            $body .= "<h3>Good day!</h3>";
+            $body .= "<p style='font-size: 20px;'>We have successfully reset your password</p>";
+            $body .= "<p>You may now sign in to the Grading Management System using the information below :</p>";
+            $body .= "</td></tr>";
+            $body .= "<tr><td>";
+            $body .= "<div>username: [your-email-address]</div>";
+            $body .= "<div>password: <b>$newPassword</b></div>";
+            $body .= "</td></tr>";
+            $body .= "<tr><td><i>*Note:Please check your spelling and case.</i></td></tr>";
+            $body .= "</tbody></table>";
+            $this->sendMail($recipient, "GCM Online : Reset Password", $body);
+            $this->updatePassword($id, $newPassword);
         } else {
             return (object) [
                 'status' => false,
@@ -66,10 +80,21 @@ class Mail extends dbHandler
         return substr(str_shuffle($data), 0, 8);
     }
 
-    private function isEmailRegistered($email): bool
+    private function isEmailRegistered($email): string
     {
         $query = "SELECT id FROM $this->userType WHERE email='$email'";
         $result = mysqli_query($this->conn, $query);
-        return mysqli_num_rows($result);
+        if (mysqli_num_rows($result)) {
+            $row = mysqli_fetch_assoc($result);
+            return $row['id'];
+        }
+        return false;
     }
+
+    private function updatePassword($id, $newPass)
+    {
+        $query = "UPDATE $this->userType SET `password`='$newPass' WHERE `id`='$id'";
+        return mysqli_query($this->conn, $query);
+    }
+    
 }
