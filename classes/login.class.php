@@ -44,10 +44,11 @@ class Login extends dbHandler
                 'msg' => 'Too many failed login attempts. Your account has been blocked'
             ];
         } elseif ($this->password != $this->userInfo->password) {
-            $this->setUserAttempt($this->userInfo->id, $this->userInfo->attempt-1);
+            $this->setUserAttempt($this->userInfo->id, $this->userInfo->attempt - 1);
             $this->invalidCredentials();
         } else {
             $this->setUserAttempt($this->userInfo->id, DEFAULT_ATTEMPT);
+            $_SESSION['ADMIN'] = $this->userInfo->id;
             $this->response = (object) [
                 'status' => true,
                 'msg' => ''
@@ -63,10 +64,11 @@ class Login extends dbHandler
         ];
     }
 
-    private function setUserAttempt($id, $attempt) {
+    private function setUserAttempt($id, $attempt)
+    {
         if ($this->type === ADMIN) return true;
-        $query = "UPDATE $this->type SET attempt='$attempt', status='".ACTIVE."' where id='$id'";
-        if ($attempt == 0) $query = "UPDATE $this->type SET attempt='$attempt', status='".BLOCKED."' where id='$id'";
+        $query = "UPDATE $this->type SET attempt='$attempt', status='" . ACTIVE . "' where id='$id'";
+        if ($attempt == 0) $query = "UPDATE $this->type SET attempt='$attempt', status='" . BLOCKED . "' where id='$id'";
         return mysqli_query($this->conn, $query);
     }
 
@@ -74,5 +76,4 @@ class Login extends dbHandler
     {
         return $this->response;
     }
-
 }  // End of Login class

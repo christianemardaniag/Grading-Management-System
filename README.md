@@ -58,7 +58,7 @@
     - Grading criteria percentage total should not be exceed to 100%
 - Blocked User
 
-#### 8. Profile
+#### **8. Profile**
 - Admin can edit their information (Username, Email, Password)
 
 

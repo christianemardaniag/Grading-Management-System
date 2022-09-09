@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 include("constant.handler.php");
 spl_autoload_register(function($className) {

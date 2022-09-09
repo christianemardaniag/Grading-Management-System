@@ -13,10 +13,10 @@ $(document).ready(function () {
     $("#loginForm").submit(function (event) {
         event.preventDefault();
         var data = $(this).serializeArray();  // Form Data
-        data.push({name: 'login-admin', value: true});
+        data.push({name: 'login', value: 'admin'});
         $.ajax({
             type: "POST",
-            url: "process-admin/main.process.php",
+            url: "../process/general.process.php",
             data: data,
             dataType: "JSON",
             success: function (response) {
@@ -38,11 +38,11 @@ $(document).ready(function () {
     $("#forgotPasswordForm").submit(function (event) {
         event.preventDefault();
         $.ajax({
-            url: "process-admin/main.process.php",
+            url: "../../process/general.process.php",
             type: "post",
             data: {
                 email: $("#fpEmail").val(),
-                'forgot-password-admin': true
+                'forgot-password': 'admin'
             },
             beforeSend: function () {
                 $("#fPSpinner").show();

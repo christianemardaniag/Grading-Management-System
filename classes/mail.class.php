@@ -62,9 +62,9 @@ class Mail extends dbHandler
             $body .= "<div>username: [your-email-address]</div>";
             $body .= "<div>password: <b>$newPassword</b></div>";
             $body .= "</td></tr>";
-            $body .= "<tr><td><i>*Note:Please check your spelling and case.</i></td></tr>";
+            $body .= "<tr><td><p>*Note:Please check your spelling and case.</p></td></tr>";
             $body .= "</tbody></table>";
-            $this->sendMail($recipient, "GCM Online : Reset Password", $body);
+            $this->sendMail($recipient, "GMS Online : Reset Password", $body);
             $this->updatePassword($id, $newPassword);
         } else {
             return (object) [
