@@ -1,5 +1,5 @@
 <?php
-include '../include/autoloader.inc.php';
+include '../../include/autoloader.inc.php';
 if (!isset($_SESSION['ADMIN'])) {
     echo true;
     exit();

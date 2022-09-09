@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // CHECK IF SESSION[ADMIN] is set
-    $.post("../../process/admin.process.php", function (data, textStatus, jqXHR) {
+    $.post("process.main.php", function (data, textStatus, jqXHR) {
         if (data) {
             window.location.href = '../';
         }
@@ -20,8 +20,8 @@ $(document).ready(function () {
     });
 
     function loadContent() {
-        $(".nav-link").removeClass('active');
-        $("#" + searchParams.get('url')).addClass('active');
+        $(".nav-link").removeClass('active-nav');
+        $("#" + searchParams.get('url')).addClass('active-nav');
         $("#content").load("../" + searchParams.get('url'));
     }
 
@@ -41,7 +41,7 @@ $(document).ready(function () {
         $("#errorAlert").hide();
         $.ajax({
             type: "POST",
-            url: "../../process/admin.process.php",
+            url: "process.main.php",
             data: { getInfo: true },
             dataType: "JSON",
             success: function (data) {
@@ -60,7 +60,7 @@ $(document).ready(function () {
         data.push({ name: 'setInfo', value: true });
         $.ajax({
             type: "POST",
-            url: "../../process/admin.process.php",
+            url: "process.main.php",
             data: data,
             dataType: "JSON",
             success: function (response) {

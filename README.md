@@ -7,11 +7,11 @@
 ### Features
 
 ## ADMIN
-#### **1. Login** 
-- Admin have different page for login and can be access via URL http://localhost/Grading-Management-System/gms-admin
-- Admin can sign in using their username or email address
-- Admin can use forgot password and enter the registered email to send a new random password to the email
-- Admin cannot be block by the system
+#### ~~1. Login~~ 
+- ~~Admin have different page for login and can be access via URL http://localhost/Grading-Management-System/gms-admin~~
+- ~~Admin can sign in using their username or email address~~
+- ~~Admin can use forgot password and enter the registered email to send a new random password to the email~~
+- ~~Admin cannot be block by the system~~
 
 #### 2. Dashboard
 - Display total count of __Faculty__
@@ -58,8 +58,8 @@
     - Grading criteria percentage total should not be exceed to 100%
 - Blocked User
 
-#### **8. Profile**
-- Admin can edit their information (Username, Email, Password)
+#### ~~8. Profile~~
+- ~~Admin can edit their information (Username, Email, Password)~~
 
 
 ## FACULTY
