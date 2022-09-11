@@ -97,4 +97,20 @@ class Mail extends dbHandler
         return mysqli_query($this->conn, $query);
     }
     
+    public function sendCredentials($recipient, $username, $password) {
+            $body = " <table><tbody>";
+            $body .= "<tr><td style='background-color: rgb(58, 26, 14); color: white; padding: 10px 10px; font-size: 20px; font-weight: 600;'>Grading Management System</td></tr>";
+            $body .= "<tr><td>";
+            $body .= "<h3>Good day!</h3>";
+            $body .= "<p style='font-size: 20px;'>We have successfully create your account</p>";
+            $body .= "<p>You may now sign in to the Grading Management System using the information below :</p>";
+            $body .= "</td></tr>";
+            $body .= "<tr><td>";
+            $body .= "<div>username: <b>$username</b></div>";
+            $body .= "<div>password: <b>$password</b></div>";
+            $body .= "</td></tr>";
+            $body .= "<tr><td><p>*Note:Please check your spelling and case.</p></td></tr>";
+            $body .= "</tbody></table>";
+            $this->sendMail($recipient, "GMS Online : Account Creation", $body);
+    }
 }

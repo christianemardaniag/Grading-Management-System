@@ -26,15 +26,15 @@
 - Admin can print all students or faculty reports or individual sections
 
 #### 4. Faculty
-- List of all faculty
-- Search Bar: Faculty name, Employee No, email address
+- ~~List of all faculty~~
+- ~~Search Bar: Faculty name, Employee No, email address~~
 - List of handled students per faculty
 - List of handled subject
 - Can print individual faculty with handled students
 - Can add/edit/archive new faculty
-- Admin will provide email and username to faculty for login
+- ~~Admin will provide email and username to faculty for login~~
 - The system will automatically send password to faculties email address after account creation
-- can upload excel file with __specific format__
+- ~~can upload excel file with __specific format__~~
 
 #### 5. Student
 - Upload and download list of students (excel file)

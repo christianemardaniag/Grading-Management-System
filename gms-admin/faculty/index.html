@@ -1,18 +1,75 @@
 <main>
-    <header >
-        <div id="header-title" class="h3">Faculty</div>
+    <header class="">
+        <div id="header-title" class="d-flex justify-content-between">
+            <h3>Faculty</h3>
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+
+
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        <li><button class="dropdown-item" id="uploadFileBtn">Upload Excel File</button></li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-dark">Add Faculty</button>
+            </div>
+        </div>
     </header>
     <div class="row g-2">
         <div class="col-4 d-print-none">
             <input type="search" name="search" id="search" class="form-control mb-2" placeholder="Search">
             <div style="overflow-y: scroll; height: 80vh;">
-                <div id="list" class="list-group" ></div>
+                <div id="list" class="list-group"></div>
             </div>
         </div>
         <div id="records" class="col">
-
+            <div class="text-bg-light border p-4">
+                <div class="row g-3">
+                    <div class="col-3">
+                        <img src="../../images/ChristianAniag_2x2.png" class="img-fluid rounded-circle">
+                    </div>
+                    <div class="col">
+                        <small><i class="fal fa-hashtag"></i> 201445487</small>
+                        <h2>Aniag, Christian Emard Santos</h2>
+                        <div><i class="fal fa-envelope mx-2"></i> <a href="mailto:aniagchristianemard@gmail.com"
+                                class="text-decoration-none link-dark">aniagchristianemard@gmail.com</a></div>
+                        <div><i class="far fa-phone-alt mx-2"></i> 09050446098</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
+
+<!-- File Upload Modal -->
+<form id="fileUploadForm" enctype="multipart/form-data">
+    <input type="file" name="fileUpload" id="fileUpload" accept=".xlsx, .xls, .csv" class="d-none">
+</form>
+<div class="modal fade" id="fileUploadModal" tabindex="-1" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileUploadModalLabel">Excel Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center" id="previewSpinner">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                <div class="container-fluid" id="fileUploadBody">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="upload">Upload <span class="spinner-border spinner-border-sm" id="uploadSpinner" role="status"></span></button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="../faculty/script.faculty.js"></script>
