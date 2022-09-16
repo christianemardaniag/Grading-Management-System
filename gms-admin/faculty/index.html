@@ -2,9 +2,7 @@
     <header class="">
         <div id="header-title" class="d-flex justify-content-between">
             <h3>Faculty</h3>
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-
-
+            <div class="btn-group" role="group">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -13,7 +11,8 @@
                         <li><button class="dropdown-item" id="uploadFileBtn">Upload Excel File</button></li>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-dark">Add Faculty</button>
+                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addFacultyModal">Add
+                    New Faculty</button>
             </div>
         </div>
     </header>
@@ -25,20 +24,7 @@
             </div>
         </div>
         <div id="records" class="col">
-            <div class="text-bg-light border p-4">
-                <div class="row g-3">
-                    <div class="col-3">
-                        <img src="../../images/ChristianAniag_2x2.png" class="img-fluid rounded-circle">
-                    </div>
-                    <div class="col">
-                        <small><i class="fal fa-hashtag"></i> 201445487</small>
-                        <h2>Aniag, Christian Emard Santos</h2>
-                        <div><i class="fal fa-envelope mx-2"></i> <a href="mailto:aniagchristianemard@gmail.com"
-                                class="text-decoration-none link-dark">aniagchristianemard@gmail.com</a></div>
-                        <div><i class="far fa-phone-alt mx-2"></i> 09050446098</div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 </main>
@@ -57,17 +43,85 @@
             <div class="modal-body">
                 <div class="text-center" id="previewSpinner">
                     <div class="spinner-border" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">Loading...</span>
                     </div>
-                  </div>
+                </div>
                 <div class="container-fluid" id="fileUploadBody">
 
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="upload">Upload <span class="spinner-border spinner-border-sm" id="uploadSpinner" role="status"></span></button>
+                <button type="button" class="btn btn-primary" id="upload">Upload <span
+                        class="spinner-border spinner-border-sm" id="uploadSpinner" role="status"></span></button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Faculty Modal -->
+<div class="modal fade" id="addFacultyModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Faculty</h5>
+                <button type="button" class="btn-close" data-bs-target="#addFacultyModal"
+                    data-bs-toggle="modal"></button>
+            </div>
+            <form id="addFacultyForm">
+                <div class="modal-body">
+                    <div class="row row-cols-1 row-cols-md-3 g-2">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">* First Name</label>
+                                <input type="text" class="form-control" name="firstName" id="firstName" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="middleName" class="form-label">Middle Name</label>
+                                <input type="text" class="form-control" name="middleName" id="middleName">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">* Last Name</label>
+                                <input type="text" class="form-control" name="lastName" id="lastName" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-2">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">* Email address</label>
+                                <input type="email" class="form-control" name="email" id="email" required email>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="contact_no" class="form-label">* Contact Number</label>
+                                <input type="text" class="form-control" name="contact_no" id="contact_no"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="employeeNo" class="form-label">* Employee Number</label>
+                                <input type="text" class="form-control" name="employeeNo" id="employeeNo" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger " role="alert" id="addNewFacultyError">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-target="#addFacultyModal"
+                        data-bs-toggle="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="addFacultyBtn">Add New Faculty <span
+                        class="spinner-border spinner-border-sm" id="addFacultySpinner" role="status"></span></button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

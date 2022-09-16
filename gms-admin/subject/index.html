@@ -1,0 +1,82 @@
+<main>
+    <header class="">
+        <div id="header-title" class="d-flex justify-content-between">
+            <h3>Subject</h3>
+            <div class="btn-group d-print-none" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        <li><button class="dropdown-item" id="uploadFileBtn">Upload Excel File</button></li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addFacultyModal">Add
+                    New Subject</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="mx-3">
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <label for="year_sem">Year and Semester</label>
+                <select class="form-select" id="year_sem">
+                    <option value="All" selected>All</option>
+                    <option value="1-1">1ST YEAR - 1ST SEMESTER</option>
+                    <option value="1-2">1ST YEAR - 2ND SEMESTER</option>
+                    <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                    <option value="2-1">2ND YEAR - 1ST SEMESTER</option>
+                    <option value="2-2">2ND YEAR - 2ND SEMESTER</option>
+                    <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                    <option value="3-1">3RD YEAR - 1ST SEMESTER</option>
+                    <option value="3-2">3RD YEAR - 2ND SEMESTER</option>
+                    <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                    <option value="4-1">4TH YEAR - 1ST SEMESTER</option>
+                    <option value="4-2">4TH YEAR - 2ND SEMESTER</option>
+                </select>
+            </div>
+            <div>
+                <label for="specialization">Specialization</label>
+                <select class="form-select" id="specialization">
+                    <option value="All" selected>All</option>
+                    <option value="General">General</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Business Analytics">Business Analytics</option>
+                    <option value="Service Management">Service Management</option>
+
+                </select>
+            </div>
+            <form>
+                <div class="d-flex justify-content-start">
+                    <div class="me-1">
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="fal fa-search"></i></div>
+                            <input type="search" class="form-control" id="inlineFormInputGroupUsername"
+                                placeholder="Search..">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-dark">Search</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Specialization</th>
+                    <th>Teacher/s</th>
+                </tr>
+            </thead>
+            <tbody id="subject_tdata">
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script src="../subject/script.subject.js"></script>

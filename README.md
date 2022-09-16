@@ -31,9 +31,10 @@
 - List of handled students per faculty
 - List of handled subject
 - Can print individual faculty with handled students
-- Can add/edit/archive new faculty
+- Can ~~add~~/edit/archive new faculty
 - ~~Admin will provide email and username to faculty for login~~
-- The system will automatically send password to faculties email address after account creation
+    - ~~NO DUPLICATION OF USERNAME~~
+- ~~The system will automatically send password to faculties email address after account creation~~
 - ~~can upload excel file with __specific format__~~
 
 #### 5. Student
@@ -41,9 +42,9 @@
 - Add/Edit/Archive students
 
 #### 6. Subject
-- List of all subject per year, semester, and specialization
+- ~~List of all subject per year, semester, and specialization~~
 - Admin can add/edit/delete subject
-- Search bar: Subject Title, Subject Code, Units
+- Search bar: Subject Title, Subject Code
 - List of faculty teaching specific subject
 - Assign faculty to specific subject
 

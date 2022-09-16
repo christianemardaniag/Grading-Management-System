@@ -8,7 +8,7 @@ class Mail extends dbHandler
 {
     private $mail;
     private $userType;
-    private const SERVER_EMAIL = 'the_back_end@outlook.ph';
+    private const SERVER_EMAIL = 'spacemonkeydev@outlook.com';
 
     function __construct($userType)
     {
@@ -16,12 +16,12 @@ class Mail extends dbHandler
         $this->userType = $userType;
         $this->mail = new PHPMailer(true);
 
-        $this->mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        // $this->mail->SMTPDebug = SMTP::DEBUG_SERVER;
         $this->mail->isSMTP();
         $this->mail->Host       = 'smtp.office365.com';
         $this->mail->SMTPAuth   = true;
         $this->mail->Username   = self::SERVER_EMAIL;
-        $this->mail->Password   = 'hannaqt1722';
+        $this->mail->Password   = 'nv%Iy90$3J&7';
         $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mail->Port       = 587;
     }
@@ -111,6 +111,6 @@ class Mail extends dbHandler
             $body .= "</td></tr>";
             $body .= "<tr><td><p>*Note:Please check your spelling and case.</p></td></tr>";
             $body .= "</tbody></table>";
-            $this->sendMail($recipient, "GMS Online : Account Creation", $body);
+            $this->sendMail($recipient, "GMS Online : Account Creation Details", $body);
     }
 }

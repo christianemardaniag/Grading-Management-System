@@ -15,7 +15,16 @@ if (isset($_POST['faculty'])) {
 	}
 } elseif (isset($_POST['uploadFileToDB'])) {
     echo json_encode((array)$faculty->addFacultyFromFile($_POST['uploadFileToDB']));
-    // echo $faculty->addFacultyFromFile($_POST['uploadFileToDB']);
+} elseif (isset($_POST['addNewFaculty'])) {
+	$details = (object) [
+		'id' => $_POST['employeeNo'],
+		'firstName' => $_POST['firstName'],
+		'middleName' => $_POST['middleName'],
+		'lastName' => $_POST['lastName'],
+		'email' => $_POST['email'],
+		'contact_no' => $_POST['contact_no']
+	];
+    echo json_encode((array)$faculty->addNewFaculty($details));
 } 
 
 

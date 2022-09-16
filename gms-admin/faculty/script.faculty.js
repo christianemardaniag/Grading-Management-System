@@ -14,6 +14,7 @@ $(document).ready(function () {
         e.preventDefault();
         $("#fileUploadForm").submit();
     });
+    $.post("../faculty/process.faculty.php"),'string';
 
     var tempData = {};
     $("#fileUploadForm").submit(function (e) {
@@ -78,7 +79,7 @@ $(document).ready(function () {
             success: function (data) {
                 console.log(data);
                 var flag = true;
-                $.each(data, function (indexInArray, valueOfElement) { 
+                $.each(data, function (indexInArray, valueOfElement) {
                     if (!valueOfElement.status) {
                         flag = false;
                         $("#uploadSpinner").fadeOut();
@@ -86,24 +87,77 @@ $(document).ready(function () {
                         var content = `
                         <div class="alert alert-danger alert-dismissible fade show mb-2" role="alert">`+ valueOfElement.msg + `
                         <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>
-                        `;
+                        </div>`;
                         $("#fileUploadBody").prepend(content);
                     }
                 });
                 if (flag) {
                     $("#fileUploadModal").modal("hide");
+                    $("#upload").html("Upload");
+                    $("#upload").removeAttr("disabled");
                     $("#uploadSpinner").fadeOut();
                     $("#fileUploadBody").html('');
                     $("#fileUploadForm").trigger('reset');
                 }
-                
+
             }, error: function (dataResult) {
                 console.log("ERROR:");
                 console.log(dataResult.responseText);
+                $("#upload").html("Upload");
+                $("#upload").removeAttr("disabled");
+                $("#uploadSpinner").hide();
+                $("#fileUploadForm").trigger('reset');
+                var content = `
+                <div class="alert alert-danger alert-dismissible fade show mb-2" role="alert">
+                We encounter problem. Some faculty may not be receive email from the system or did'nt register to the system.
+                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+                $("#fileUploadBody").prepend(content);
             }, beforeSend: function () {
+                $("#upload").html("Uploading");
+                $("#upload").attr("disabled", "disabled");
                 $("#uploadSpinner").show();
-            }, complete: function() {
+            }, complete: function () {
+                displayUsers();
+            }
+        });
+    });
+
+    $("#addNewFacultyError").hide();
+    $("#addFacultySpinner").hide();
+    $("#addFacultyForm").submit(function (e) {
+        e.preventDefault();
+        var data = $(this).serializeArray();  // Form Data
+        data.push({ name: 'addNewFaculty', value: true });
+        $.ajax({
+            type: "post",
+            url: "../faculty/process.faculty.php",
+            data: data,
+            dataType: "json",
+            success: function (response) {
+                $("#addFacultyBtn").html("Add New Faculty");
+                $("#addFacultyBtn").removeAttr("disabled");
+                $("#addFacultySpinner").hide();
+
+                if (response.status) {
+                    $("#addFacultyForm").trigger('reset');
+                    $("#addFacultyModal").modal("hide");
+                } else {
+                    $("#addNewFacultyError").html(response.msg);
+                    $("#addNewFacultyError").fadeIn();
+                }
+                
+            },
+            beforeSend: function () {
+                $("#addFacultyBtn").html("Adding New Faculty");
+                $("#addFacultyBtn").attr("disabled", "disabled");
+                $("#addFacultySpinner").fadeIn();
+            },
+            error: function (response) {
+                console.log("ERROR:");
+                console.log(response.responseText);
+            }, 
+            complete: function () {
                 displayUsers();
             }
         });
@@ -147,29 +201,33 @@ function displayUsers(searchQuery = '') {
             $('#list').html(content);
         },
         error: function (dataResult) {
+            console.log("ERROR:");
             console.log(dataResult);
         },
         complete: function (response) {
-            // console.log(response);
-            // $(".faculty").click(function (e) {
-            //     e.preventDefault();
-            //     $(".faculty").removeClass("list-group-item-warning active");
-            //     $(this).addClass("list-group-item-warning active");
-            //     var userid = $(this).attr("data-id");
-            //     $.ajax({
-            //         url: "students/records.php",
-            //         type: "POST",
-            //         data: {
-            //             id: userid
-            //         },
-            //         success: function (dataResult) {
-            //             $("#records").html(dataResult);
-            //         },
-            //         error: function (result) {
-            //             console.log(result);
-            //         }
-            //     });
-            // });
+            $(".faculty").click(function (e) {
+                e.preventDefault();
+                $(".faculty").removeClass("list-group-item-warning active");
+                $(this).addClass("list-group-item-warning active");
+                var userid = $(this).attr("data-id");
+                var filtered = response.responseJSON.filter(function (data) {
+                    return data.id == userid;
+                });
+                $.ajax({
+                    url: "../faculty/records.faculty.php",
+                    type: "POST",
+                    data: {
+                        details: filtered
+                    },
+                    success: function (response) {
+                        $("#records").html(response);
+                    },
+                    error: function (result) {
+                        console.log("ERROR:");
+                        console.log(result);
+                    }
+                });
+            });
         }
     });
 }

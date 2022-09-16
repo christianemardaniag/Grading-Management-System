@@ -14,6 +14,61 @@ class Faculty extends dbHandler
         }
     }
 
+    // PUBLIC FUNCTIONS
+    public function getFacultyInfo()
+    {
+        return $this->facultyInfo;
+    }
+
+    public function addFacultyFromFile($data)
+    {
+        $data = json_encode($data);
+        $data = json_decode($data);
+        $query = "INSERT INTO faculty(id, username, password, firstName, middleName, lastName, email, contact_no) VALUES ";
+        $status = array();
+        foreach ($data->body as $eachData) {
+            $email = strtolower($eachData[4]);
+            if ($this->isEmailExist($email)) {
+                $status[] = (object) ['status' => false, 'msg' => '<b>' . $email . '</b> is already exist'];
+            } else {
+                $username = $this->generateUsername($eachData[1], $eachData[3]);
+                $password = $this->generateRandomPassword();
+                $mail = new Mail(ADMIN);
+                $mail->sendCredentials($email, $username, $password);
+                $query .= "('$eachData[0]', '$username', '$password', '$eachData[1]', '$eachData[2]', '$eachData[3]', '$email', '$eachData[5]'),";
+            }
+        }
+        $query = rtrim($query, ",");
+        if (mysqli_query($this->conn, $query)) {
+            $status[] = (object) ['status' => true, 'msg' => ''];
+        } else {
+            $status[] = (object) ['status' => false, 'msg' => "Error description: " . mysqli_error($this->conn)];
+        }
+        return $status;
+    }
+
+    public function addNewFaculty($details)
+    {
+        $username = $this->generateUsername($details->firstName, $details->lastName);
+        $password = $this->generateRandomPassword();
+        if ($this->isEmailExist($details->email)) {
+            return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
+        } else {
+            $query = "INSERT INTO faculty(id, username, password, firstName, middleName, lastName, email, contact_no) VALUES 
+                ('$details->id', '$username', '$password', '$details->firstName', '$details->middleName', '$details->lastName', '$details->email', '$details->contact_no')";
+            $mail = new Mail(ADMIN);
+            $mail->sendCredentials($details->email, $username, $password);
+            
+            if (mysqli_query($this->conn, $query)) {
+                return (object) ['status' => true, 'msg' => ''];
+            } else {
+                return (object) ['status' => false, 'msg' => "Error description: " . mysqli_error($this->conn)];
+            }
+        }
+    }
+
+    // PRIVATE FUNCTIONS
+
     private function withID($id)
     {
         $this->id = $id;
@@ -32,11 +87,6 @@ class Faculty extends dbHandler
         if (mysqli_num_rows($result)) {
             return $this->setFacultyInfo($result);
         }
-    }
-
-    public function getFacultyInfo()
-    {
-        return $this->facultyInfo;
     }
 
     private function setFacultyInfo($result)
@@ -58,37 +108,13 @@ class Faculty extends dbHandler
         return $faculties;
     }
 
-    public function addFacultyFromFile($data)
-    {
-        $data = json_encode($data);
-        $data = json_decode($data);
-        // TODO: EMAIL EACH USER FOR USERNAME AND PASSWORD
-        $query = "INSERT INTO faculty(id, username, password, firstName, middleName, lastName, email, contact_no) VALUES ";
-        $status = array();
-        foreach ($data->body as $eachData) {
-            $email = strtolower($eachData[4]);
-            if ($this->isEmailExist($email)) {
-                $status[] = (object) ['status' => false, 'msg' => '<b>' . $email . '</b> is already exist'];
-            } else {
-                $username = $this->generateUsername($eachData[1], $eachData[3]);
-                $password = $this->generateRandomPassword();
-                $mail = new Mail(ADMIN);
-                $mail->sendCredentials($email, $username, $password);
-                $query .= "('$eachData[0]', '$username', '$password', '$eachData[1]', '$eachData[2]', '$eachData[3]', '$email', '$eachData[5]'),";
-            }
-        }
-        $query = rtrim($query, ",");
-        mysqli_query($this->conn, $query);
-        $status[] = (object) ['status' => true, 'msg' =>''];
-        return $status;
-    }
-
     private function generateUsername($firstName, $lastName)
     {
         $ext = "";
         $i = 1;
         do {
             $username = strtolower($firstName . $lastName . $ext);
+            $username = str_replace(' ', '', $username);
             $ext = $i++;
         } while ($this->isUsernameExist($username));
 
