@@ -41,12 +41,12 @@
 - Upload and download list of students (excel file)
 - Add/Edit/Archive students
 
-#### 6. Subject
+#### ~~6. Subject~~
 - ~~List of all subject per year, semester, and specialization~~
-- Admin can add/edit/delete subject
-- Search bar: Subject Title, Subject Code
-- List of faculty teaching specific subject
-- Assign faculty to specific subject
+- ~~Admin can add/edit/delete subject~~
+- ~~Search bar: Subject Title, Subject Code~~
+- ~~List of faculty teaching specific subject~~
+- ~~Assign faculty to specific subject~~
 
 #### 7. Settings (Replacement to Criteria)
 - __ANNOUNCEMENT__ (ADDITIONAL)

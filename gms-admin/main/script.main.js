@@ -14,7 +14,9 @@ $(document).ready(function () {
     $(".nav-link").click(function (e) {
         e.preventDefault();
         if (searchParams.has('url')) {
-            searchParams.set('url', $(this).attr('id'));
+            let page = $(this).attr('id');
+            searchParams.set('url', page);
+            history.replaceState('', '', `http://localhost/Grading-Management-System/gms-admin/main/?url=${page}`)
             loadContent();
         }
     });

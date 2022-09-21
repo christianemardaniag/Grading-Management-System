@@ -183,19 +183,13 @@ function displayUsers(searchQuery = '') {
             });
             $.each(filtered, function (i, data) {
                 content += `
-                    <button data-id="` + data.id + `" class="faculty list-group-item list-group-item-action" aria-current="true">
-                            <div class="row g-2">
-                                <div class="col-3 d-flex align-items-center">
-                                  <img src="../../images/defaultUserImage.jpg" class="img-fluid rounded-circle">
-                                </div>
-                                <div class="col-9">
-                                  <div class="card-body">
-                                    <h5 class="card-title">`+ data.fullName + `</h5>
-                                    <small>` + data.id + `</small><br>
-                                    <small>`+ data.email + `</small>
-                                  </div>
-                                </div>
-                              </div>
+                    <button data-id="` + data.id + `" class="faculty list-group-item list-group-item-action d-flex gap-3" aria-current="true">
+                        <img src="../../images/defaultUserImage.jpg" width="60" height="60" class="rounded-circle flex-shrink-0">
+                        <div>
+                            <small class="opacity-75">` + data.id + `</small>
+                            <h6 class="card-title">`+ data.fullName + `</h6>
+                            <small class="opacity-75">`+ data.email + `</small>
+                        </div>
                     </button>`;
             });
             $('#list').html(content);
