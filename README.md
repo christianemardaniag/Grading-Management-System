@@ -38,6 +38,8 @@
 - ~~can upload excel file with __specific format__~~
 
 #### 5. Student
+- ~~List of all student~~
+- ~~Search Bar: Student name, Student No, email address~~
 - Upload and download list of students (excel file)
 - Add/Edit/Archive students
 
