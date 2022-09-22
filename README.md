@@ -90,12 +90,13 @@
 - Can add/edit/delete quiz, activities, and exam
 - https://frappe.io/datatable
 - https://github.com/datazenit/sensei-grid
+- https://handsontable.com/
 
-#### 5. Chat
-- Can chat co-faculty and students
-- Can upload and download file (max limit 3mb file size)
-- Refresh chat box every 1 second
-- View Contacts
+#### ~~5. Chat~~ (NOT TO DO)
+- ~~Can chat co-faculty and students~~
+- ~~Can upload and download file (max limit 3mb file size)~~
+- ~~Refresh chat box every 1 second~~
+- ~~View Contacts~~
 
 #### 6. Profile
 - Faculty can edit their information (Username, Email, Password)
@@ -120,8 +121,8 @@
 - Download grade
 - 
 
-#### 4. Chat
-- Can chat co-students and faculty
-- Can upload and download file (max limit 3mb file size)
-- Refresh chat box every 1 second
-- View Contacts
+#### ~~4. Chat~~ (NOT TO DO)
+- ~~Can chat co-students and faculty~~
+- ~~Can upload and download file (max limit 3mb file size)~~
+- ~~Refresh chat box every 1 second~~
+- ~~View Contacts~~

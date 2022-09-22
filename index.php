@@ -13,6 +13,8 @@
     session_start();
     print_r($_SESSION);
    ?>
+   <a href="gms-admin">admin</a>
+   <a href="gms-faculty">faculty</a>
 </body>
 
 </html>

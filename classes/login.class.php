@@ -48,7 +48,7 @@ class Login extends dbHandler
             $this->invalidCredentials();
         } else {
             $this->setUserAttempt($this->userInfo->id, DEFAULT_ATTEMPT);
-            $_SESSION['ADMIN'] = $this->userInfo->id;
+            $_SESSION[$this->type] = $this->userInfo->id;
             $this->response = (object) [
                 'status' => true,
                 'msg' => ''
