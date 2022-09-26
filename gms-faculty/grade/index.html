@@ -11,4 +11,25 @@
     </div>
 </main>
 
+<!-- DELETE SUBJECT MODAL -->
+<div class="modal fade py-5" tabindex="-1" id="removeModal">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-3">
+            <div class="modal-body p-4 text-center">
+                <h5 class="">Remove Activity</h5>
+                <p class="mb-1">Are you sure you want to Activity?</p>
+                <p class="mb-0 text-danger fw-bolder">*This action will also remove all students grade under this activity and this is cannot be undone!
+                </p>
+            </div>
+            <div class="modal-footer flex-nowrap p-0">
+                <button type="button" id="remove-yes-btn"
+                    class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end"><strong>Yes</strong></button>
+                <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0"
+                    data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div><!-- END OF DELETE SUBJECT MODAL -->
+
+
 <script src="../grade/script.grade.js"></script>

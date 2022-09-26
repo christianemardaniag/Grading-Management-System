@@ -1,11 +1,11 @@
 <?php
 include '../../include/autoloader.inc.php';
-if (!isset($_SESSION['ADMIN'])) {
+if (!isset($_SESSION[ADMIN])) {
     echo true;
     exit();
 }
 
-$admin = new Admin($_SESSION['ADMIN']);
+$admin = new Admin($_SESSION[ADMIN]);
 
 // PROFILE
 if (isset($_POST['getInfo'])) {

@@ -1,9 +1,114 @@
+var json = {
+    "criteria": [{
+        "name": "Activities/Project",
+        "equiv": 30,
+        "activity": [{
+            "name": "1",
+            "score": 100
+        }]
+    }, {
+        "name": "Quizzes",
+        "equiv": 20,
+        "activity": [{
+            "name": "1",
+            "score": 80
+        }, {
+            "name": "2",
+            "score": 120
+        }]
+    }, {
+        "name": "Recitation",
+        "equiv": 15,
+        "activity": [{
+            "name": "1",
+            "score": 100
+        }]
+    }, {
+        "name": "Promptness",
+        "equiv": 5,
+        "activity": [{
+            "name": "1",
+            "score": 100
+        }]
+    }, {
+        "name": "Major Exam",
+        "equiv": 30,
+        "activity": [{
+            "name": "ME",
+            "score": 100
+        }]
+    }
+    ],
+    "students": [
+        {
+            "stundetNo": "2013412425",
+            "name": "Aniag, Christian",
+            "grade": 0,
+            "equiv": 5.0,
+            "remarks": "Failed",
+            "scores": [
+                {
+                    "average": 50,
+                    "score": [14]
+                }, {
+                    "average": 80,
+                    "score": [50, 90]
+                }, {
+                    "average": 50,
+                    "score": [20]
+                }, {
+                    "average": 60,
+                    "score": [52]
+                }, {
+                    "average": 70,
+                    "score": [65]
+                },
+            ]
+        },
+        {
+            "stundetNo": "2013412425",
+            "name": "Aniag, Christian",
+            "grade": 0,
+            "equiv": 5.0,
+            "remarks": "Failed",
+            "scores": [
+                {
+                    "average": 100,
+                    "score": [0]
+                }, {
+                    "average": 100,
+                    "score": [60, 110]
+                }, {
+                    "average": 100,
+                    "score": [0]
+                }, {
+                    "average": 100,
+                    "score": [0]
+                }, {
+                    "average": 100,
+                    "score": [0]
+                },
+            ]
+        }
+    ]
+};
 $(document).ready(function () {
 
+    fetchGrades(response);
+    
+    // $.ajax({
+    // type: "POST",
+    //     url: "../grade/process.grade.php",
+    //     data: { GET_GRADE_REQ: true },
+    //     dataType: "JSON",
+    //     success: function (response) {
+    //         json = response;
+    //         fetchGrades(response);
+    //     }, error: function (response) {
+    //         console.error(response);
 
-    fetchGrades(json);
-
-
+    //     }
+    // });
 });
 
 function fetchGrades(json) {
@@ -11,24 +116,31 @@ function fetchGrades(json) {
         let colGroup = ``;
         let criteria_th = ``;
         let activities_th = ``;
+        let actionBtn_th = ``;
         let score_th = ``;
         $.each(json.criteria, function (index, criteria) {
+            console.log(json);
             let cri_len = Object.keys(criteria.activity).length;
             colGroup += `<col span="${cri_len}" style="background-color: #d1e7dd;">
                     <col style="background-color: #ffe5d0;">`;
             criteria_th += `<th colspan="${cri_len + 1}">${criteria.name}</th>`;
+            console.log(criteria.activity.length);
+            if (criteria.activity.length == 0) {
+                actionBtn_th = `<th data-index="${index}" data-bs-toggle='popover' class="plus-btn bg-light"><i class="fal fa-plus"></i></th>`;
+                activities_th = `<th>Equiv</th>`;
+                score_th = `<th>${criteria.equiv}%</th>`;
+            }
             $.each(criteria.activity, function (i, activity) {
                 if (cri_len - 1 != i) {
-                    activities_th += `<th class="px-3">${activity.name}</th>`;
+                    actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
+                    activities_th += `<th>${activity.name}</th>`;
                     score_th += `<th>${activity.score}</th>`;
                 } else {
+                    actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
+                    actionBtn_th += `<th data-index="${index}" data-bs-toggle='popover' class="plus-btn bg-light"><i class="fal fa-plus"></i></th>`;
                     activities_th += `
-                        <th class="position-relative px-3">${activity.name}
-                            <span data-bs-toggle="popover" data-index="${index}" class="position-absolute top-50 start-100 translate-middle badge rounded-pill border text-bg-light">
-                                <i class="fal fa-plus"></i>
-                            </span>
-                        </th>
-                        <th class="px-3">Equiv</th>`;
+                    <th>${activity.name}</th>
+                    <th>Equiv</th>`;
                     score_th += `
                         <th>${activity.score}</th>
                         <th>${criteria.equiv}%</th>`;
@@ -41,6 +153,9 @@ function fetchGrades(json) {
         $.each(json.students, function (index_student, student) {
             let score_td = ``;
             $.each(student.scores, function (index_criteria, criteria) {
+                if (criteria.score.length == 0) {
+                    score_td += `<td><b>50.00</b></td>`;
+                }
                 for (let i = 0; i < criteria.score.length; i++) {
                     const score = criteria.score[i];
                     score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-student="${index_student}" contenteditable='true'>${score}</td>`;
@@ -61,7 +176,6 @@ function fetchGrades(json) {
 
             </tr>`;
         });
-
         let tContent = `
         <colgroup>
             <col span="2">
@@ -70,17 +184,20 @@ function fetchGrades(json) {
         </colgroup>
         <thead>
             <tr>
-                <th rowspan="3">Student No.</th>
-                <th rowspan="3">Name</th>
-                <th rowspan="3">Final Grade</th>
+                <th rowspan="4">Student No.</th>
+                <th rowspan="4">Name</th>
+                <th rowspan="4">Final Grade</th>
                 ${criteria_th}
                 <th colspan="3">Final Grade</th>
             </tr>
             <tr>
+                ${actionBtn_th}
+                <th rowspan="3">Grade</th>
+                <th rowspan="3">Equiv</th>
+                <th rowspan="3">Remarks</th>
+            </tr>
+            <tr>
                 ${activities_th}
-                <th rowspan="2">Grade</th>
-                <th rowspan="2">Equiv</th>
-                <th rowspan="2">Remarks</th>
             </tr>
             <tr>
                 ${score_th}
@@ -93,6 +210,24 @@ function fetchGrades(json) {
 
         $("#gradesTable").html(tContent);
 
+        // REMOVE ACTIVITY
+        $(".minus-btn").click(function (e) {
+            e.preventDefault();
+            let i_criteria = $(this).data("criteria");
+            let i_act = $(this).data("act");
+            $("#removeModal").modal("show");
+            $("#remove-yes-btn").click(function (e) {
+                e.preventDefault();
+                $.each(json.students, function (indexInArray, student) {
+                    student.scores[i_criteria].score.splice(i_act, 1);
+                });
+                json.criteria[i_criteria].activity.splice(i_act, 1);
+                fetchGrades(json);
+                $("#removeModal").modal("hide");
+            });
+        });
+
+        // ADD ACTIVITY
         let popoverContent = `
         <form id="addColumnForm" style="width: 150px;">
             <div class="row">
@@ -163,7 +298,7 @@ function fetchGrades(json) {
             json.students[i_student].equiv = equiv;
 
             // set remarks
-            json.students[i_student].remarks = (equiv == 5.00)? "Failed":"Passed";
+            json.students[i_student].remarks = (equiv == 5.00) ? "Failed" : "Passed";
             fetchGrades(json);
         });
 
@@ -204,97 +339,4 @@ function addColumn(index, label, score) {
     });
 }
 
-var json = {
-    "criteria": [{
-        "name": "Activities/Project",
-        "equiv": 30,
-        "activity": [{
-            "name": "1",
-            "score": 100
-        }]
-    }, {
-        "name": "Quizzes",
-        "equiv": 20,
-        "activity": [{
-            "name": "1",
-            "score": 120
-        }, {
-            "name": "2",
-            "score": 120
-        }]
-    }, {
-        "name": "Recitation",
-        "equiv": 15,
-        "activity": [{
-            "name": "1",
-            "score": 100
-        }]
-    }, {
-        "name": "Promptness",
-        "equiv": 5,
-        "activity": [{
-            "name": "1",
-            "score": 100
-        }]
-    }, {
-        "name": "Major Exam",
-        "equiv": 30,
-        "activity": [{
-            "name": "ME",
-            "score": 100
-        }]
-    }
-    ],
-    "students": [
-        {
-            "stundetNo": "2013412425",
-            "name": "Aniag, Christian",
-            "grade": 0,
-            "equiv": 5.0,
-            "remarks": "Failed",
-            "scores": [
-                {
-                    "average": 100,
-                    "score": [14]
-                }, {
-                    "average": 100,
-                    "score": [50, 100]
-                }, {
-                    "average": 100,
-                    "score": [20]
-                }, {
-                    "average": 100,
-                    "score": [52]
-                }, {
-                    "average": 100,
-                    "score": [65]
-                },
-            ]
-        },
-        {
-            "stundetNo": "2013412425",
-            "name": "Aniag, Christian",
-            "grade": 0,
-            "equiv": 5.0,
-            "remarks": "Failed",
-            "scores": [
-                {
-                    "average": 100,
-                    "score": [0]
-                }, {
-                    "average": 100,
-                    "score": [60, 110]
-                }, {
-                    "average": 100,
-                    "score": [0]
-                }, {
-                    "average": 100,
-                    "score": [0]
-                }, {
-                    "average": 100,
-                    "score": [0]
-                },
-            ]
-        }
-    ]
-};
+
