@@ -102,6 +102,7 @@ class Faculty extends dbHandler
                 'fullName' => $row['fullName'],
                 'email' => $row['email'],
                 'contact_no' => $row['contact_no'],
+                'profile_picture' => $row['profile_picture'],
                 'status' => $row['status'],
             ];
         }

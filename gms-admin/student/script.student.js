@@ -30,7 +30,7 @@ $(document).ready(function () {
             success: function (data) {
                 var content = `
                 <div class="table-responsive">
-                    <table id="previewTable" class="table table-sm table-striped table-bordered">
+                    <table id="previewTable" class="table table-sm table-striped table-bordered display compact">
                         <thead><tr>
                         `;
                 tempData.body = [];
@@ -60,7 +60,8 @@ $(document).ready(function () {
                 $("#fileUploadBody").html(content);
                 $('#previewTable').DataTable();
             }, error: function (dataResult) {
-                console.log(dataResult);
+                console.error(dataResult);
+                $("#fileUploadBody").prepend(dataResult.responseText);
             }, beforeSend: function () {
                 $("#fileUploadModal").modal("show");
                 $("#previewSpinner").show();
@@ -103,6 +104,7 @@ $(document).ready(function () {
             }, error: function (dataResult) {
                 console.log("ERROR:");
                 console.log(dataResult.responseText);
+                $("#fileUploadBody").prepend(dataResult.responseText);
                 $("#upload").html("Upload");
                 $("#upload").removeAttr("disabled");
                 $("#uploadSpinner").hide();

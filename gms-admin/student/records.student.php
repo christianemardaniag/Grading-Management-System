@@ -10,7 +10,7 @@ $details = json_decode($details);
         </div>
         <div class="col">
             <small><i class="fal fa-hashtag"></i> <?php echo $details[0]->id; ?></small>
-            <h2><?php echo $details[0]->firstName . ' ' . $details[0]->lastName; ?></h2>
+            <h2><?php echo $details[0]->fullName; ?></h2>
             <div><i class="fal fa-envelope mx-2"></i> <a href="mailto:<?php echo $details[0]->email; ?>" class="text-decoration-none link-dark"><?php echo $details[0]->email; ?></a></div>
             <div><i class="far fa-phone-alt mx-2"></i> <?php echo $details[0]->contact_no; ?></div>
             <!-- <button class="btn btn-sm btn-outline-secondary"><i class="fal fa-edit"></i> Edit</button> -->

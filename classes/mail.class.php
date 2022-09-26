@@ -109,7 +109,7 @@ class Mail extends dbHandler
             $body .= "<div>username: <b>$username</b></div>";
             $body .= "<div>password: <b>$password</b></div>";
             $body .= "</td></tr>";
-            $body .= "<tr><td><p>*Note:Please check your spelling and case.</p></td></tr>";
+            $body .= "<tr><td><p>*Note: Please check your spelling and case. You can change you account details on your profile</p></td></tr>";
             $body .= "</tbody></table>";
             $this->sendMail($recipient, "GMS Online : Account Creation Details", $body);
     }

@@ -24,32 +24,42 @@ class Student extends dbHandler
     {
         $data = json_encode($data);
         $data = json_decode($data);
-        $query = "INSERT INTO student(id, username, password, firstName, middleName, lastName, email, contact_no) VALUES ";
+        $query = "INSERT INTO student(id, fullName, username, email, password, contact_no, gender, specialization, program, level, section, subjects) VALUES ";
         $status = array();
         foreach ($data->body as $eachData) {
-            $email = strtolower($eachData[4]);
+            $email = strtolower($eachData[STUDENT_EMAIL]);
             if ($this->isEmailExist($email)) {
                 $status[] = (object) ['status' => false, 'msg' => '<b>' . $email . '</b> is already exist'];
             } else {
-                $username = $this->generateUsername($eachData[1], $eachData[3]);
+                $username = explode("@", $email)[0];
                 $password = $this->generateRandomPassword();
                 $mail = new Mail(ADMIN);
                 $mail->sendCredentials($email, $username, $password);
-                $query .= "('$eachData[0]', '$username', '$password', '$eachData[1]', '$eachData[2]', '$eachData[3]', '$email', '$eachData[5]'),";
+                $query .= "(
+                    '" . $eachData[STUDENT_STUDENT_NO]      . "',
+                    '" . $eachData[STUDENT_FULLNAME]        . "', 
+                    '$username', '$email', '$password', 
+                    '" . $eachData[STUDENT_CONTACT_NO]      . "', 
+                    '" . $eachData[STUDENT_GENDER]          . "', 
+                    '" . $eachData[STUDENT_SPECIALIZATION]  . "', 
+                    '" . $eachData[STUDENT_PROGRAM]         . "', 
+                    '" . $eachData[STUDENT_LEVEL]           . "', 
+                    '" . $eachData[STUDENT_SECTION]         . "', 
+                    '" . $eachData[STUDENT_SUBJECTS]        . "'),";
             }
         }
         $query = rtrim($query, ",");
         if (mysqli_query($this->conn, $query)) {
             $status[] = (object) ['status' => true, 'msg' => ''];
         } else {
-            $status[] = (object) ['status' => false, 'msg' => "Error description: " . mysqli_error($this->conn)];
+            $status[] = (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
         }
         return $status;
     }
 
     public function addNewStudent($details)
     {
-        $username = $this->generateUsername($details->firstName, $details->lastName);
+        $username = explode("@", $details->email)[0];
         $password = $this->generateRandomPassword();
         if ($this->isEmailExist($details->email)) {
             return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
@@ -58,7 +68,7 @@ class Student extends dbHandler
                 ('$details->id', '$username', '$password', '$details->firstName', '$details->middleName', '$details->lastName', '$details->email', '$details->contact_no')";
             $mail = new Mail(ADMIN);
             $mail->sendCredentials($details->email, $username, $password);
-            
+
             if (mysqli_query($this->conn, $query)) {
                 return (object) ['status' => true, 'msg' => ''];
             } else {
@@ -82,7 +92,7 @@ class Student extends dbHandler
 
     private function getAllStudent()
     {
-        $query = "SELECT *, CONCAT(lastName,', ', firstName) AS fullName FROM student WHERE status='" . ACTIVE . "'";
+        $query = "SELECT * FROM student WHERE status='" . ACTIVE . "'";
         $result = mysqli_query($this->conn, $query);
         if (mysqli_num_rows($result)) {
             return $this->setStudentInfo($result);
@@ -91,43 +101,46 @@ class Student extends dbHandler
 
     private function setStudentInfo($result)
     {
-        $faculties = array();
+        $students = array();
         while ($row = mysqli_fetch_assoc($result)) {
-            $faculties[] = (object) [
+            $students[] = (object) [
                 'id' => $row['id'],
-                'username' => $row['username'],
-                'firstName' => $row['firstName'],
-                'middleName' => $row['middleName'],
-                'lastName' => $row['lastName'],
                 'fullName' => $row['fullName'],
+                'username' => $row['username'],
                 'email' => $row['email'],
                 'contact_no' => $row['contact_no'],
+                'gender' => $row['gender'],
+                'specialization' => $row['specialization'],
+                'program' => $row['program'],
+                'level' => $row['level'],
+                'section' => $row['section'],
+                'subjects' => explode(",", $row['subjects']),
                 'profile_picture' => $row['profile_picture'],
                 'status' => $row['status'],
             ];
         }
-        return $faculties;
+        return $students;
     }
 
-    private function generateUsername($firstName, $lastName)
-    {
-        $ext = "";
-        $i = 1;
-        do {
-            $username = strtolower($firstName . $lastName . $ext);
-            $username = str_replace(' ', '', $username);
-            $ext = $i++;
-        } while ($this->isUsernameExist($username));
+    // private function generateUsername($firstName, $lastName)
+    // {
+    //     $ext = "";
+    //     $i = 1;
+    //     do {
+    //         $username = strtolower($firstName . $lastName . $ext);
+    //         $username = str_replace(' ', '', $username);
+    //         $ext = $i++;
+    //     } while ($this->isUsernameExist($username));
 
-        return $username;
-    }
+    //     return $username;
+    // }
 
-    private function isUsernameExist($username): bool
-    {
-        $query = "SELECT id FROM student WHERE username='$username'";
-        $result = mysqli_query($this->conn, $query);
-        return mysqli_num_rows($result);
-    }
+    // private function isUsernameExist($username): bool
+    // {
+    //     $query = "SELECT id FROM student WHERE username='$username'";
+    //     $result = mysqli_query($this->conn, $query);
+    //     return mysqli_num_rows($result);
+    // }
 
     private function isEmailExist($email): bool
     {

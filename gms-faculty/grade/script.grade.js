@@ -94,7 +94,7 @@ var json = {
 };
 $(document).ready(function () {
 
-    fetchGrades(response);
+    fetchGrades(json);
     
     // $.ajax({
     // type: "POST",
