@@ -1,8 +1,9 @@
+<link rel="stylesheet" href="../student/style.student.css">
 <main>
     <header class="">
         <div id="header-title" class="d-flex justify-content-between">
             <h3>Student</h3>
-            <div class="btn-group" role="group">
+            <div class="btn-group d-print-none" role="group">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -16,16 +17,72 @@
             </div>
         </div>
     </header>
-    <div class="row g-2">
-        <div class="col-4 d-print-none">
-            <input type="search" name="search" id="search" class="form-control mb-2" placeholder="Search">
-            <div style="overflow-y: scroll; height: 80vh;">
-                <div id="list" class="list-group"></div>
-            </div>
-        </div>
-        <div id="records" class="col">
 
+    <div class="mx-3">
+        <div id="error"></div>
+
+        <div class="py-3 mt-3">
+            <h5>Filter</h5>
+            <div class="row row-cols-4 g-2">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="filter-level" class="form-label">Specialization</label>
+                        <select class="form-select mb-3" name="filter-specialization" id="filter-specialization" required>
+                            <option value="All" selected>All</option>
+                            <option value="General">General</option>
+                            <option value="Business Analytics">Business Analytics</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Service Management">Service Management</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="filter-program" class="form-label">Program</label>
+                        <select class="form-select mb-3" name="filter-program" id="filter-program" required>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="filter-level" class="form-label">Year Level</label>
+                        <select class="form-select mb-3" name="filter-level" id="filter-level" required>
+                            <option value="All" selected>All</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="filter-section" class="form-label">Section</label>
+                        <select class="form-select mb-3" name="filter-section" id="filter-section" required>                            
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            
         </div>
+
+        <table class="table table-bordered table-striped table-hover compact display" id="studentsTable">
+            <thead>
+                <tr>
+                    <th>Student No</th>
+                    <th>Full Name</th>
+                    <th>CYS</th>
+                    <th>Specialization</th>
+                    <th>Email</th>
+                    <th>Contact No</th>
+                </tr>
+            </thead>
+            <tbody id="studentRecords">
+
+            </tbody>
+        </table>
+
     </div>
 </main>
 
@@ -52,7 +109,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="upload">Upload <span
+                <button type="button" class="btn btn-primary" id="upload"><span id="updloadLabel">Upload</span> <span
                         class="spinner-border spinner-border-sm" id="uploadSpinner" role="status"></span></button>
             </div>
         </div>
@@ -73,53 +130,298 @@
                     <div class="row row-cols-1 row-cols-md-3 g-2">
                         <div class="col">
                             <div class="mb-3">
-                                <label for="firstName" class="form-label">* First Name</label>
-                                <input type="text" class="form-control" name="firstName" id="firstName" required>
+                                <label for="add-firstName" class="form-label">* First Name</label>
+                                <input type="text" class="form-control" name="add-firstName" id="add-firstName"
+                                    required>
                             </div>
                         </div>
                         <div class="col">
                             <div class="mb-3">
-                                <label for="middleName" class="form-label">Middle Name</label>
-                                <input type="text" class="form-control" name="middleName" id="middleName">
+                                <label for="add-middleName" class="form-label">Middle Name</label>
+                                <input type="text" class="form-control" name="add-middleName" id="add-middleName">
                             </div>
                         </div>
                         <div class="col">
                             <div class="mb-3">
-                                <label for="lastName" class="form-label">* Last Name</label>
-                                <input type="text" class="form-control" name="lastName" id="lastName" required>
+                                <label for="add-lastName" class="form-label">* Last Name</label>
+                                <input type="text" class="form-control" name="add-lastName" id="add-lastName" required>
                             </div>
                         </div>
                     </div>
                     <div class="row row-cols-1 row-cols-md-3 g-2">
                         <div class="col">
                             <div class="mb-3">
-                                <label for="email" class="form-label">* Email address</label>
-                                <input type="email" class="form-control" name="email" id="email" required email>
+                                <label for="add-email" class="form-label">* Email address</label>
+                                <input type="email" class="form-control" name="add-email" id="add-email" required email>
                             </div>
                         </div>
                         <div class="col">
                             <div class="mb-3">
-                                <label for="contact_no" class="form-label">* Contact Number</label>
-                                <input type="text" class="form-control" name="contact_no" id="contact_no"
+                                <label for="add-contactNo" class="form-label">Contact Number</label>
+                                <input type="text" class="form-control" name="add-contactNo" id="add-contactNo">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="male" class="form-label">* Gender</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="add-gender" id="male"
+                                        value="Male" required>
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="add-gender" id="female"
+                                        value="Female">
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-2">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="add-studentNo" class="form-label">* Student Number</label>
+                                <input type="text" class="form-control" name="add-studentNo" id="add-studentNo"
                                     required>
                             </div>
                         </div>
                         <div class="col">
                             <div class="mb-3">
-                                <label for="studentNo" class="form-label">* Student Number</label>
-                                <input type="text" class="form-control" name="studentNo" id="studentNo" required>
+                                <label for="add-specialization" class="form-label">* Specialization</label>
+                                <select class="form-select mb-3" name="add-specialization" id="add-specialization"
+                                    required>
+                                    <option value="General" selected>General</option>
+                                    <option value="Business Analytics">Business Analytics</option>
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="Service Management">Service Management</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="add-program" class="form-label">* Program</label>
+                                <input type="text" class="form-control" name="add-program" id="add-program" required>
                             </div>
                         </div>
                     </div>
-                    <div class="alert alert-danger " role="alert" id="addNewStudentError">
+                    <div class="row row-cols-1 row-cols-md-3 g-2">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="add-level" class="form-label">* Year Level</label>
+                                <select class="form-select mb-3" name="add-level" id="add-level" required>
+                                    <option value="1st Year" selected>1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="add-section" class="form-label">* Class Section</label>
+                                <input type="text" class="form-control" name="add-section" id="add-section" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="add-subjects" class="form-label">* Subjects</label>
+                                <input type="text" class="form-control" name="add-subjects" id="add-subjects" required
+                                    email>
+                                <div class="form-text">Subject Code (Separeted with comma)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger pt-1" role="alert" id="addNewStudentError">
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-target="#addStudentModal"
                         data-bs-toggle="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="addStudentBtn">Add New Student <span
-                        class="spinner-border spinner-border-sm" id="addStudentSpinner" role="status"></span></button>
+                    <button type="submit" class="btn btn-primary" id="addStudentBtn"><span id="addLabel">Add New
+                            Student</span> <span class="spinner-border spinner-border-sm" id="addStudentSpinner"
+                            role="status"></span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW STUDENT MODAL -->
+<div class="modal fade bg-dark" id="viewStudentModal" tabindex="-1" aria-labelledby="viewStudentLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title"><i class="fal fa-hashtag"></i> <span id="view-studentNo"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="px-4">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-3">
+                            <img id="view_profile" src="../../images/defaultUserImage.jpg"
+                                class="img-fluid rounded-circle border p-2">
+                        </div>
+                        <div class="col ">
+                            <h2 class="mb-2"><span id="view-fullName"></span></h2>
+                            <div class="mb-1"><i class="fal fa-envelope me-2"></i> <span id="view-email"></span></div>
+                            <div class="mb-1"><i class="far fa-phone-alt me-2"></i> <span id="view-contactNo"></span>
+                            </div>
+                            <div class="mb-1"><i class="fad fa-venus-mars me-2"></i> <span id="view-gender"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="offset-3 g-3">
+                    <div class="row row-cols-4 g-2 mb-3">
+                        <div class="col"><b>Specialization: </b></div>
+                        <div class="col" id="view-specialization"></div>
+                        <div class="col"><b>Program:</b></div>
+                        <div class="col" id="view-program"></div>
+                        <div class="col"><b>Level:</b></div>
+                        <div class="col" id="view-level"></div>
+                        <div class="col"><b>Class Section:</b></div>
+                        <div class="col" id="view-section"></div>
+                    </div>
+                    <hr>
+                    <h5>Enrolled Subjects</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr class="table-dark">
+                                <th>Subject Code</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="view-subjects">
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-dark px-4 d-print-none" onclick="window.print()"><i class="fal fa-print"></i>
+                    Print</button>
+                <button class="btn btn-dark px-3 d-print-none" data-bs-target="#editStudentModal"
+                    data-bs-toggle="modal"><i class="fal fa-edit"></i> Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Student Modal -->
+<div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Student</h5>
+                <button type="button" class="btn-close" data-bs-target="#editStudentModal"
+                    data-bs-toggle="modal"></button>
+            </div>
+            <form id="editStudentForm">
+                <input type="hidden" name="edit-oldStudentNo">
+                <div class="modal-body">
+                    <div class="row g-2">
+                        <div class="col col-md-4">
+                            <div class="mb-3">
+                                <label for="edit-studentNo" class="form-label">* Student Number</label>
+                                <input type="text" class="form-control" name="edit-studentNo" id="edit-studentNo">
+                            </div>
+                        </div>
+                        <div class="col col-md-8">
+                            <div class="mb-3">
+                                <label for="edit-fullName" class="form-label">* Full Name</label>
+                                <input type="text" class="form-control" name="edit-fullName" id="edit-fullName"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-2">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="edit-email" class="form-label">* Email address</label>
+                                <input type="email" class="form-control" name="edit-email" id="edit-email" required
+                                    email>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="edit-contactNo" class="form-label">Contact Number</label>
+                                <input type="text" class="form-control" name="edit-contactNo" id="edit-contactNo">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="male" class="form-label">* Gender</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="edit-gender" id="male"
+                                        value="Male" required>
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="edit-gender" id="female"
+                                        value="Female">
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-3 g-2">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="edit-specialization" class="form-label">* Specialization</label>
+                                <select class="form-select mb-3" name="edit-specialization" id="edit-specialization"
+                                    required>
+                                    <option value="General" selected>General</option>
+                                    <option value="Business Analytics">Business Analytics</option>
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="Service Management">Service Management</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="edit-program" class="form-label">* Program</label>
+                                <input type="text" class="form-control" name="edit-program" id="edit-program" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="edit-level" class="form-label">* Year Level</label>
+                                <select class="form-select mb-3" name="edit-level" id="edit-level" required>
+                                    <option value="1st Year" selected>1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label for="edit-section" class="form-label">* Class Section</label>
+                                <input type="text" class="form-control" name="edit-section" id="edit-section" required>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="mb-3">
+                                <label for="edit-subjects" class="form-label">* Subjects</label>
+                                <input type="text" class="form-control" name="edit-subjects" id="edit-subjects" required
+                                    email>
+                                <div class="form-text">Subject Code (Separeted with comma)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger pt-1" role="alert" id="editNewStudentError">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-target="#editStudentModal"
+                        data-bs-toggle="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="editStudentBtn">Save Changes</button>
                 </div>
             </form>
         </div>

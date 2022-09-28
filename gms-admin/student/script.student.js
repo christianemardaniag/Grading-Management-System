@@ -1,9 +1,5 @@
 $(document).ready(function () {
-    displayUsers();
-    $("#search").change(function (e) {
-        e.preventDefault();
-        displayUsers($(this).val());
-    });
+    displayStudents();
 
     $("#uploadFileBtn").click(function (e) {
         e.preventDefault();
@@ -14,7 +10,163 @@ $(document).ready(function () {
         e.preventDefault();
         $("#fileUploadForm").submit();
     });
-    $.post("../student/process.student.php"),'string';
+
+
+
+    $.post("../student/process.student.php", { GET_PROGRAM_DESTINCT_REQ: true },
+        function (GET_PROGRAM_DESTINCT_RESP, textStatus, jqXHR) {
+            let content = `<option value="All" selected>All</option>`;
+            $.each(GET_PROGRAM_DESTINCT_RESP, function (indexInArray, program) {
+                content += `<option value="${program}">${program}</option>`;
+            });
+            $("#filter-program").html(content);
+        },
+        "JSON"
+    );
+
+    getSectionsFilter();
+
+    function getSectionsFilter() {
+        $.post("../student/process.student.php", {
+            GET_SECTION_DESTINCT_REQ: true,
+            program: $("#filter-program").val(),
+            level: $("#filter-level").val()
+        },
+            function (GET_SECTION_DESTINCT_RESP, textStatus, jqXHR) {
+                let content = `<option value="All" selected>All</option>`;
+                $.each(GET_SECTION_DESTINCT_RESP, function (indexInArray, section) {
+                    content += `<option value="${section}">${section}</option>`;
+                });
+                console.log();
+                $("#filter-section").html(content);
+            },
+            "JSON"
+        );
+    }
+
+
+    $("#filter-specialization").change(function (e) {
+        e.preventDefault();
+        getSectionsFilter();
+        displayStudents($(this).val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+    });
+
+    $("#filter-program").change(function (e) {
+        e.preventDefault();
+        getSectionsFilter();
+        displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+    });
+
+    $("#filter-level").change(function (e) {
+        e.preventDefault();
+        getSectionsFilter();
+        displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+    });
+
+    $("#filter-section").change(function (e) {
+        e.preventDefault();
+        displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+    });
+
+
+    function displayStudents(specialization = 'All', program = 'All', level = 'All', section = 'All') {
+        console.log(specialization);
+        console.log(program);
+        $.ajax({
+            type: "POST",
+            url: "../student/process.student.php",
+            data: { GET_STUDENTS_REQ: true },
+            dataType: "JSON",
+            success: function (GET_STUDENTS_RESP) {
+                var filtered = GET_STUDENTS_RESP.filter(function (student) {
+                    let spec = (specialization == "All") ? true : student.specialization == specialization;
+                    let prog = (program == "All") ? true : student.program == program;
+                    let lev = (level == "All") ? true : student.level == level;
+                    let sec = (section == "All") ? true : student.section == section;
+
+                    return spec && prog && lev && sec;
+                });
+                console.log(filtered);
+                content = ``;
+                $.each(filtered, function (indexInArray, student) {
+                    content += `
+                        <tr data-id="${student.studentNo}">
+                            <td>${student.studentNo}</td>
+                            <td>${student.fullName}</td>
+                            <td>${student.program} ${student.section}</td>
+                            <td>${student.specialization}</td>
+                            <td>${student.email}</td>
+                            <td>${student.contact_no}</td>
+                        </tr>
+                     `;
+                });
+
+                if ($.fn.DataTable.isDataTable("#studentsTable")) {
+                    $('#studentsTable').DataTable().clear().destroy();
+                }
+                $("#studentRecords").html(content);
+                $("#studentsTable").DataTable({
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "pageLength": 50
+                });
+
+                var selectedStudent;
+                $("#studentRecords > tr").click(function (e) {
+                    e.preventDefault();
+                    studentNo = $(this).data("id");
+                    selectedStudent = GET_STUDENTS_RESP.filter(function (eachStudent) {
+                        return eachStudent.studentNo == studentNo;
+                    })[0];
+                    console.log(selectedStudent);
+                    $("#view-profile").attr("src", selectedStudent.profile_picture);
+                    $("#view-studentNo").html(selectedStudent.studentNo);
+                    $("#view-fullName").html(selectedStudent.fullName);
+                    $("#view-cys").html(selectedStudent.program + " " + selectedStudent.section);
+                    $("#view-email").html(selectedStudent.email);
+                    $("#view-contactNo").html(selectedStudent.contact_no);
+                    $("#view-gender").html(selectedStudent.gender);
+                    $("#view-specialization").html(selectedStudent.specialization);
+                    $("#view-program").html(selectedStudent.program);
+                    $("#view-level").html(selectedStudent.level);
+                    $("#view-section").html(selectedStudent.section);
+                    let subjects = ``;
+                    $.each(selectedStudent.subjects, function (indexInArray, subject) {
+                        subjects += `
+                            <tr>
+                                <td>${subject.code}</td>
+                                <td>${subject.description}</td>
+                            </tr>`;
+                    });
+                    $("#view-subjects").html(subjects);
+                    $("#viewStudentModal").modal("show");
+                });
+
+                $("#editStudentModal").on("show.bs.modal", function () {
+                    $("#edit-oldStudentNo").val(selectedStudent.studentNo);
+                    $("#edit-studentNo").val(selectedStudent.studentNo);
+                    $("#edit-fullName").val(selectedStudent.fullName);
+                    $("#edit-email").val(selectedStudent.email);
+                    $("#edit-contactNo").val(selectedStudent.contact_no);
+                    $("input[name=edit-gender][value=" + selectedStudent.gender + "]").attr('checked', 'checked');
+                    $("#edit-specialization").val(selectedStudent.specialization);
+                    $("#edit-program").val(selectedStudent.program);
+                    $("#edit-level").val(selectedStudent.level);
+                    $("#edit-section").val(selectedStudent.section);
+                    let sub = ``;
+                    $.each(selectedStudent.subjects, function (indexInArray, subject) {
+                        sub += `${subject.code}, `;
+                    });
+                    $("#edit-subjects").val(sub.slice(0, -1));
+                });
+
+            }, error: function (response) {
+                console.error(response);
+                $("#error").html(response.responseText);
+            }
+        });
+
+
+    }
 
     var tempData = {};
     $("#fileUploadForm").submit(function (e) {
@@ -83,7 +235,7 @@ $(document).ready(function () {
                 $.each(data, function (indexInArray, valueOfElement) {
                     if (!valueOfElement.status) {
                         flag = false;
-                        $("#uploadSpinner").fadeOut();
+                        $("#uploadSpinner").hide();
                         $("#fileUploadForm").trigger('reset');
                         var content = `
                         <div class="alert alert-danger alert-dismissible fade show mb-2" role="alert">`+ valueOfElement.msg + `
@@ -94,18 +246,19 @@ $(document).ready(function () {
                 });
                 if (flag) {
                     $("#fileUploadModal").modal("hide");
-                    $("#upload").html("Upload");
+                    $("#updloadLabel").html("Upload");
                     $("#upload").removeAttr("disabled");
-                    $("#uploadSpinner").fadeOut();
+                    $("#uploadSpinner").hide();
                     $("#fileUploadBody").html('');
                     $("#fileUploadForm").trigger('reset');
+                    displayStudents();
                 }
 
             }, error: function (dataResult) {
                 console.log("ERROR:");
                 console.log(dataResult.responseText);
                 $("#fileUploadBody").prepend(dataResult.responseText);
-                $("#upload").html("Upload");
+                $("#updloadLabel").html("Upload");
                 $("#upload").removeAttr("disabled");
                 $("#uploadSpinner").hide();
                 $("#fileUploadForm").trigger('reset');
@@ -116,11 +269,9 @@ $(document).ready(function () {
                 </div>`;
                 $("#fileUploadBody").prepend(content);
             }, beforeSend: function () {
-                $("#upload").html("Uploading");
-                $("#upload").attr("disabled", "disabled");
                 $("#uploadSpinner").show();
-            }, complete: function () {
-                displayUsers();
+                $("#updloadLabel").html("Uploading");
+                $("#upload").attr("disabled", "disabled");
             }
         });
     });
@@ -130,101 +281,67 @@ $(document).ready(function () {
     $("#addStudentForm").submit(function (e) {
         e.preventDefault();
         var data = $(this).serializeArray();  // Form Data
-        data.push({ name: 'addNewStudent', value: true });
+        data.push({ name: 'ADD_STUDENT_REQ', value: true });
         $.ajax({
-            type: "post",
+            type: "POST",
             url: "../student/process.student.php",
             data: data,
             dataType: "json",
-            success: function (response) {
-                $("#addStudentBtn").html("Add New Student");
+            success: function (ADD_STUDENT_RESP) {
+                $("#addLabel").html("Add New Student");
                 $("#addStudentBtn").removeAttr("disabled");
                 $("#addStudentSpinner").hide();
 
-                if (response.status) {
+                if (ADD_STUDENT_RESP.status) {
+                    $("#addNewStudentError").fadeOut();
                     $("#addStudentForm").trigger('reset');
                     $("#addStudentModal").modal("hide");
                 } else {
-                    $("#addNewStudentError").html(response.msg);
+                    $("#addNewStudentError").html(ADD_STUDENT_RESP.msg);
                     $("#addNewStudentError").fadeIn();
                 }
-                
+                displayStudents();
             },
             beforeSend: function () {
-                $("#addStudentBtn").html("Adding New Student");
+                $("#addLabel").html("Adding New Student");
+                $("#addStudentSpinner").show();
                 $("#addStudentBtn").attr("disabled", "disabled");
-                $("#addStudentSpinner").fadeIn();
             },
             error: function (response) {
-                console.log("ERROR:");
-                console.log(response.responseText);
-            }, 
-            complete: function () {
-                displayUsers();
+                console.error(response.responseText);
+                $("#addNewStudentError").html(response.responseText);
+                $("#addNewStudentError").fadeIn();
+            }
+        });
+    });
+
+    $("#editNewStudentError").hide();
+    $("#editStudentForm").submit(function (e) {
+        e.preventDefault();
+        var data = $(this).serializeArray();  // Form Data
+        data.push({ name: 'EDIT_STUDENT_REQ', value: true });
+        $.ajax({
+            type: "POST",
+            url: "../student/process.student.php",
+            data: data,
+            dataType: "json",
+            success: function (EDIT_STUDENT_RESP) {
+                if (EDIT_STUDENT_RESP.status) {
+                    $("#editNewStudentError").fadeOut();
+                    $("#editStudentForm").trigger('reset');
+                    $("#editStudentModal").modal("hide");
+                } else {
+                    $("#editNewStudentError").html(ADD_STUDENT_RESP.msg);
+                    $("#editNewStudentError").fadeIn();
+                }
+                displayStudents();
+            },
+            error: function (response) {
+                console.error(response.responseText);
+                $("#editNewStudentError").html(response.responseText);
+                $("#editNewStudentError").fadeIn();
             }
         });
     });
 
 });
-
-
-function displayUsers(searchQuery = '') {
-    $("#records").html("");
-    $.ajax({
-        type: "POST",
-        url: "../student/process.student.php",
-        data: { student: true },
-        dataType: "JSON",
-        success: function (response) {
-            var content = ``;
-            var filtered = response.filter(function (data) {
-                searchQuery = searchQuery.toLowerCase();
-                return data.id.includes(searchQuery)
-                    || data.fullName.toLowerCase().includes(searchQuery)
-                    || data.email.toLowerCase().includes(searchQuery);
-            });
-            $.each(filtered, function (i, data) {
-                content += `
-                    <button data-id="` + data.id + `" class="student list-group-item list-group-item-action d-flex gap-3" aria-current="true">
-                        <img src="../../${data.profile_picture}" width="60" height="60" class="rounded-circle flex-shrink-0">
-                        <div>
-                            <small class="opacity-75">` + data.id + `</small>
-                            <h6 class="card-title">`+ data.fullName + `</h6>
-                            <small class="opacity-75">`+ data.email + `</small>
-                        </div>
-                    </button>`;
-            });
-            $('#list').html(content);
-        },
-        error: function (dataResult) {
-            console.log("ERROR:");
-            console.log(dataResult);
-        },
-        complete: function (response) {
-            $(".student").click(function (e) {
-                e.preventDefault();
-                $(".student").removeClass("list-group-item-warning active");
-                $(this).addClass("list-group-item-warning active");
-                var userid = $(this).attr("data-id");
-                var filtered = response.responseJSON.filter(function (data) {
-                    return data.id == userid;
-                });
-                $.ajax({
-                    url: "../student/records.student.php",
-                    type: "POST",
-                    data: {
-                        details: filtered
-                    },
-                    success: function (response) {
-                        $("#records").html(response);
-                    },
-                    error: function (result) {
-                        console.log("ERROR:");
-                        console.log(result);
-                    }
-                });
-            });
-        }
-    });
-}
-

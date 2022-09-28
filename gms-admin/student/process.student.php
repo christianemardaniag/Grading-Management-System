@@ -2,7 +2,7 @@
 include '../../include/autoloader.inc.php';
 
 $student = new Student();
-if (isset($_POST['student'])) {
+if (isset($_POST['GET_STUDENTS_REQ'])) {
     echo json_encode((array)$student->getStudentInfo());
 } elseif (isset($_FILES['fileUpload'])) {
     $fileName = $_FILES['fileUpload']['tmp_name'];
@@ -15,16 +15,24 @@ if (isset($_POST['student'])) {
 	}
 } elseif (isset($_POST['uploadFileToDB'])) {
     echo json_encode((array)$student->addStudentFromFile($_POST['uploadFileToDB']));
-} elseif (isset($_POST['addNewStudent'])) {
+} elseif (isset($_POST['ADD_STUDENT_REQ'])) {
 	$details = (object) [
-		'id' => $_POST['employeeNo'],
-		'firstName' => $_POST['firstName'],
-		'middleName' => $_POST['middleName'],
-		'lastName' => $_POST['lastName'],
-		'email' => $_POST['email'],
-		'contact_no' => $_POST['contact_no']
+		'id' => $_POST['add-studentNo'],
+		'fullName' => strtoupper($_POST['add-lastName']) .", ". $_POST['add-firstName'] . " " . $_POST['add-middleName'],
+		'email' => $_POST['add-email'],
+		'contactNo' => $_POST['add-contactNo'],
+		'gender' => $_POST['add-gender'],
+		'program' => $_POST['add-program'],
+		'specialization' => $_POST['add-specialization'],
+		'level' => $_POST['add-level'],
+		'section' => $_POST['add-section'],
+		'subjects' => $_POST['add-subjects'],
 	];
     echo json_encode((array)$student->addNewStudent($details));
-} 
+} elseif (isset($_POST['GET_PROGRAM_DESTINCT_REQ'])) {
+    echo json_encode((array)$student->getDestinctProgram());
+} elseif (isset($_POST['GET_SECTION_DESTINCT_REQ'])) {
+    echo json_encode((array)$student->getSections($_POST["program"], $_POST["level"]));
+}
 
 
