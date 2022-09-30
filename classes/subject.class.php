@@ -19,10 +19,11 @@ class Subject extends dbHandler
                     'specialization' => $row['specialization'],
                     'lec_units' => $row['lec_units'],
                     'lab_units' => $row['lab_units'],
+                    'total_units' => $row['total_units'],
                     'hours_per_week' => $row['hours_per_week'],
                     'prereq' => $row['prereq'],
-                    'co_req' => $row['co_req'],
-                    'teachers' => $this->getTeacher($id),
+                    'coreq' => $row['co_req'],
+                    // 'teachers' => $this->getTeacher($id),
                 ];
             }
         }

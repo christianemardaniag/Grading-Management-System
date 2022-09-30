@@ -10,6 +10,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark">
                         <li><button class="dropdown-item" id="uploadFileBtn">Upload Excel File</button></li>
+                        <li><button class="dropdown-item" onclick="window.print()">Print</button></li>
                     </ul>
                 </div>
                 <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add
@@ -300,15 +301,37 @@
                 </div>
 
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-dark px-4 d-print-none" onclick="window.print()"><i class="fal fa-print"></i>
+            <div class="modal-footer d-print-none">
+                <button class="btn btn-danger px-3 " data-bs-target="#removeStudentModal"
+                    data-bs-toggle="modal"><i class="fal fa-trash"></i> Remove</button>
+                <button class="btn btn-dark px-4" onclick="window.print()"><i class="fal fa-print"></i>
                     Print</button>
-                <button class="btn btn-dark px-3 d-print-none" data-bs-target="#editStudentModal"
+                <button class="btn btn-dark px-3" data-bs-target="#editStudentModal"
                     data-bs-toggle="modal"><i class="fal fa-edit"></i> Edit</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- DELETE STUDENT MODAL -->
+<div class="modal fade py-5" tabindex="-1" id="removeStudentModal">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-3">
+            <div class="modal-body p-4 text-center">
+                <h5 class="">Remove <span id="remove-fullName"></span></h5>
+                <p class="mb-1">Are you sure you want to remove student <span id="remove-studentNo" class="h5"></span>?</p>
+                <p class="mb-0 text-danger fw-bolder">*This action is cannot be undone!
+                </p>
+            </div>
+            <div class="modal-footer flex-nowrap p-0">
+                <button type="button" id="remove-yes-btn"
+                    class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end"><strong>Yes</strong></button>
+                <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0"
+                    data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div><!-- END OF DELETE STUDENT MODAL -->
 
 <!-- Edit Student Modal -->
 <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentLabel" aria-hidden="true">
@@ -320,7 +343,7 @@
                     data-bs-toggle="modal"></button>
             </div>
             <form id="editStudentForm">
-                <input type="hidden" name="edit-oldStudentNo">
+                <input type="hidden" name="edit-oldStudentNo" id="edit-oldStudentNo">
                 <div class="modal-body">
                     <div class="row g-2">
                         <div class="col col-md-4">
@@ -408,8 +431,7 @@
                         <div class="col-8">
                             <div class="mb-3">
                                 <label for="edit-subjects" class="form-label">* Subjects</label>
-                                <input type="text" class="form-control" name="edit-subjects" id="edit-subjects" required
-                                    email>
+                                <input type="text" class="form-control" name="edit-subjects" id="edit-subjects" required>
                                 <div class="form-text">Subject Code (Separeted with comma)</div>
                             </div>
                         </div>

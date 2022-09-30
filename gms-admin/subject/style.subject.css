@@ -10,3 +10,8 @@
 .remove-faculty:hover {
     background: #b82f3c !important;
 }
+
+th.dt-center,
+td.dt-center {
+    text-align: center;
+}

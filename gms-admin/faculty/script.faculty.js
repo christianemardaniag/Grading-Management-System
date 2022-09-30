@@ -1,9 +1,5 @@
 $(document).ready(function () {
-    displayUsers();
-    $("#search").change(function (e) {
-        e.preventDefault();
-        displayUsers($(this).val());
-    });
+    displayFaculties();
 
     $("#uploadFileBtn").click(function (e) {
         e.preventDefault();
@@ -14,7 +10,139 @@ $(document).ready(function () {
         e.preventDefault();
         $("#fileUploadForm").submit();
     });
-    $.post("../faculty/process.faculty.php"),'string';
+
+    $("#addFacultyModal").on("show.bs.modal", function() {
+        let subCtr = 1;
+        $("#add-subject").click(function (e) { 
+            e.preventDefault();
+            subCtr++;
+            let sub = `
+            <div class="row g-2">
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="add-subject-${subCtr}" class="form-label">Subject</label>
+                        <input type="text" class="form-control" name="subject[${subCtr}]" id="add-subject-${subCtr}">
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="mb-3">
+                        <label for="add-sections-${subCtr}" class="form-label">Class Sectionss</label>
+                        <input type="text" class="form-control" name="sections[${subCtr}]" id="add-sections-${subCtr}">
+                        <div class="form-text">Class Sections (Separeted with comma)</div>
+                    </div>
+                </div>
+            </div>`;
+            $("#add-facultySubjects").append(sub);
+            $("#subCtr").val(subCtr);
+        });
+    
+    });
+
+    
+    function displayFaculties() {
+        $.ajax({
+            type: "POST",
+            url: "../faculty/process.faculty.php",
+            data: { GET_FACULTIES_REQ: true },
+            dataType: "JSON",
+            success: function (GET_FACULTIES_RESP) {
+                content = ``;
+                $.each(GET_FACULTIES_RESP, function (indexInArray, faculty) {
+                    content += `
+                        <tr data-id="${faculty.facultyID}">
+                            <td>${faculty.facultyID}</td>
+                            <td>${faculty.fullName}</td>
+                            <td>${faculty.email}</td>
+                            <td>${faculty.contact_no}</td>
+                        </tr>
+                     `;
+                });
+
+                if ($.fn.DataTable.isDataTable("#facultiesTable")) {
+                    $('#facultiesTable').DataTable().clear().destroy();
+                }
+                $("#facultyRecords").html(content);
+                $("#facultiesTable").DataTable({
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "pageLength": 50
+                });
+
+                var selectedFaculty = "";
+                $("#facultyRecords > tr").click(function (e) {
+                    e.preventDefault();
+                    facultyNo = $(this).data("id");
+                    selectedFaculty = GET_FACULTIES_RESP.filter(function (eachFaculty) {
+                        return eachFaculty.facultyNo == facultyNo;
+                    })[0];
+                    console.log(selectedFaculty);
+                    $("#view-profile").attr("src", selectedFaculty.profile_picture);
+                    $("#view-facultyNo").html(selectedFaculty.facultyNo);
+                    $("#view-fullName").html(selectedFaculty.fullName);
+                    $("#view-cys").html(selectedFaculty.program + " " + selectedFaculty.section);
+                    $("#view-email").html(selectedFaculty.email);
+                    $("#view-contactNo").html(selectedFaculty.contact_no);
+                    $("#view-gender").html(selectedFaculty.gender);
+                    $("#view-specialization").html(selectedFaculty.specialization);
+                    $("#view-program").html(selectedFaculty.program);
+                    $("#view-level").html(selectedFaculty.level);
+                    $("#view-section").html(selectedFaculty.section);
+                    let subjects = ``;
+                    $.each(selectedFaculty.subjects, function (indexInArray, subject) {
+                        subjects += `
+                            <tr>
+                                <td>${subject.code}</td>
+                                <td>${subject.description}</td>
+                            </tr>`;
+                    });
+                    $("#view-subjects").html(subjects);
+                    $("#viewFacultyModal").modal("show");
+
+                    $("#removeFacultyModal").on("show.bs.modal", function () {
+                        $("#remove-fullName").html(selectedFaculty.fullName);
+                        $("#remove-facultyNo").html(selectedFaculty.facultyNo);
+                    })
+
+                    $("#remove-yes-btn").click(function (e) {
+                        e.preventDefault();
+                        $.ajax({
+                            type: "POST",
+                            url: "../faculty/process.faculty.php",
+                            data: { REMOVE_FACULTY_REQ: selectedFaculty.facultyNo },
+                            dataType: "JSON",
+                            success: function (REMOVE_FACULTY_RESP) {
+                                displayFaculties($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+                                $("#removeFacultyModal").modal("hide");
+                            }
+                        });
+                    });
+                });
+
+                $("#editFacultyModal").on("show.bs.modal", function () {
+                    $("#edit-oldFacultyNo").val(selectedFaculty.facultyNo);
+                    $("#edit-facultyNo").val(selectedFaculty.facultyNo);
+                    $("#edit-fullName").val(selectedFaculty.fullName);
+                    $("#edit-email").val(selectedFaculty.email);
+                    $("#edit-contactNo").val(selectedFaculty.contact_no);
+                    $("input[name=edit-gender][value=" + selectedFaculty.gender + "]").attr('checked', 'checked');
+                    $("#edit-specialization").val(selectedFaculty.specialization);
+                    $("#edit-program").val(selectedFaculty.program);
+                    $("#edit-level").val(selectedFaculty.level);
+                    $("#edit-section").val(selectedFaculty.section);
+                    let sub = ``;
+                    $.each(selectedFaculty.subjects, function (indexInArray, subject) {
+                        sub += `${subject.code}, `;
+                    });
+                    $("#edit-subjects").val(sub.slice(0, -1));
+                });
+
+            }, error: function (response) {
+                console.error(response);
+                $("#error").html(response.responseText);
+            }
+        });
+
+
+    }
 
     var tempData = {};
     $("#fileUploadForm").submit(function (e) {
@@ -30,7 +158,7 @@ $(document).ready(function () {
             success: function (data) {
                 var content = `
                 <div class="table-responsive">
-                    <table id="previewTable" class="table table-sm table-striped table-bordered">
+                    <table id="previewTable" class="table table-sm table-striped table-bordered display compact">
                         <thead><tr>
                         `;
                 tempData.body = [];
@@ -58,15 +186,46 @@ $(document).ready(function () {
                 $("#fileUploadModal").modal("show");
                 $("#previewSpinner").fadeOut();
                 $("#fileUploadBody").html(content);
-                $('#previewTable').DataTable();
+                mergeCommonRows($("#previewTable"))
+                // $('#previewTable').DataTable();
             }, error: function (dataResult) {
-                console.log(dataResult);
+                console.error(dataResult);
+                $("#fileUploadBody").prepend(dataResult.responseText);
             }, beforeSend: function () {
                 $("#fileUploadModal").modal("show");
                 $("#previewSpinner").show();
             }
         });
+
     });
+
+    function mergeCommonRows(table, firstOnly) {
+        reset(table);
+        var firstColumnBrakes = [];   
+        for(var i=1; i<=table.find('th').length; i++){
+            var previous = null, cellToExtend = null, rowspan = 1;
+            table.find("td:nth-child(" + i + ")").each(function(index, el){   
+                if (previous == $(el).text() && $(el).text() !== "" && $.inArray(index, firstColumnBrakes) === -1) {
+                    $(el).addClass('d-none');
+                    cellToExtend.attr("rowspan", (rowspan = rowspan+1));
+                    cellToExtend.addClass("align-middle");
+                }else{
+                    if(firstOnly == 'first only'){                
+                        if(i === 1) firstColumnBrakes.push(index);
+                    }else{
+                        if($.inArray(index, firstColumnBrakes) === -1) firstColumnBrakes.push(index);
+                    }
+                    rowspan = 1;
+                    previous = $(el).text();
+                    cellToExtend = $(el);
+                }
+            });
+        }    
+    }
+    function reset(table){
+        table.find('td').removeClass('d-none').attr('rowspan', 1);
+    }
+    
 
     $("#uploadSpinner").hide();
     $("#upload").click(function (e) {
@@ -82,7 +241,7 @@ $(document).ready(function () {
                 $.each(data, function (indexInArray, valueOfElement) {
                     if (!valueOfElement.status) {
                         flag = false;
-                        $("#uploadSpinner").fadeOut();
+                        $("#uploadSpinner").hide();
                         $("#fileUploadForm").trigger('reset');
                         var content = `
                         <div class="alert alert-danger alert-dismissible fade show mb-2" role="alert">`+ valueOfElement.msg + `
@@ -93,17 +252,19 @@ $(document).ready(function () {
                 });
                 if (flag) {
                     $("#fileUploadModal").modal("hide");
-                    $("#upload").html("Upload");
+                    $("#updloadLabel").html("Upload");
                     $("#upload").removeAttr("disabled");
-                    $("#uploadSpinner").fadeOut();
+                    $("#uploadSpinner").hide();
                     $("#fileUploadBody").html('');
                     $("#fileUploadForm").trigger('reset');
+                    displayFaculties();
                 }
 
             }, error: function (dataResult) {
                 console.log("ERROR:");
                 console.log(dataResult.responseText);
-                $("#upload").html("Upload");
+                $("#fileUploadBody").prepend(dataResult.responseText);
+                $("#updloadLabel").html("Upload");
                 $("#upload").removeAttr("disabled");
                 $("#uploadSpinner").hide();
                 $("#fileUploadForm").trigger('reset');
@@ -114,11 +275,9 @@ $(document).ready(function () {
                 </div>`;
                 $("#fileUploadBody").prepend(content);
             }, beforeSend: function () {
-                $("#upload").html("Uploading");
-                $("#upload").attr("disabled", "disabled");
                 $("#uploadSpinner").show();
-            }, complete: function () {
-                displayUsers();
+                $("#updloadLabel").html("Uploading");
+                $("#upload").attr("disabled", "disabled");
             }
         });
     });
@@ -128,101 +287,68 @@ $(document).ready(function () {
     $("#addFacultyForm").submit(function (e) {
         e.preventDefault();
         var data = $(this).serializeArray();  // Form Data
-        data.push({ name: 'addNewFaculty', value: true });
+        data.push({ name: 'ADD_FACULTY_REQ', value: true });
         $.ajax({
-            type: "post",
+            type: "POST",
             url: "../faculty/process.faculty.php",
             data: data,
             dataType: "json",
-            success: function (response) {
-                $("#addFacultyBtn").html("Add New Faculty");
+            success: function (ADD_FACULTY_RESP) {
+                $("#addLabel").html("Add New Faculty");
                 $("#addFacultyBtn").removeAttr("disabled");
                 $("#addFacultySpinner").hide();
 
-                if (response.status) {
+                if (ADD_FACULTY_RESP.status) {
+                    $("#addNewFacultyError").fadeOut();
                     $("#addFacultyForm").trigger('reset');
                     $("#addFacultyModal").modal("hide");
                 } else {
-                    $("#addNewFacultyError").html(response.msg);
+                    console.error(ADD_FACULTY_RESP);
+                    $("#addNewFacultyError").html(ADD_FACULTY_RESP.msg);
                     $("#addNewFacultyError").fadeIn();
                 }
-                
+                displayFaculties();
             },
             beforeSend: function () {
-                $("#addFacultyBtn").html("Adding New Faculty");
+                $("#addLabel").html("Adding New Faculty");
+                $("#addFacultySpinner").show();
                 $("#addFacultyBtn").attr("disabled", "disabled");
-                $("#addFacultySpinner").fadeIn();
             },
             error: function (response) {
-                console.log("ERROR:");
-                console.log(response.responseText);
-            }, 
-            complete: function () {
-                displayUsers();
+                console.error(response.responseText);
+                $("#addNewFacultyError").html(response.responseText);
+                $("#addNewFacultyError").fadeIn();
+            }
+        });
+    });
+
+    $("#editNewFacultyError").hide();
+    $("#editFacultyForm").submit(function (e) {
+        e.preventDefault();
+        var data = $(this).serializeArray();  // Form Data
+        data.push({ name: 'EDIT_FACULTY_REQ', value: true });
+        $.ajax({
+            type: "POST",
+            url: "../faculty/process.faculty.php",
+            data: data,
+            dataType: "json",
+            success: function (EDIT_FACULTY_RESP) {
+                if (EDIT_FACULTY_RESP.status) {
+                    $("#editNewFacultyError").fadeOut();
+                    $("#editFacultyForm").trigger('reset');
+                    $("#editFacultyModal").modal("hide");
+                } else {
+                    $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
+                    $("#editNewFacultyError").fadeIn();
+                }
+                displayFaculties($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+            },
+            error: function (response) {
+                console.error(response.responseText);
+                $("#editNewFacultyError").html(response.responseText);
+                $("#editNewFacultyError").fadeIn();
             }
         });
     });
 
 });
-
-
-function displayUsers(searchQuery = '') {
-    $("#records").html("");
-    $.ajax({
-        type: "POST",
-        url: "../faculty/process.faculty.php",
-        data: { faculty: true },
-        dataType: "JSON",
-        success: function (response) {
-            var content = ``;
-            var filtered = response.filter(function (data) {
-                searchQuery = searchQuery.toLowerCase();
-                return data.id.includes(searchQuery)
-                    || data.fullName.toLowerCase().includes(searchQuery)
-                    || data.email.toLowerCase().includes(searchQuery);
-            });
-            $.each(filtered, function (i, data) {
-                content += `
-                    <button data-id="` + data.id + `" class="faculty list-group-item list-group-item-action d-flex gap-3" aria-current="true">
-                        <img src="../../images/defaultUserImage.jpg" width="60" height="60" class="rounded-circle flex-shrink-0">
-                        <div>
-                            <small class="opacity-75">` + data.id + `</small>
-                            <h6 class="card-title">`+ data.fullName + `</h6>
-                            <small class="opacity-75">`+ data.email + `</small>
-                        </div>
-                    </button>`;
-            });
-            $('#list').html(content);
-        },
-        error: function (dataResult) {
-            console.log("ERROR:");
-            console.log(dataResult);
-        },
-        complete: function (response) {
-            $(".faculty").click(function (e) {
-                e.preventDefault();
-                $(".faculty").removeClass("list-group-item-warning active");
-                $(this).addClass("list-group-item-warning active");
-                var userid = $(this).attr("data-id");
-                var filtered = response.responseJSON.filter(function (data) {
-                    return data.id == userid;
-                });
-                $.ajax({
-                    url: "../faculty/records.faculty.php",
-                    type: "POST",
-                    data: {
-                        details: filtered
-                    },
-                    success: function (response) {
-                        $("#records").html(response);
-                    },
-                    error: function (result) {
-                        console.log("ERROR:");
-                        console.log(result);
-                    }
-                });
-            });
-        }
-    });
-}
-

@@ -77,6 +77,31 @@ class Student extends dbHandler
         }
     }
 
+    public function editStudent($details)
+    {
+        if ($this->isEmailExist($details->email, $details->id_old)) {
+            return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
+        } else {
+
+            $query = "UPDATE `student` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo',`gender`='$details->gender',`specialization`='$details->specialization',`program`='$details->program',`level`='$details->level',`section`='$details->section',`subjects`='$details->subjects',`profile_picture`='$details->gender' WHERE id='$details->id_old'";
+            if (mysqli_query($this->conn, $query)) {
+                return (object) ['status' => true, 'msg' => ''];
+            } else {
+                return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+            }
+        }
+    }
+
+    public function removeStudent($studentNo)
+    {
+        $query = "UPDATE `student` SET `status`='deleted' WHERE id='$studentNo'";
+        if (mysqli_query($this->conn, $query)) {
+            return (object) ['status' => true, 'msg' => ''];
+        } else {
+            return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+        }
+    }
+
     public function getDestinctProgram()
     {
         $prog = array();
@@ -161,29 +186,9 @@ class Student extends dbHandler
         return $students;
     }
 
-    // private function generateUsername($firstName, $lastName)
-    // {
-    //     $ext = "";
-    //     $i = 1;
-    //     do {
-    //         $username = strtolower($firstName . $lastName . $ext);
-    //         $username = str_replace(' ', '', $username);
-    //         $ext = $i++;
-    //     } while ($this->isUsernameExist($username));
-
-    //     return $username;
-    // }
-
-    // private function isUsernameExist($username): bool
-    // {
-    //     $query = "SELECT id FROM student WHERE username='$username'";
-    //     $result = mysqli_query($this->conn, $query);
-    //     return mysqli_num_rows($result);
-    // }
-
-    private function isEmailExist($email): bool
+    private function isEmailExist($email, $id = "")
     {
-        $query = "SELECT id FROM student WHERE email='$email'";
+        $query = 'SELECT id FROM `student` WHERE email="' . $email . '" AND id!="' . $id . '"';
         $result = mysqli_query($this->conn, $query);
         return mysqli_num_rows($result);
     }

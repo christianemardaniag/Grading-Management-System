@@ -110,7 +110,7 @@ $(document).ready(function () {
                     "pageLength": 50
                 });
 
-                var selectedStudent;
+                var selectedStudent = "";
                 $("#studentRecords > tr").click(function (e) {
                     e.preventDefault();
                     studentNo = $(this).data("id");
@@ -139,6 +139,25 @@ $(document).ready(function () {
                     });
                     $("#view-subjects").html(subjects);
                     $("#viewStudentModal").modal("show");
+
+                    $("#removeStudentModal").on("show.bs.modal", function () {
+                        $("#remove-fullName").html(selectedStudent.fullName);
+                        $("#remove-studentNo").html(selectedStudent.studentNo);
+                    })
+
+                    $("#remove-yes-btn").click(function (e) { 
+                        e.preventDefault();
+                        $.ajax({
+                            type: "POST",
+                            url: "../student/process.student.php",
+                            data: { REMOVE_STUDENT_REQ: selectedStudent.studentNo },
+                            dataType: "JSON",
+                            success: function (REMOVE_STUDENT_RESP) {
+                                displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+                                $("#removeStudentModal").modal("hide");
+                            }
+                        });
+                    });
                 });
 
                 $("#editStudentModal").on("show.bs.modal", function () {
@@ -331,10 +350,10 @@ $(document).ready(function () {
                     $("#editStudentForm").trigger('reset');
                     $("#editStudentModal").modal("hide");
                 } else {
-                    $("#editNewStudentError").html(ADD_STUDENT_RESP.msg);
+                    $("#editNewStudentError").html(EDIT_STUDENT_RESP.msg);
                     $("#editNewStudentError").fadeIn();
                 }
-                displayStudents();
+                displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
             },
             error: function (response) {
                 console.error(response.responseText);
