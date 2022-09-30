@@ -68,8 +68,8 @@ class Faculty extends dbHandler
         } else {
             $query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) VALUES 
                 ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo')";
-            // $mail = new Mail(ADMIN);
-            // $mail->sendCredentials($details->email, $username, $password);
+            $mail = new Mail(ADMIN);
+            $mail->sendCredentials($details->email, $username, $password);
 
             if (mysqli_query($this->conn, $query)) {
                 $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
