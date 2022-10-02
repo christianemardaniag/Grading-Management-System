@@ -90,20 +90,28 @@ $(document).ready(function () {
 
     function displaySubjects(subjects) {
         var content = ``;
+        $level = ['', "1st Year", "2nd Year", "3rd Year", "4th Year"];
+        $sem = ['', "1st Semester", "2nd Semester"];
         $.each(subjects, function (i, subject) {
             content += `
             <tr>
                 <td>${subject.code}</td>
                 <td>${subject.description}</td>
-                <td>${subject.specialization}</td>
-                <td>
-                <button class="assign-btn btn btn-sm btn-success" data-id="${subject.id}"><i class="fal fa-plus-circle"></i> Assign</button>
-                    <button class="edit-btn btn btn-sm btn-dark" data-id="${subject.id}"><i class="fal fa-edit"></i> Edit</button>
-                    <button class="remove-btn btn btn-sm btn-danger" data-id="${subject.id} data-code="${subject.code}"><i class="far fa-trash"></i> Remove</button>
-                    </td>
+                <td>${$level[subject.year_level]} - ${$sem[subject.semester]}</td>
+                <td class="dt-center">${subject.lec_units}.0</td>
+                <td class="dt-center">${subject.lab_units}.0</td>
+                <td class="dt-center">${subject.total_units}.0</td>
+                <td class="dt-center">${subject.hours_per_week}</td>
+                <td>${subject.prereq}</td>
+                <td>${subject.coreq}</td>
+                
             </tr>
             `;
         });
+        // <td>
+        //             <button class="edit-btn btn btn-sm btn-dark" data-id="${subject.id}"><i class="fal fa-edit"></i> Edit</button>
+        //             <button class="remove-btn btn btn-sm btn-danger" data-id="${subject.id} data-code="${subject.code}"><i class="far fa-trash"></i> Remove</button>
+        //             </td>
         $("#subject_tdata").html(content);
 
         $(".edit-btn").click(function (e) {

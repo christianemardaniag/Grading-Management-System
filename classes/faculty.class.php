@@ -24,48 +24,132 @@ class Faculty extends dbHandler
     {
         $data = json_encode($data);
         $data = json_decode($data);
-        $query = "INSERT INTO faculty(id, username, password, firstName, middleName, lastName, email, contact_no) VALUES ";
+        $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
         $status = array();
+        $tempID = "";
         foreach ($data->body as $eachData) {
-            $email = strtolower($eachData[4]);
-            if ($this->isEmailExist($email)) {
-                $status[] = (object) ['status' => false, 'msg' => '<b>' . $email . '</b> is already exist'];
-            } else {
-                $username = $this->generateUsername($eachData[1], $eachData[3]);
-                $password = $this->generateRandomPassword();
-                $mail = new Mail(ADMIN);
-                $mail->sendCredentials($email, $username, $password);
-                $query .= "('$eachData[0]', '$username', '$password', '$eachData[1]', '$eachData[2]', '$eachData[3]', '$email', '$eachData[5]'),";
+            if ($tempID != $eachData[FACULTY_ID]) {
+                $tempID = $eachData[FACULTY_ID];
+                $email = strtolower($eachData[FACULTY_EMAIL]);
+                if ($this->isEmailExist($email)) {
+                    $status[] = (object) ['status' => false, 'msg' => '<b>' . $email . '</b> is already exist'];
+                } else {
+                    $username = explode("@", $email)[0];
+                    $password = $this->generateRandomPassword();
+                    $mail = new Mail(ADMIN);
+                    $mail->sendCredentials($email, $username, $password);
+                    $faculty_query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) 
+                    VALUES ('" . $eachData[FACULTY_ID] . "','" . $eachData[FACULTY_FULLNAME] . "', 
+                    '$username', '$email', '$password', '" . $eachData[FACULTY_CONTACT_NO] . "')";
+                    if (mysqli_query($this->conn, $faculty_query)) {
+                        $status[] = (object) ['status' => true, 'msg' => ''];
+                    } else {
+                        $status[] = (object) ['status' => false, 'sql' => $faculty_query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                    }
+                }
             }
+            $sub_sec_sql .= "('" . $eachData[FACULTY_ID] . "','" . $eachData[FACULTY_SUBJECTS] . "','" . $eachData[FACULTY_SECTION] . "'),";
         }
-        $query = rtrim($query, ",");
-        if (mysqli_query($this->conn, $query)) {
+        $sub_sec_sql = rtrim($sub_sec_sql, ",");
+        if (mysqli_query($this->conn, $sub_sec_sql)) {
             $status[] = (object) ['status' => true, 'msg' => ''];
         } else {
-            $status[] = (object) ['status' => false, 'msg' => "Error description: " . mysqli_error($this->conn)];
+            $status[] = (object) ['status' => false, 'sql' => $sub_sec_sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
         }
         return $status;
     }
 
     public function addNewFaculty($details)
     {
-        $username = $this->generateUsername($details->firstName, $details->lastName);
+        $username = explode("@", $details->email)[0];
         $password = $this->generateRandomPassword();
         if ($this->isEmailExist($details->email)) {
             return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
         } else {
-            $query = "INSERT INTO faculty(id, username, password, firstName, middleName, lastName, email, contact_no) VALUES 
-                ('$details->id', '$username', '$password', '$details->firstName', '$details->middleName', '$details->lastName', '$details->email', '$details->contact_no')";
+            $query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) VALUES 
+                ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo')";
             $mail = new Mail(ADMIN);
             $mail->sendCredentials($details->email, $username, $password);
-            
+
             if (mysqli_query($this->conn, $query)) {
-                return (object) ['status' => true, 'msg' => ''];
+                $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
+                foreach ($details->sub_sec as $eachData) {
+                    $sub_sec_sql .= "('$details->id', '$eachData->subject', '$eachData->sections'),";
+                }
+                $sub_sec_sql = rtrim($sub_sec_sql, ",");
+                if (mysqli_query($this->conn, $sub_sec_sql)) {
+                    return (object) ['status' => true, 'msg' => ''];
+                } else {
+                    return (object) ['status' => false, 'sql' => $sub_sec_sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                }
             } else {
-                return (object) ['status' => false, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
             }
         }
     }
+
+    public function editFaculty($details)
+    {
+        if ($this->isEmailExist($details->email, $details->id_old)) {
+            return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
+        } else {
+            $query = "UPDATE `faculty` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo', `email`='$details->email' WHERE id='$details->id_old'";
+            if (mysqli_query($this->conn, $query)) {
+                $delete_sql = "DELETE FROM faculty_subject WHERE faculty_id='$details->id'";
+                if (mysqli_query($this->conn, $delete_sql)) {
+                    $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
+                    foreach ($details->sub_sec as $eachData) {
+                        $sub_sec_sql .= "('$details->id', '$eachData->subject', '$eachData->sections'),";
+                    }
+                    $sub_sec_sql = rtrim($sub_sec_sql, ",");
+                    if (mysqli_query($this->conn, $sub_sec_sql)) {
+                        return (object) ['status' => true, 'msg' => ''];
+                    } else {
+                        return (object) ['status' => false, 'sql' => $sub_sec_sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                    }
+                } else {
+                    return (object) ['status' => false, 'sql' => $delete_sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                }
+            } else {
+                return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+            }
+        }
+    }
+
+    public function removeFaculty($facultyID)
+    {
+        $query = "UPDATE `faculty` SET `status`='deleted' WHERE id='$facultyID'";
+        if (mysqli_query($this->conn, $query)) {
+            return (object) ['status' => true, 'msg' => ''];
+        } else {
+            return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+        }
+    }
+
+    public function getDestinctProgram()
+    {
+        $prog = array();
+        $query = "SELECT DISTINCT(program) FROM faculty";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result))
+                array_push($prog, $row["program"]);
+        }
+        return $prog;
+    }
+
+    public function getSections($program, $level)
+    {
+        $prog = array();
+        $query = "SELECT DISTINCT(section) FROM faculty WHERE program='$program' AND level='$level'";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result))
+                array_push($prog, $row["section"]);
+        }
+        return $prog;
+    }
+
 
     // PRIVATE FUNCTIONS
 
@@ -82,7 +166,7 @@ class Faculty extends dbHandler
 
     private function getAllFaculty()
     {
-        $query = "SELECT *, CONCAT(lastName,', ', firstName) AS fullName FROM faculty WHERE status='" . ACTIVE . "'";
+        $query = "SELECT * FROM faculty WHERE status='" . ACTIVE . "'";
         $result = mysqli_query($this->conn, $query);
         if (mysqli_num_rows($result)) {
             return $this->setFacultyInfo($result);
@@ -93,45 +177,43 @@ class Faculty extends dbHandler
     {
         $faculties = array();
         while ($row = mysqli_fetch_assoc($result)) {
+            $sub_sec = array();
+            $id = $row['id'];
+            $query = "SELECT * FROM faculty_subject WHERE faculty_id='$id'";
+            $result2 = mysqli_query($this->conn, $query);
+            if (mysqli_num_rows($result2)) {
+                while ($row2 = mysqli_fetch_assoc($result2)) {
+                    $code = $row2['subject_code'];
+                    $query2 = "SELECT description FROM subject WHERE code='$code'";
+                    $res = mysqli_query($this->conn, $query2);
+                    if (mysqli_num_rows($res)) {
+                        $subrow = mysqli_fetch_assoc($res);
+                        $sub_sec[] = (object) [
+                            "code" => $code,
+                            "description" => $subrow['description'],
+                            "sections" => $row2['sections'],
+                        ];
+                    }
+                }
+            }
+
             $faculties[] = (object) [
-                'id' => $row['id'],
-                'username' => $row['username'],
-                'firstName' => $row['firstName'],
-                'middleName' => $row['middleName'],
-                'lastName' => $row['lastName'],
+                'facultyID' => $id,
                 'fullName' => $row['fullName'],
+                'username' => $row['username'],
                 'email' => $row['email'],
                 'contact_no' => $row['contact_no'],
                 'profile_picture' => $row['profile_picture'],
                 'status' => $row['status'],
+                'sub_sec' => $sub_sec,
             ];
         }
         return $faculties;
     }
 
-    private function generateUsername($firstName, $lastName)
+    private function isEmailExist($email, $id = "")
     {
-        $ext = "";
-        $i = 1;
-        do {
-            $username = strtolower($firstName . $lastName . $ext);
-            $username = str_replace(' ', '', $username);
-            $ext = $i++;
-        } while ($this->isUsernameExist($username));
-
-        return $username;
-    }
-
-    private function isUsernameExist($username): bool
-    {
-        $query = "SELECT id FROM faculty WHERE username='$username'";
-        $result = mysqli_query($this->conn, $query);
-        return mysqli_num_rows($result);
-    }
-
-    private function isEmailExist($email): bool
-    {
-        $query = "SELECT id FROM faculty WHERE email='$email'";
+        $query = 'SELECT id FROM `faculty` WHERE email="' . $email . '" AND id!="' . $id . '"';
         $result = mysqli_query($this->conn, $query);
         return mysqli_num_rows($result);
     }

@@ -64,18 +64,68 @@ class Student extends dbHandler
         if ($this->isEmailExist($details->email)) {
             return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
         } else {
-            $query = "INSERT INTO student(id, username, password, firstName, middleName, lastName, email, contact_no) VALUES 
-                ('$details->id', '$username', '$password', '$details->firstName', '$details->middleName', '$details->lastName', '$details->email', '$details->contact_no')";
+            $query = "INSERT INTO student(id, fullName, username, email, password, contact_no, gender, specialization, program, level, section, subjects) VALUES 
+                ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo', '$details->gender', '$details->specialization', '$details->program', '$details->level', '$details->section', '$details->subjects')";
             $mail = new Mail(ADMIN);
             $mail->sendCredentials($details->email, $username, $password);
 
             if (mysqli_query($this->conn, $query)) {
                 return (object) ['status' => true, 'msg' => ''];
             } else {
-                return (object) ['status' => false, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
             }
         }
     }
+
+    public function editStudent($details)
+    {
+        if ($this->isEmailExist($details->email, $details->id_old)) {
+            return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
+        } else {
+
+            $query = "UPDATE `student` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo',`gender`='$details->gender',`specialization`='$details->specialization',`program`='$details->program',`level`='$details->level',`section`='$details->section',`subjects`='$details->subjects' WHERE id='$details->id_old'";
+            if (mysqli_query($this->conn, $query)) {
+                return (object) ['status' => true, 'msg' => ''];
+            } else {
+                return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+            }
+        }
+    }
+
+    public function removeStudent($studentNo)
+    {
+        $query = "UPDATE `student` SET `status`='deleted' WHERE id='$studentNo'";
+        if (mysqli_query($this->conn, $query)) {
+            return (object) ['status' => true, 'msg' => ''];
+        } else {
+            return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+        }
+    }
+
+    public function getDestinctProgram()
+    {
+        $prog = array();
+        $query = "SELECT DISTINCT(program) FROM student";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result))
+                array_push($prog, $row["program"]);
+        }
+        return $prog;
+    }
+
+    public function getSections($program, $level)
+    {
+        $prog = array();
+        $query = "SELECT DISTINCT(section) FROM student WHERE program='$program' AND level='$level'";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result))
+                array_push($prog, $row["section"]);
+        }
+        return $prog;
+    }
+
 
     // PRIVATE FUNCTIONS
 
@@ -103,8 +153,22 @@ class Student extends dbHandler
     {
         $students = array();
         while ($row = mysqli_fetch_assoc($result)) {
+            $subjects = array();
+            foreach (explode(",", $row['subjects']) as $sub) {
+                $sub = trim($sub);
+                $query = "SELECT description FROM subject WHERE code='$sub'";
+                $res = mysqli_query($this->conn, $query);
+                if (mysqli_num_rows($res)) {
+                    $subrow = mysqli_fetch_assoc($res);
+                    $subjects[] = (object) [
+                        "code" => $sub,
+                        "description" => $subrow['description']
+                    ];
+                }
+            }
+
             $students[] = (object) [
-                'id' => $row['id'],
+                'studentNo' => $row['id'],
                 'fullName' => $row['fullName'],
                 'username' => $row['username'],
                 'email' => $row['email'],
@@ -114,7 +178,7 @@ class Student extends dbHandler
                 'program' => $row['program'],
                 'level' => $row['level'],
                 'section' => $row['section'],
-                'subjects' => explode(",", $row['subjects']),
+                'subjects' => $subjects,
                 'profile_picture' => $row['profile_picture'],
                 'status' => $row['status'],
             ];
@@ -122,29 +186,9 @@ class Student extends dbHandler
         return $students;
     }
 
-    // private function generateUsername($firstName, $lastName)
-    // {
-    //     $ext = "";
-    //     $i = 1;
-    //     do {
-    //         $username = strtolower($firstName . $lastName . $ext);
-    //         $username = str_replace(' ', '', $username);
-    //         $ext = $i++;
-    //     } while ($this->isUsernameExist($username));
-
-    //     return $username;
-    // }
-
-    // private function isUsernameExist($username): bool
-    // {
-    //     $query = "SELECT id FROM student WHERE username='$username'";
-    //     $result = mysqli_query($this->conn, $query);
-    //     return mysqli_num_rows($result);
-    // }
-
-    private function isEmailExist($email): bool
+    private function isEmailExist($email, $id = "")
     {
-        $query = "SELECT id FROM student WHERE email='$email'";
+        $query = 'SELECT id FROM `student` WHERE email="' . $email . '" AND id!="' . $id . '"';
         $result = mysqli_query($this->conn, $query);
         return mysqli_num_rows($result);
     }
