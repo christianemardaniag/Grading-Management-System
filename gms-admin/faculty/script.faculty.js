@@ -70,28 +70,23 @@ $(document).ready(function () {
                 var selectedFaculty = "";
                 $("#facultyRecords > tr").click(function (e) {
                     e.preventDefault();
-                    facultyNo = $(this).data("id");
+                    facultyID = $(this).data("id");
+                    console.log(GET_FACULTIES_RESP);
                     selectedFaculty = GET_FACULTIES_RESP.filter(function (eachFaculty) {
-                        return eachFaculty.facultyNo == facultyNo;
+                        return eachFaculty.facultyID == facultyID;
                     })[0];
-                    console.log(selectedFaculty);
                     $("#view-profile").attr("src", selectedFaculty.profile_picture);
-                    $("#view-facultyNo").html(selectedFaculty.facultyNo);
+                    $("#view-facultyID").html(selectedFaculty.facultyID);
                     $("#view-fullName").html(selectedFaculty.fullName);
-                    $("#view-cys").html(selectedFaculty.program + " " + selectedFaculty.section);
                     $("#view-email").html(selectedFaculty.email);
                     $("#view-contactNo").html(selectedFaculty.contact_no);
-                    $("#view-gender").html(selectedFaculty.gender);
-                    $("#view-specialization").html(selectedFaculty.specialization);
-                    $("#view-program").html(selectedFaculty.program);
-                    $("#view-level").html(selectedFaculty.level);
-                    $("#view-section").html(selectedFaculty.section);
                     let subjects = ``;
-                    $.each(selectedFaculty.subjects, function (indexInArray, subject) {
+                    $.each(selectedFaculty.sub_sec, function (indexInArray, subject) {
                         subjects += `
                             <tr>
                                 <td>${subject.code}</td>
                                 <td>${subject.description}</td>
+                                <td>${subject.sections}</td>
                             </tr>`;
                     });
                     $("#view-subjects").html(subjects);
@@ -99,7 +94,7 @@ $(document).ready(function () {
 
                     $("#removeFacultyModal").on("show.bs.modal", function () {
                         $("#remove-fullName").html(selectedFaculty.fullName);
-                        $("#remove-facultyNo").html(selectedFaculty.facultyNo);
+                        $("#remove-facultyID").html(selectedFaculty.facultyID);
                     })
 
                     $("#remove-yes-btn").click(function (e) {
@@ -107,10 +102,11 @@ $(document).ready(function () {
                         $.ajax({
                             type: "POST",
                             url: "../faculty/process.faculty.php",
-                            data: { REMOVE_FACULTY_REQ: selectedFaculty.facultyNo },
+                            data: { REMOVE_FACULTY_REQ: selectedFaculty.facultyID },
                             dataType: "JSON",
                             success: function (REMOVE_FACULTY_RESP) {
-                                displayFaculties($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+                                console.log(REMOVE_FACULTY_RESP);
+                                displayFaculties();
                                 $("#removeFacultyModal").modal("hide");
                             }
                         });
@@ -118,21 +114,33 @@ $(document).ready(function () {
                 });
 
                 $("#editFacultyModal").on("show.bs.modal", function () {
-                    $("#edit-oldFacultyNo").val(selectedFaculty.facultyNo);
-                    $("#edit-facultyNo").val(selectedFaculty.facultyNo);
+                    $("#edit-oldFacultyID").val(selectedFaculty.facultyID);
+                    $("#edit-facultyID").val(selectedFaculty.facultyID);
                     $("#edit-fullName").val(selectedFaculty.fullName);
                     $("#edit-email").val(selectedFaculty.email);
                     $("#edit-contactNo").val(selectedFaculty.contact_no);
-                    $("input[name=edit-gender][value=" + selectedFaculty.gender + "]").attr('checked', 'checked');
-                    $("#edit-specialization").val(selectedFaculty.specialization);
-                    $("#edit-program").val(selectedFaculty.program);
-                    $("#edit-level").val(selectedFaculty.level);
-                    $("#edit-section").val(selectedFaculty.section);
-                    let sub = ``;
-                    $.each(selectedFaculty.subjects, function (indexInArray, subject) {
-                        sub += `${subject.code}, `;
+                    
+                    let sub_sec = ``;
+                    $.each(selectedFaculty.sub_sec, function (i, subject) {
+                        sub_sec += `
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <div class="mb-3">
+                                    <label for="edit-subject-${i+1}" class="form-label">Subject</label>
+                                    <input type="text" class="form-control" name="edit-subject[${i+1}]" id="edit-subject-${i+1}" value="${subject.code}">
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="mb-3">
+                                    <label for="edit-sections-${i+1}" class="form-label">Class Sections</label>
+                                    <input type="text" class="form-control" name="edit-sections[${i+1}]" id="edit-sections-${i+1}" value="${subject.sections}">
+                                    <div class="form-text">Class Sections (Separeted with comma)</div>
+                                </div>
+                            </div>
+                        </div>`;
                     });
-                    $("#edit-subjects").val(sub.slice(0, -1));
+                    $("#edit-subCtr").val(selectedFaculty.sub_sec.length);
+                    $("#edit-facultySubjects").html(sub_sec);
                 });
 
             }, error: function (response) {
@@ -341,7 +349,7 @@ $(document).ready(function () {
                     $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
                     $("#editNewFacultyError").fadeIn();
                 }
-                displayFaculties($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+                displayFaculties();
             },
             error: function (response) {
                 console.error(response.responseText);

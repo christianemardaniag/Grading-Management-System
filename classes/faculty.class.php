@@ -68,8 +68,8 @@ class Faculty extends dbHandler
         } else {
             $query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) VALUES 
                 ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo')";
-            // $mail = new Mail(ADMIN);
-            // $mail->sendCredentials($details->email, $username, $password);
+            $mail = new Mail(ADMIN);
+            $mail->sendCredentials($details->email, $username, $password);
 
             if (mysqli_query($this->conn, $query)) {
                 $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
@@ -93,10 +93,23 @@ class Faculty extends dbHandler
         if ($this->isEmailExist($details->email, $details->id_old)) {
             return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
         } else {
-
-            $query = "UPDATE `faculty` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo',`gender`='$details->gender',`specialization`='$details->specialization',`program`='$details->program',`level`='$details->level',`section`='$details->section',`subjects`='$details->subjects',`profile_picture`='$details->gender' WHERE id='$details->id_old'";
+            $query = "UPDATE `faculty` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo', `email`='$details->email' WHERE id='$details->id_old'";
             if (mysqli_query($this->conn, $query)) {
-                return (object) ['status' => true, 'msg' => ''];
+                $delete_sql = "DELETE FROM faculty_subject WHERE faculty_id='$details->id'";
+                if (mysqli_query($this->conn, $delete_sql)) {
+                    $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
+                    foreach ($details->sub_sec as $eachData) {
+                        $sub_sec_sql .= "('$details->id', '$eachData->subject', '$eachData->sections'),";
+                    }
+                    $sub_sec_sql = rtrim($sub_sec_sql, ",");
+                    if (mysqli_query($this->conn, $sub_sec_sql)) {
+                        return (object) ['status' => true, 'msg' => ''];
+                    } else {
+                        return (object) ['status' => false, 'sql' => $sub_sec_sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                    }
+                } else {
+                    return (object) ['status' => false, 'sql' => $delete_sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                }
             } else {
                 return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
             }
@@ -164,28 +177,35 @@ class Faculty extends dbHandler
     {
         $faculties = array();
         while ($row = mysqli_fetch_assoc($result)) {
-            // $subjects = array();
-            // foreach (explode(",", $row['subjects']) as $sub) {
-            //     $sub = trim($sub);
-            //     $query = "SELECT description FROM subject WHERE code='$sub'";
-            //     $res = mysqli_query($this->conn, $query);
-            //     if (mysqli_num_rows($res)) {
-            //         $subrow = mysqli_fetch_assoc($res);
-            //         $subjects[] = (object) [
-            //             "code" => $sub,
-            //             "description" => $subrow['description']
-            //         ];
-            //     }
-            // }
+            $sub_sec = array();
+            $id = $row['id'];
+            $query = "SELECT * FROM faculty_subject WHERE faculty_id='$id'";
+            $result2 = mysqli_query($this->conn, $query);
+            if (mysqli_num_rows($result2)) {
+                while ($row2 = mysqli_fetch_assoc($result2)) {
+                    $code = $row2['subject_code'];
+                    $query2 = "SELECT description FROM subject WHERE code='$code'";
+                    $res = mysqli_query($this->conn, $query2);
+                    if (mysqli_num_rows($res)) {
+                        $subrow = mysqli_fetch_assoc($res);
+                        $sub_sec[] = (object) [
+                            "code" => $code,
+                            "description" => $subrow['description'],
+                            "sections" => $row2['sections'],
+                        ];
+                    }
+                }
+            }
 
             $faculties[] = (object) [
-                'facultyID' => $row['id'],
+                'facultyID' => $id,
                 'fullName' => $row['fullName'],
                 'username' => $row['username'],
                 'email' => $row['email'],
                 'contact_no' => $row['contact_no'],
                 'profile_picture' => $row['profile_picture'],
                 'status' => $row['status'],
+                'sub_sec' => $sub_sec,
             ];
         }
         return $faculties;

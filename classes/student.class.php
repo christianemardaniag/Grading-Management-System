@@ -83,7 +83,7 @@ class Student extends dbHandler
             return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
         } else {
 
-            $query = "UPDATE `student` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo',`gender`='$details->gender',`specialization`='$details->specialization',`program`='$details->program',`level`='$details->level',`section`='$details->section',`subjects`='$details->subjects',`profile_picture`='$details->gender' WHERE id='$details->id_old'";
+            $query = "UPDATE `student` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo',`gender`='$details->gender',`specialization`='$details->specialization',`program`='$details->program',`level`='$details->level',`section`='$details->section',`subjects`='$details->subjects' WHERE id='$details->id_old'";
             if (mysqli_query($this->conn, $query)) {
                 return (object) ['status' => true, 'msg' => ''];
             } else {

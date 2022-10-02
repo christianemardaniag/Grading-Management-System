@@ -29,18 +29,17 @@ if (isset($_POST['GET_FACULTIES_REQ'])) {
 	];
 	echo json_encode((array)$faculty->addNewFaculty($details));
 } elseif (isset($_POST['EDIT_FACULTY_REQ'])) {
+	$sub_sec = array();
+	for ($i = 1; $i <= $_POST["edit-subCtr"]; $i++) {
+		$sub_sec[] = (object) ['subject' => $_POST["edit-subject"][$i], 'sections' => $_POST["edit-sections"][$i]];
+	}
 	$details = (object) [
-		'id_old' => $_POST['edit-oldFacultyNo'],
-		'id' => $_POST['edit-facultyNo'],
+		'id_old' => $_POST['edit-oldFacultyID'],
+		'id' => $_POST['edit-facultyID'],
 		'fullName' => $_POST['edit-fullName'],
 		'email' => $_POST['edit-email'],
 		'contactNo' => $_POST['edit-contactNo'],
-		'gender' => $_POST['edit-gender'],
-		'program' => $_POST['edit-program'],
-		'specialization' => $_POST['edit-specialization'],
-		'level' => $_POST['edit-level'],
-		'section' => $_POST['edit-section'],
-		'subjects' => $_POST['edit-subjects'],
+		'sub_sec' => $sub_sec,
 	];
 	echo json_encode((array)$faculty->editFaculty($details));
 } elseif (isset($_POST['REMOVE_FACULTY_REQ'])) {
