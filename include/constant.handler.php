@@ -6,6 +6,7 @@ const STUDENT = "student";
 
 const BLOCKED = "blocked";
 const ACTIVE = "active";
+const DELETED = "deleted";
 const DEFAULT_ATTEMPT = 2; // 3 login attempts. zero based
 
 // CONST FOR STUDENT FILE UPLOAD 

@@ -11,9 +11,9 @@ $(document).ready(function () {
         $("#fileUploadForm").submit();
     });
 
-    $("#addFacultyModal").on("show.bs.modal", function() {
+    $("#addFacultyModal").on("show.bs.modal", function () {
         let subCtr = 1;
-        $("#add-subject").click(function (e) { 
+        $("#add-subject").click(function (e) {
             e.preventDefault();
             subCtr++;
             let sub = `
@@ -35,10 +35,10 @@ $(document).ready(function () {
             $("#add-facultySubjects").append(sub);
             $("#subCtr").val(subCtr);
         });
-    
+
     });
 
-    
+
     function displayFaculties() {
         $.ajax({
             type: "POST",
@@ -75,7 +75,7 @@ $(document).ready(function () {
                     selectedFaculty = GET_FACULTIES_RESP.filter(function (eachFaculty) {
                         return eachFaculty.facultyID == facultyID;
                     })[0];
-                    $("#view-profile").attr("src", selectedFaculty.profile_picture);
+                    $("#view-profile").attr("src", "../../" + selectedFaculty.profile_picture);
                     $("#view-facultyID").html(selectedFaculty.facultyID);
                     $("#view-fullName").html(selectedFaculty.fullName);
                     $("#view-email").html(selectedFaculty.email);
@@ -119,21 +119,21 @@ $(document).ready(function () {
                     $("#edit-fullName").val(selectedFaculty.fullName);
                     $("#edit-email").val(selectedFaculty.email);
                     $("#edit-contactNo").val(selectedFaculty.contact_no);
-                    
+
                     let sub_sec = ``;
                     $.each(selectedFaculty.sub_sec, function (i, subject) {
                         sub_sec += `
                         <div class="row g-2">
                             <div class="col-4">
                                 <div class="mb-3">
-                                    <label for="edit-subject-${i+1}" class="form-label">Subject</label>
-                                    <input type="text" class="form-control" name="edit-subject[${i+1}]" id="edit-subject-${i+1}" value="${subject.code}">
+                                    <label for="edit-subject-${i + 1}" class="form-label">Subject</label>
+                                    <input type="text" class="form-control" name="edit-subject[${i + 1}]" id="edit-subject-${i + 1}" value="${subject.code}">
                                 </div>
                             </div>
                             <div class="col-8">
                                 <div class="mb-3">
-                                    <label for="edit-sections-${i+1}" class="form-label">Class Sections</label>
-                                    <input type="text" class="form-control" name="edit-sections[${i+1}]" id="edit-sections-${i+1}" value="${subject.sections}">
+                                    <label for="edit-sections-${i + 1}" class="form-label">Class Sections</label>
+                                    <input type="text" class="form-control" name="edit-sections[${i + 1}]" id="edit-sections-${i + 1}" value="${subject.sections}">
                                     <div class="form-text">Class Sections (Separeted with comma)</div>
                                 </div>
                             </div>
@@ -209,31 +209,31 @@ $(document).ready(function () {
 
     function mergeCommonRows(table, firstOnly) {
         reset(table);
-        var firstColumnBrakes = [];   
-        for(var i=1; i<=table.find('th').length; i++){
+        var firstColumnBrakes = [];
+        for (var i = 1; i <= table.find('th').length; i++) {
             var previous = null, cellToExtend = null, rowspan = 1;
-            table.find("td:nth-child(" + i + ")").each(function(index, el){   
+            table.find("td:nth-child(" + i + ")").each(function (index, el) {
                 if (previous == $(el).text() && $(el).text() !== "" && $.inArray(index, firstColumnBrakes) === -1) {
                     $(el).addClass('d-none');
-                    cellToExtend.attr("rowspan", (rowspan = rowspan+1));
+                    cellToExtend.attr("rowspan", (rowspan = rowspan + 1));
                     cellToExtend.addClass("align-middle");
-                }else{
-                    if(firstOnly == 'first only'){                
-                        if(i === 1) firstColumnBrakes.push(index);
-                    }else{
-                        if($.inArray(index, firstColumnBrakes) === -1) firstColumnBrakes.push(index);
+                } else {
+                    if (firstOnly == 'first only') {
+                        if (i === 1) firstColumnBrakes.push(index);
+                    } else {
+                        if ($.inArray(index, firstColumnBrakes) === -1) firstColumnBrakes.push(index);
                     }
                     rowspan = 1;
                     previous = $(el).text();
                     cellToExtend = $(el);
                 }
             });
-        }    
+        }
     }
-    function reset(table){
+    function reset(table) {
         table.find('td').removeClass('d-none').attr('rowspan', 1);
     }
-    
+
 
     $("#uploadSpinner").hide();
     $("#upload").click(function (e) {

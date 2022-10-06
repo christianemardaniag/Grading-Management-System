@@ -15,10 +15,7 @@ class Student extends dbHandler
     }
 
     // PUBLIC FUNCTIONS
-    public function getStudentInfo()
-    {
-        return $this->studentInfo;
-    }
+    
 
     public function addStudentFromFile($data)
     {
@@ -147,6 +144,11 @@ class Student extends dbHandler
         if (mysqli_num_rows($result)) {
             return $this->setStudentInfo($result);
         }
+    }
+
+    public function getStudentInfo()
+    {
+        return $this->studentInfo;
     }
 
     private function setStudentInfo($result)

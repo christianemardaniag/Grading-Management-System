@@ -1,6 +1,6 @@
 <?php
 include '../../include/autoloader.inc.php';
-print_r($_SESSION);
+// print_r($_SESSION);
 // if (!isset($_SESSION[FACULTY])) {
 //     echo true;
 //     exit();

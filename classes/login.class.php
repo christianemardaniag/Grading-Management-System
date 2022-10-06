@@ -43,6 +43,11 @@ class Login extends dbHandler
                 'status' => false,
                 'msg' => 'Too many failed login attempts. Your account has been blocked'
             ];
+        } elseif ($this->userInfo->status == DELETED && $this->type != ADMIN) {
+            $this->response = (object) [
+                'status' => false,
+                'msg' => 'Your account has been deleted by the administrator. For account restoration, please contact your administrator.'
+            ];
         } elseif ($this->password != $this->userInfo->password) {
             $this->setUserAttempt($this->userInfo->id, $this->userInfo->attempt - 1);
             $this->invalidCredentials();

@@ -2,7 +2,7 @@ $(document).ready(function () {
     $.post("process.main.php", function (data, textStatus, jqXHR) {
         console.log(data);
         if (data) {
-            // window.location.href = '../';
+            window.location.href = '../';
         }
     });
 
