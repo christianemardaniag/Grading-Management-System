@@ -77,7 +77,10 @@
 - Display __current__ total number of handled students per sem including all section
 - Display __current__ bar graph chart for total number of students __per section__
 - Display all assigned subjects (Table)
-- and more.. (to follow)
+- Display top 10 students over all section 
+- Display top 3 students per section
+- Display average per criteria
+- Highest Average per section and subject
 
 #### 3. Student
 - List of all students per year and semester

@@ -70,8 +70,6 @@ $(document).ready(function () {
 
 
     function displayStudents(specialization = 'All', program = 'All', level = 'All', section = 'All') {
-        console.log(specialization);
-        console.log(program);
         $.ajax({
             type: "POST",
             url: "../student/process.student.php",
@@ -86,7 +84,6 @@ $(document).ready(function () {
 
                     return spec && prog && lev && sec;
                 });
-                console.log(filtered);
                 content = ``;
                 $.each(filtered, function (indexInArray, student) {
                     content += `

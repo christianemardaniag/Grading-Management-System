@@ -1,35 +1,49 @@
 <link rel="stylesheet" href="../grade/style.grade.css">
 <main>
     <header>
-        <div id="header-title" class="h3">Grade</div>
+        <div id="header-title" class="d-flex justify-content-between">
+            <h3>Grade</h3>
+            <div class="d-print-none">
+                <button type="button" class="btn btn-dark" id="uploadFileBtn">Upload Class Record</button>
+            </div>
+        </div>
     </header>
 
-    <div class="me-2 table-responsive">
+    <!-- <div class="me-2 table-responsive">
         <table class="table table-bordered table-striped border-secondary table-sm text-center" id="gradesTable">
            
         </table>
-    </div>
+    </div> -->
 </main>
 
-<!-- DELETE SUBJECT MODAL -->
-<div class="modal fade py-5" tabindex="-1" id="removeModal">
-    <div class="modal-dialog">
-        <div class="modal-content rounded-3">
-            <div class="modal-body p-4 text-center">
-                <h5 class="">Remove Activity</h5>
-                <p class="mb-1">Are you sure you want to Activity?</p>
-                <p class="mb-0 text-danger fw-bolder">*This action will also remove all students grade under this activity and this is cannot be undone!
-                </p>
+<!-- File Upload Class Record Modal -->
+<form id="fileUploadForm" enctype="multipart/form-data">
+    <input type="file" name="fileUpload" id="fileUpload" accept=".xlsx, .xls, .csv" class="d-none">
+</form>
+<div class="modal fade" id="uploadClassRecord" tabindex="-1" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileUploadModalLabel">Excel Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-footer flex-nowrap p-0">
-                <button type="button" id="remove-yes-btn"
-                    class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end"><strong>Yes</strong></button>
-                <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0"
-                    data-bs-dismiss="modal">No</button>
+            <div class="modal-body">
+                <div class="text-center" id="previewSpinner">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div class="container-fluid" id="fileUploadBody">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="upload"><span id="updloadLabel">Upload</span> <span
+                        class="spinner-border spinner-border-sm" id="uploadSpinner" role="status"></span></button>
             </div>
         </div>
     </div>
-</div><!-- END OF DELETE SUBJECT MODAL -->
-
+</div><!-- File Upload Class Record Modal END -->
 
 <script src="../grade/script.grade.js"></script>
