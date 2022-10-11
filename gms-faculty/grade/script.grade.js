@@ -115,6 +115,7 @@ $(document).ready(function () {
             contentType: false,
             cache: false,
             processData: false,
+            dataType: "JSON",
             success: function (FILE_UPLOAD_RESP) {
                 // TODO: IF CODE OR SECTION IS EMPTY, SHOW WARNING ALERT SUGGEST DOWNLOAD CSV FORMAT
                 tempData.code = FILE_UPLOAD_RESP[4][5];  // * subject code coordinates
