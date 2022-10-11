@@ -14,4 +14,6 @@ if(isset($_POST["GET_GRADE_REQ"])) {
 	} else {
 		echo SimpleXLSX::parseError();
 	}
+} elseif (isset($_POST['UPLOAD_FILE_REQ'])) {
+	echo json_encode((array)$grade->addClassRecordFromFile($_POST['UPLOAD_FILE_REQ']));
 }

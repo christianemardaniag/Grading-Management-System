@@ -41,7 +41,7 @@ var json = {
     ],
     "students": [
         {
-            "stundetNo": "2013412425",
+            "studentNo": "2013412425",
             "name": "Aniag, Christian",
             "grade": 0,
             "equiv": 5.0,
@@ -118,9 +118,9 @@ $(document).ready(function () {
             dataType: "JSON",
             success: function (FILE_UPLOAD_RESP) {
                 // TODO: IF CODE OR SECTION IS EMPTY, SHOW WARNING ALERT SUGGEST DOWNLOAD CSV FORMAT
-                tempData.code = FILE_UPLOAD_RESP[4][5];  // * subject code coordinates
+                tempData.code = FILE_UPLOAD_RESP[4][5].trim();  // * subject code coordinates
                 tempData.description = FILE_UPLOAD_RESP[5][5];  // * subject description coordinates
-                tempData.section = FILE_UPLOAD_RESP[6][5];  // * subject section coordinates
+                tempData.section = FILE_UPLOAD_RESP[6][5].trim();  // * subject section coordinates
 
                 var content = `
                 <div class="fs-5">Subject Code: <b>${tempData.code}</b></div>
@@ -229,14 +229,14 @@ $(document).ready(function () {
                                 scores.score.push(element);
                             }
                             totalLen += actLen + 1;
-                            scores.average = FILE_UPLOAD_RESP[row][totalLen-1];
+                            scores.average = FILE_UPLOAD_RESP[row][totalLen - 1];
                             student.scores.push(scores);
                         }
 
                         // * GET OTHER DETAILS
                         $.each(column, function (col, val) {
                             content += `<td>${val}</td>`;
-                            if (col == 2) student.stundetNo = val;
+                            if (col == 2) student.studentNo = val;
                             if (col == 3) student.name = val;
                             if (col == 5) student.equiv = val;
                             if (col == totalLen) student.grade = val;
@@ -259,6 +259,50 @@ $(document).ready(function () {
             }, beforeSend: function () {
                 $("#uploadClassRecord").modal("show");
                 $("#previewSpinner").show();
+            }
+        });
+    });
+
+    $("#uploadSpinner").hide();
+    $("#upload").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '../grade/process.grade.php',
+            type: 'POST',
+            data: { UPLOAD_FILE_REQ: tempData },
+            dataType: 'json',
+            success: function (UPLOAD_FILE_RESP) {
+                console.log(UPLOAD_FILE_RESP);
+                var flag = true;
+                $.each(UPLOAD_FILE_RESP, function (indexInArray, valueOfElement) {
+                    if (!valueOfElement.status) {
+                        flag = false;        
+                    }
+                });
+                $("#fileUploadForm").trigger('reset');
+                $("#updloadLabel").html("Upload");
+                $("#upload").removeAttr("disabled");
+                $("#uploadSpinner").hide();
+                if (flag) {
+                    $("#uploadClassRecord").modal("hide");
+                    $("#fileUploadBody").html('');
+                    $("#fileUploadForm").trigger('reset');
+                    // displayFaculties();
+                } else {
+                    console.error(valueOfElement.msg);
+                    var content = `
+                        <div class="alert alert-warning alert-dismissible fade show mb-2 py-2" role="alert">We encounter a problem. Some student didn't get grades correctly. Please double check the file you uploaded.
+                        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>`;
+                    $("#fileUploadBody").prepend(content);
+                }
+            }, error: function (response) {
+                console.error(response.responseText);
+                $("#fileUploadBody").prepend(response.responseText);
+            }, beforeSend: function () {
+                $("#uploadSpinner").show();
+                $("#updloadLabel").html("Uploading");
+                $("#upload").attr("disabled", "disabled");
             }
         });
     });

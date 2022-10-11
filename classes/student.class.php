@@ -87,7 +87,7 @@ class Student extends dbHandler
             if (mysqli_query($this->conn, $query)) {
                 $sql = "INSERT INTO student_subject(student_id, subject_code) VALUES";
                 foreach (explode(", ", $details->subjects) as $subject) {
-                    $sql .= "($this->conn->insert_id, '$subject'),";
+                    $sql .= "('$details->id', '$subject'),";
                 }
                 $sql = rtrim($sql, ",");
                 if (mysqli_query($this->conn, $sql)) {
