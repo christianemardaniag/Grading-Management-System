@@ -29,7 +29,7 @@ class Grade extends dbHandler
         foreach ($data->students as $student) {
             $criteria = json_encode($data->criteria);
             $grade = json_encode($student->scores);
-            $query = "UPDATE student_subject SET criteria='$criteria', grade='$grade' WHERE student_id='$student->studentNo'";
+            $query = "UPDATE student_subject SET criteria='$criteria', grade='$grade', final_grade='$student->grade', equiv='$student->equiv', remarks='$student->remarks' WHERE student_id='$student->studentNo'";
             if (mysqli_query($this->conn, $query)) {
                 $status[] = (object) ['status' => true, 'msg' => ''];
             } else {

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    
 
     $.post("../student/process.student.php", { GET_FACULTY_REQ: true },
         function (GET_FACULTY_RESP, textStatus, jqXHR) {
@@ -26,50 +25,15 @@ $(document).ready(function () {
         "JSON"
     );
 
-    // getSectionsFilter();
-
-    // function getSectionsFilter() {
-    //     $.post("../student/process.student.php", {
-    //         GET_SECTION_DESTINCT_REQ: true,
-    //         program: $("#filter-program").val(),
-    //         level: $("#filter-level").val()
-    //     },
-    //         function (GET_SECTION_DESTINCT_RESP, textStatus, jqXHR) {
-    //             let content = `<option value="All" selected>All</option>`;
-    //             $.each(GET_SECTION_DESTINCT_RESP, function (indexInArray, section) {
-    //                 content += `<option value="${section}">${section}</option>`;
-    //             });
-    //             console.log();
-    //             $("#filter-section").html(content);
-    //         },
-    //         "JSON"
-    //     );
-    // }
-
-
     $("#filter-specialization").change(function (e) {
         e.preventDefault();
-        // getSectionsFilter();
         displayStudents($("#filter-specialization").val(), $("#filter-subject").val(), $("#filter-section").val());
     });
 
     $("#filter-subject").change(function (e) {
         e.preventDefault();
-        // getSectionsFilter();
         displayStudents($("#filter-specialization").val(), $("#filter-subject").val(), $("#filter-section").val());
     });
-
-    // $("#filter-program").change(function (e) {
-    //     e.preventDefault();
-    //     getSectionsFilter();
-    //     displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
-    // });
-
-    // $("#filter-level").change(function (e) {
-    //     e.preventDefault();
-    //     getSectionsFilter();
-    //     displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
-    // });
 
     $("#filter-section").change(function (e) {
         e.preventDefault();

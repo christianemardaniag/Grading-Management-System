@@ -20,13 +20,13 @@ $(document).ready(function () {
             <div class="row g-2">
                 <div class="col-4">
                     <div class="mb-3">
-                        <label for="add-subject-${subCtr}" class="form-label">Subject</label>
+                        <label for="add-subject-${subCtr}" class="form-label">Subject Code</label>
                         <input type="text" class="form-control" name="subject[${subCtr}]" id="add-subject-${subCtr}">
                     </div>
                 </div>
                 <div class="col-8">
                     <div class="mb-3">
-                        <label for="add-sections-${subCtr}" class="form-label">Class Sectionss</label>
+                        <label for="add-sections-${subCtr}" class="form-label">Class Sections</label>
                         <input type="text" class="form-control" name="sections[${subCtr}]" id="add-sections-${subCtr}">
                         <div class="form-text">Class Sections (Separeted with comma)</div>
                     </div>

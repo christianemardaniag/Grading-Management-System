@@ -81,6 +81,7 @@
 - Display top 3 students per section
 - Display average per criteria
 - Highest Average per section and subject
+- Candidate for major honors
 
 #### 3. Student
 - List of all students per year and semester

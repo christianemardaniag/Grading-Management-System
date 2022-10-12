@@ -9,11 +9,35 @@
         </div>
     </header>
 
-    <!-- <div class="me-2 table-responsive">
-        <table class="table table-bordered table-striped border-secondary table-sm text-center" id="gradesTable">
-           
+    <div id="error" class="alert alert-danger py-1"></div>
+
+    <div class="py-3 mt-3">
+        <h5>Filter</h5>
+        <div class="row row-cols-4 g-2">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="filter-subject" class="form-label">Subject</label>
+                    <select class="form-select mb-3" name="filter-subject" id="filter-subject" required>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="filter-section" class="form-label">Section</label>
+                    <select class="form-select mb-3" name="filter-section" id="filter-section" required>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="me-2 table-responsive">
+        <table class="table table-bordered table-striped table-hover border-secondary table-sm text-center" id="gradesTable">
+            
         </table>
-    </div> -->
+
+
+    </div>
 </main>
 
 <!-- File Upload Class Record Modal -->

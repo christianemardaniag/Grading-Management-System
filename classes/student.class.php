@@ -190,7 +190,12 @@ class Student extends dbHandler
                 while ($subrow = mysqli_fetch_assoc($res)) {
                     $subjects[] = (object) [
                         "code" => $subrow["subject_code"],
-                        "description" => $subrow['description']
+                        "description" => $subrow['description'],
+                        "grade" => $subrow['final_grade'],
+                        "equiv" => $subrow['equiv'],
+                        "remarks" => $subrow['remarks'],
+                        "criteria" => json_decode($subrow['criteria']),
+                        "scores" => json_decode($subrow['grade'])
                     ];
                 }
             }
