@@ -189,7 +189,8 @@ $(document).ready(function () {
                     //     "equiv": 0.3,
                     //     "activities": [{
                     //         "name": "1",
-                    //         "total": 100
+                    //         "total": 100,
+                    //         "isLock": false
                     //     }]
                     // }]
                     if (row == 8) {
@@ -205,6 +206,7 @@ $(document).ready(function () {
                                         let activities = {};
                                         activities.name = FILE_UPLOAD_RESP[row + 1][ctr];
                                         activities.total = parseInt(FILE_UPLOAD_RESP[row + 2][ctr]);
+                                        activities.isLock = false;
                                         criteria.activities.push(activities);
                                         ctr++;
                                     } while (FILE_UPLOAD_RESP[row][ctr + 1] == '');
@@ -269,7 +271,7 @@ $(document).ready(function () {
                                 scores.score.push(element);
                             }
                             totalLen += actLen + 1;
-                            scores.average = parseInt(FILE_UPLOAD_RESP[row][totalLen - 1]);
+                            scores.average = parseFloat(FILE_UPLOAD_RESP[row][totalLen - 1]);
                             student.scores.push(scores);
                         }
 
@@ -279,7 +281,7 @@ $(document).ready(function () {
                             if (col == 2) student.studentNo = val;
                             if (col == 3) student.name = val;
                             if (col == 5) student.equiv = parseFloat(val);
-                            if (col == totalLen) student.grade = parseInt(val);
+                            if (col == totalLen) student.grade = parseFloat(val);
                             if (col == totalLen + 2) student.remarks = val;
                         });
 
@@ -331,7 +333,8 @@ $(document).ready(function () {
                 } else {
                     console.error(valueOfElement.msg);
                     var content = `
-                        <div class="alert alert-warning alert-dismissible fade show mb-2 py-2" role="alert">We encounter a problem. Some student didn't get grades correctly. Please double check the file you uploaded.
+                        <div class="alert alert-warning alert-dismissible fade show mb-2 py-2" role="alert">
+                            We encounter a problem. Some student didn't get grades correctly. Please double check the file you uploaded.
                         <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>`;
                     $("#fileUploadBody").prepend(content);
@@ -349,7 +352,6 @@ $(document).ready(function () {
 
     function displayStudents(subject = '', section = '') {
         var json = {};
-
         $.ajax({
             type: "POST",
             url: "../grade/process.grade.php",
@@ -396,16 +398,15 @@ $(document).ready(function () {
 
 });  // END OF DOCUMENT READY FUNCTION
 
-
 function fetchGrades(json) {
     $(document).ready(function () {
         let colGroup = ``;
         let criteria_th = ``;
         let activities_th = ``;
         let actionBtn_th = ``;
+        let lockBtn_th = ``;
         let score_th = ``;
         let act_ctr = 5;
-        console.log(json);
         $.each(json.criteria, function (index, criteria) {
             let cri_len = criteria.activities.length;
             act_ctr += cri_len;
@@ -420,14 +421,18 @@ function fetchGrades(json) {
             $.each(criteria.activities, function (i, activity) {
                 if (cri_len - 1 != i) {
                     actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
+                    lockBtn_th += `<th data-criteria="${index}" data-act="${i}" class="lock-btn bg-light ${activity.isLock ? 'active' : ''}">
+                        <i class="fas ${activity.isLock ? 'fa-lock' : 'fa-unlock-alt'}"></i></th>`;
                     activities_th += `<th>${activity.name}</th>`;
                     score_th += `<th>${activity.total}</th>`;
                 } else {
                     actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
+                    lockBtn_th += `<th data-criteria="${index}" data-act="${i}" class="lock-btn bg-light ${activity.isLock ? 'active' : ''}">
+                        <i class="fas ${activity.isLock ? 'fa-lock' : 'fa-unlock-alt'}"></i></th>`;
+                    lockBtn_th += `<th rowspan='2'>Equiv</th>`;
                     actionBtn_th += `<th data-index="${index}" data-bs-toggle='popover' class="plus-btn bg-light"><i class="fal fa-plus"></i></th>`;
                     activities_th += `
-                    <th>${activity.name}</th>
-                    <th>Equiv</th>`;
+                    <th>${activity.name}</th>`;
                     score_th += `
                         <th>${activity.total}</th>
                         <th>${criteria.equiv}%</th>`;
@@ -448,13 +453,14 @@ function fetchGrades(json) {
                 score_td += `<td colspan=${act_ctr}>NO GRADES AVAILABLE</td>`
             }
             $.each(student.scores, function (index_criteria, criteria) {
-
                 if (criteria.score.length == 0) {
                     score_td += `<td><b>50.00</b></td>`;
                 }
                 for (let i = 0; i < criteria.score.length; i++) {
+                    let isLock = json.criteria[index_criteria].activities[i].isLock;
                     const score = criteria.score[i];
-                    score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-student="${index_student}" contenteditable='true'>${score}</td>`;
+                    score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-student="${index_student}" 
+                        contenteditable='${isLock ? 'false' : 'true'}'>${score}</td>`;
                     if (i == criteria.score.length - 1) {
                         score_td += `<td><b>${parseFloat(criteria.average).toFixed(2)}</b></td>`;
                     }
@@ -463,7 +469,7 @@ function fetchGrades(json) {
             tbody += `
             <tr>
                 <td>${student.studentNo}</td>
-                <td>${student.name}</td>
+                <td class='text-start'>${student.name}</td>
                 <td><b>${parseFloat(student.equiv).toFixed(2)}</b></td>
                 ${score_td}
                 <td>${parseFloat(student.grade).toFixed(2)}</td>
@@ -480,17 +486,21 @@ function fetchGrades(json) {
         </colgroup>
         <thead>
         <tr>
-            <th rowspan="4">Student No.</th>
-            <th rowspan="4">Name</th>
-            <th rowspan="4">Final Grade</th>
+            <th rowspan="5">Student No.</th>
+            <th rowspan="5">Name</th>
+            <th rowspan="5">Final Grade</th>
             ${criteria_th}
             <th colspan="3">Final Grade</th>
         </tr>
         <tr>
             ${actionBtn_th}
-            <th rowspan="3">Grade</th>
-            <th rowspan="3">Equiv</th>
-            <th rowspan="3">Remarks</th>
+            <th rowspan="4">Grade</th>
+            <th rowspan="4">Equiv</th>
+            <th rowspan="4">Remarks</th>
+        </tr>
+        <tr>
+            ${lockBtn_th}
+            
         </tr>
         <tr>
             ${activities_th}
@@ -507,6 +517,16 @@ function fetchGrades(json) {
         $("#gradesTable").html(tContent);
 
         displayTop10Students(json);
+
+        // LOCK ACTIVITY
+        $(".lock-btn").click(function (e) {
+            e.preventDefault();
+            let i_criteria = $(this).data("criteria");
+            let i_act = $(this).data("act");
+            let isLock = json.criteria[i_criteria].activities[i_act].isLock;
+            json.criteria[i_criteria].activities[i_act].isLock = !isLock;
+            fetchGrades(json);
+        });
 
         // REMOVE ACTIVITY
         $(".minus-btn").click(function (e) {
@@ -639,6 +659,7 @@ function displayTop10Students(json) {
 }
 
 function getEquiv(grade) {
+    grade = Math.floor(grade);
     if (grade <= 74) {
         return 5.00;
     } else if (grade <= 75) {

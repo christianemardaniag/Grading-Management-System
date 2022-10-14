@@ -151,3 +151,19 @@
 - ~~Can upload and download file (max limit 3mb file size)~~
 - ~~Refresh chat box every 1 second~~
 - ~~View Contacts~~
+
+---
+
+## Possible Questions
+
+### FACULTY
+
+#### GRADE
+
+> Sa faculty pwede pa ba ko mag re-upload grades?
+
+    Answer: Yes pwede, ma ooverwrite lang ung mga unang grades ni student
+
+> Pwede ba i-export ung ulit ung mga grades?
+
+    Answer: As of now hindi pa available ung export na feature. Pero plan sya in the future
