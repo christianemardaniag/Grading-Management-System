@@ -437,6 +437,11 @@ function fetchGrades(json) {
         });
 
         let tbody = ``;
+        json.students.sort(function (a, b) {
+            if (a.name > b.name) { return 1 }
+            if (a.name < b.name) { return -1 }
+            return 0;
+        });
         $.each(json.students, function (index_student, student) {
             let score_td = ``;
             if (student.scores === null) {
@@ -463,7 +468,7 @@ function fetchGrades(json) {
                 ${score_td}
                 <td>${parseFloat(student.grade).toFixed(2)}</td>
                 <td>${parseFloat(student.equiv).toFixed(2)}</td>
-                <td>${student.remarks}</td>
+                <td class="${student.remarks == 'Failed' ? "table-danger" : ""}">${student.remarks}</td>
 
             </tr>`;
         });
@@ -578,12 +583,10 @@ function fetchGrades(json) {
             });
             json.students[i_student].scores[i_criteria].score[i_score] = newVal;
             let total_score = 0;
-            $.each(json.students[i_student].scores[i_criteria], function (indexInArray, score) {
-                for (let i = 0; i < score.length; i++) {
-                    total_score += parseInt(score[i]);
-                }
+            $.each(json.students[i_student].scores[i_criteria].score, function (indexInArray, score) {
+                total_score += parseInt(score);
             });
-            let ave = (total_over / total_score) * 50 + 50;
+            let ave = (total_score / total_over) * 50 + 50;
             json.students[i_student].scores[i_criteria].average = ave;
 
             // set grade
@@ -600,7 +603,7 @@ function fetchGrades(json) {
 
             // set remarks
             json.students[i_student].remarks = (equiv == 5.00) ? "Failed" : "Passed";
-            debugger
+
             fetchGrades(json);
         });
 
@@ -621,14 +624,14 @@ function displayTop10Students(json) {
         });
         $.each(outstandingStudent, function (i, val) {
             content += `
-            <tr class="${((i<3) ? "table-info" : "")}">
-                <td>${i+1}.</td>
+            <tr class="${((i < 3) ? "table-info" : "")}">
+                <td>${i + 1}.</td>
                 <td>${json.students[val.k].studentNo}</td>
                 <td class='text-start'>${json.students[val.k].name}</td>
                 <td>${parseFloat(json.students[val.k].grade).toFixed(2)}</td>
                 <td class='fw-bold'>${parseFloat(json.students[val.k].equiv).toFixed(2)}</td>
             </tr>`;
-            
+
         });
 
         $("#top10StudentBody").html(content);
