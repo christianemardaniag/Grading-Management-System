@@ -111,13 +111,13 @@ $(document).ready(function () {
             let uniSec = [];
             $.each(GET_FACULTY_RESP.sub_sec, function (indexInArray, subject) {
                 subContent += `<option value="${subject.code}">${subject.code} - ${subject.description}</option>`;
-                $.each(subject.sections.split(", "), function (indexInArray, section) { 
-                    if($.inArray(section, uniSec) == -1) {
+                $.each(subject.sections.split(", "), function (indexInArray, section) {
+                    if ($.inArray(section, uniSec) == -1) {
                         uniSec.push(section);
                     }
                 });
             });
-            $.each(uniSec, function (indexInArray, section) { 
+            $.each(uniSec, function (indexInArray, section) {
                 console.log();
                 secContent += `<option value="${section}">${section}</option>`;
             });
@@ -204,7 +204,7 @@ $(document).ready(function () {
                                     do {
                                         let activities = {};
                                         activities.name = FILE_UPLOAD_RESP[row + 1][ctr];
-                                        activities.total = FILE_UPLOAD_RESP[row + 2][ctr];
+                                        activities.total = parseInt(FILE_UPLOAD_RESP[row + 2][ctr]);
                                         criteria.activities.push(activities);
                                         ctr++;
                                     } while (FILE_UPLOAD_RESP[row][ctr + 1] == '');
@@ -212,7 +212,7 @@ $(document).ready(function () {
                                     while (FILE_UPLOAD_RESP[row][ctr] == '') {
                                         ctr++;
                                     }
-                                    criteria.equiv = FILE_UPLOAD_RESP[row + 2][ctr - 1];
+                                    criteria.equiv = parseInt(FILE_UPLOAD_RESP[row + 2][ctr - 1] * 100);
                                     criteria.name = val;
                                     tempData.criteria.push(criteria);
                                 }
@@ -265,11 +265,11 @@ $(document).ready(function () {
                             let scores = {};
                             scores.score = [];
                             for (let j = 0; j < actLen; j++) {
-                                const element = FILE_UPLOAD_RESP[row][totalLen + j];
+                                const element = parseInt(FILE_UPLOAD_RESP[row][totalLen + j]);
                                 scores.score.push(element);
                             }
                             totalLen += actLen + 1;
-                            scores.average = FILE_UPLOAD_RESP[row][totalLen - 1];
+                            scores.average = parseInt(FILE_UPLOAD_RESP[row][totalLen - 1]);
                             student.scores.push(scores);
                         }
 
@@ -278,11 +278,11 @@ $(document).ready(function () {
                             content += `<td>${val}</td>`;
                             if (col == 2) student.studentNo = val;
                             if (col == 3) student.name = val;
-                            if (col == 5) student.equiv = val; 
-                            if (col == totalLen) student.grade = val;
+                            if (col == 5) student.equiv = parseFloat(val);
+                            if (col == totalLen) student.grade = parseInt(val);
                             if (col == totalLen + 2) student.remarks = val;
                         });
-                        
+
                         tempData.students.push(student);
                         content += `</tr>`;
                     }
@@ -306,13 +306,13 @@ $(document).ready(function () {
     $("#uploadSpinner").hide();
     $("#upload").click(function (e) {
         e.preventDefault();
+        console.log(tempData);
         $.ajax({
             url: '../grade/process.grade.php',
             type: 'POST',
             data: { UPLOAD_FILE_REQ: tempData },
             dataType: 'json',
             success: function (UPLOAD_FILE_RESP) {
-                console.log(UPLOAD_FILE_RESP);
                 var flag = true;
                 $.each(UPLOAD_FILE_RESP, function (indexInArray, valueOfElement) {
                     if (!valueOfElement.status) {
@@ -347,12 +347,9 @@ $(document).ready(function () {
         });
     });
 
-    // fetchGrades(json);
-
-    // TODO: DISPLAY TABLE
     function displayStudents(subject = '', section = '') {
         var json = {};
-        
+
         $.ajax({
             type: "POST",
             url: "../grade/process.grade.php",
@@ -374,9 +371,9 @@ $(document).ready(function () {
                 console.log(filtered);
                 json.criteria = [];
                 json.students = [];
-                $.each(filtered, function (indexInArray, student) { 
+                $.each(filtered, function (indexInArray, student) {
                     var details = {};
-                    $.each(student.subjects, function (indexInArray, sub) { 
+                    $.each(student.subjects, function (indexInArray, sub) {
                         if (sub.code == subject) {
                             details.studentNo = student.studentNo;
                             details.name = student.fullName;
@@ -422,12 +419,12 @@ function fetchGrades(json) {
             }
             $.each(criteria.activities, function (i, activity) {
                 if (cri_len - 1 != i) {
-                    // actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
+                    actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
                     activities_th += `<th>${activity.name}</th>`;
                     score_th += `<th>${activity.total}</th>`;
                 } else {
-                    // actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
-                    // actionBtn_th += `<th data-index="${index}" data-bs-toggle='popover' class="plus-btn bg-light"><i class="fal fa-plus"></i></th>`;
+                    actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
+                    actionBtn_th += `<th data-index="${index}" data-bs-toggle='popover' class="plus-btn bg-light"><i class="fal fa-plus"></i></th>`;
                     activities_th += `
                     <th>${activity.name}</th>
                     <th>Equiv</th>`;
@@ -442,17 +439,17 @@ function fetchGrades(json) {
         let tbody = ``;
         $.each(json.students, function (index_student, student) {
             let score_td = ``;
-            if(student.scores === null) {
+            if (student.scores === null) {
                 score_td += `<td colspan=${act_ctr}>NO GRADES AVAILABLE</td>`
             }
             $.each(student.scores, function (index_criteria, criteria) {
-                
+
                 if (criteria.score.length == 0) {
                     score_td += `<td><b>50.00</b></td>`;
                 }
                 for (let i = 0; i < criteria.score.length; i++) {
                     const score = criteria.score[i];
-                    score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-student="${index_student}">${score}</td>`;
+                    score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-student="${index_student}" contenteditable='true'>${score}</td>`;
                     if (i == criteria.score.length - 1) {
                         score_td += `<td><b>${parseFloat(criteria.average).toFixed(2)}</b></td>`;
                     }
@@ -465,10 +462,10 @@ function fetchGrades(json) {
                 <td><b>${parseFloat(student.equiv).toFixed(2)}</b></td>
                 ${score_td}
                 <td>${parseFloat(student.grade).toFixed(2)}</td>
-                <td>${parseFloat(student.equiv).toFixed(2) }</td>
+                <td>${parseFloat(student.equiv).toFixed(2)}</td>
                 <td>${student.remarks}</td>
 
-            </tr>`; 
+            </tr>`;
         });
         let tContent = `
         <colgroup>
@@ -477,129 +474,164 @@ function fetchGrades(json) {
             ${colGroup}
         </colgroup>
         <thead>
-            <tr>
-                <th rowspan="3">Student No.</th>
-                <th rowspan="3">Name</th>
-                <th rowspan="3">Final Grade</th>
-                ${criteria_th}
-                <th colspan="3">Final Grade</th>
-            </tr>
-            
-            <tr>
-                ${activities_th}
-                <th rowspan="2">Grade</th>
-                <th rowspan="2">Equiv</th>
-                <th rowspan="2">Remarks</th>
-            </tr>
-            
-            <tr>
-                ${score_th}
-            </tr>
+        <tr>
+            <th rowspan="4">Student No.</th>
+            <th rowspan="4">Name</th>
+            <th rowspan="4">Final Grade</th>
+            ${criteria_th}
+            <th colspan="3">Final Grade</th>
+        </tr>
+        <tr>
+            ${actionBtn_th}
+            <th rowspan="3">Grade</th>
+            <th rowspan="3">Equiv</th>
+            <th rowspan="3">Remarks</th>
+        </tr>
+        <tr>
+            ${activities_th}
+        </tr>
+        <tr>
+            ${score_th}
+        </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
             ${tbody}
         </tbody>
-        <style>
-        td, th {
-            font-size: 14px;
-        }
-        </style>
     `;
 
         $("#gradesTable").html(tContent);
 
-        // // REMOVE ACTIVITY
-        // $(".minus-btn").click(function (e) {
-        //     e.preventDefault();
-        //     let i_criteria = $(this).data("criteria");
-        //     let i_act = $(this).data("act");
-        //     $("#removeModal").modal("show");
-        //     $("#remove-yes-btn").click(function (e) {
-        //         e.preventDefault();
-        //         $.each(json.students, function (indexInArray, student) {
-        //             student.scores[i_criteria].score.splice(i_act, 1);
-        //         });
-        //         json.criteria[i_criteria].activity.splice(i_act, 1);
-        //         fetchGrades(json);
-        //         $("#removeModal").modal("hide");
-        //     });
-        // });
+        displayTop10Students(json);
 
-        // // ADD ACTIVITY
-        // let popoverContent = `
-        // <form id="addColumnForm" style="width: 150px;">
-        //     <div class="row">
-        //         <div class="col-4">
-        //             <label class="mt-1 for="label">Label</label>
-        //         </div>
-        //         <div class="col-8 mb-1">
-        //             <input type="text" class="form-control form-control-sm" id="addLabel">
-        //         </div>
-        //         <div class="col-4">
-        //             <label class="mt-1 for="label">Score</label>
-        //         </div>
-        //         <div class="col-8 mb-1">
-        //             <input type="number" min="0" class="form-control form-control-sm" id="addScore">
-        //         </div>
-        //     </div>
-        //     <input type="submit" class="btn btn-sm btn-success w-100" value="Add">
-        // </form>`;
-        // $('[data-bs-toggle="popover"]').popover({
-        //     placement: "bottom",
-        //     html: true,
-        //     sanitize: false,
-        //     title: "Add Column",
-        //     content: popoverContent
-        // });
-        // var cur_ind;
-        // $("[data-bs-toggle='popover']").click(function (e) {
-        //     cur_ind = $(this).data("index");
-        // });
+        // REMOVE ACTIVITY
+        $(".minus-btn").click(function (e) {
+            e.preventDefault();
+            let i_criteria = $(this).data("criteria");
+            let i_act = $(this).data("act");
+            $("#removeModal").modal("show");
+            $("#remove-yes-btn").click(function (e) {
+                e.preventDefault();
+                $.each(json.students, function (indexInArray, student) {
+                    if (student.scores !== null) {
+                        student.scores[i_criteria].score.splice(i_act, 1);
+                    }
+                });
+                json.criteria[i_criteria].activities.splice(i_act, 1);
+                fetchGrades(json);
+                $("#removeModal").modal("hide");
+            });
+        });
 
-        // $("[data-bs-toggle='popover']").on("shown.bs.popover", function () {
-        //     $("#addColumnForm").submit(function (e) {
-        //         e.preventDefault();
-        //         $('[data-bs-toggle="popover"]').popover("hide");
-        //         addColumn(cur_ind, $("#addLabel").val(), parseInt($("#addScore").val()));
-        //     });
-        // });
+        // ADD ACTIVITY
+        let popoverContent = `
+        <form id="addColumnForm" style="width: 150px;">
+            <div class="row">
+                <div class="col-4">
+                    <label class="mt-1 for="label">Label</label>
+                </div>
+                <div class="col-8 mb-1">
+                    <input type="text" class="form-control form-control-sm" id="addLabel">
+                </div>
+                <div class="col-4">
+                    <label class="mt-1 for="label">Score</label>
+                </div>
+                <div class="col-8 mb-1">
+                    <input type="number" min="0" class="form-control form-control-sm" id="addScore">
+                </div>
+            </div>
+            <input type="submit" class="btn btn-sm btn-success w-100" value="Add">
+        </form>`;
+        $('[data-bs-toggle="popover"]').popover({
+            placement: "bottom",
+            html: true,
+            sanitize: false,
+            title: "Add Column",
+            content: popoverContent
+        });
+        var cur_ind;
+        $("[data-bs-toggle='popover']").click(function (e) {
+            cur_ind = $(this).data("index");
+        });
 
-        // $("td").on("blur", function () {
-        //     let i_score = $(this).data("score");
-        //     let i_student = $(this).data("student");
-        //     let i_criteria = $(this).data("criteria");
-        //     let newVal = parseInt($(this).html());
-        //     let total_over = 0;
-        //     $.each(json.criteria[i_criteria].activity, function (indexInArray, activity) {
-        //         total_over += activity.score;
-        //     });
-        //     json.students[i_student].scores[i_criteria].score[i_score] = newVal;
-        //     let total_score = 0;
-        //     $.each(json.students[i_student].scores[i_criteria], function (indexInArray, score) {
-        //         for (let i = 0; i < score.length; i++) {
-        //             total_score += score[i];
-        //         }
-        //     });
-        //     let ave = (total_score / total_over) * 50 + 50;
-        //     json.students[i_student].scores[i_criteria].average = ave;
+        $("[data-bs-toggle='popover']").on("shown.bs.popover", function () {
+            $("#addColumnForm").submit(function (e) {
+                e.preventDefault();
+                $('[data-bs-toggle="popover"]').popover("hide");
+                json.criteria[cur_ind].activities.push({ name: $("#addLabel").val(), total: $("#addScore").val() });
+                $.each(json.students, function (indexInArray, student) {
+                    if (student.scores !== null) {
+                        student.scores[cur_ind].score.push('');
+                    }
+                });
+                fetchGrades(json);
+            });
+        });
 
-        //     // set grade
-        //     let grade = 0;
-        //     $.each(json.criteria, function (i, criteria) {
-        //         let ave = json.students[i_student].scores[i].average;
-        //         grade += (ave * (criteria.equiv / 100));
-        //     });
-        //     json.students[i_student].grade = grade;
+        $("td").on("blur", function () {
+            let i_score = $(this).data("score");
+            let i_student = $(this).data("student");
+            let i_criteria = $(this).data("criteria");
+            let newVal = parseInt($(this).html());
+            let total_over = 0;
+            $.each(json.criteria[i_criteria].activities, function (indexInArray, activity) {
+                total_over += parseInt(activity.total);
+            });
+            json.students[i_student].scores[i_criteria].score[i_score] = newVal;
+            let total_score = 0;
+            $.each(json.students[i_student].scores[i_criteria], function (indexInArray, score) {
+                for (let i = 0; i < score.length; i++) {
+                    total_score += parseInt(score[i]);
+                }
+            });
+            let ave = (total_over / total_score) * 50 + 50;
+            json.students[i_student].scores[i_criteria].average = ave;
 
-        //     // set equiv
-        //     let equiv = getEquiv(grade);
-        //     json.students[i_student].equiv = equiv;
+            // set grade
+            let grade = 0;
+            $.each(json.criteria, function (i, criteria) {
+                let ave = json.students[i_student].scores[i].average;
+                grade += (ave * (criteria.equiv / 100));
+            });
+            json.students[i_student].grade = grade;
 
-        //     // set remarks
-        //     json.students[i_student].remarks = (equiv == 5.00) ? "Failed" : "Passed";
-        //     fetchGrades(json);
-        // });
+            // set equiv
+            let equiv = getEquiv(grade);
+            json.students[i_student].equiv = equiv;
 
+            // set remarks
+            json.students[i_student].remarks = (equiv == 5.00) ? "Failed" : "Passed";
+            debugger
+            fetchGrades(json);
+        });
+
+    });
+}
+
+function displayTop10Students(json) {
+    $(document).ready(function () {
+        var content = ``;
+        var outstandingStudent = [];
+        $.each(json.students, function (key, value) {
+            outstandingStudent.push({ v: value.grade, k: key });
+        });
+        outstandingStudent.sort(function (a, b) {
+            if (a.v > b.v) { return -1 }
+            if (a.v < b.v) { return 1 }
+            return 0;
+        });
+        $.each(outstandingStudent, function (i, val) {
+            content += `
+            <tr class="${((i<3) ? "table-info" : "")}">
+                <td>${i+1}.</td>
+                <td>${json.students[val.k].studentNo}</td>
+                <td class='text-start'>${json.students[val.k].name}</td>
+                <td>${parseFloat(json.students[val.k].grade).toFixed(2)}</td>
+                <td class='fw-bold'>${parseFloat(json.students[val.k].equiv).toFixed(2)}</td>
+            </tr>`;
+            
+        });
+
+        $("#top10StudentBody").html(content);
     });
 }
 
