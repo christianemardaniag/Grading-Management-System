@@ -79,11 +79,11 @@
 
 #### 1. Login
 
-- Faculty login page will be visible on the home page of the system as well as student login page
-- Faculty can login using __username__ or __email address__
+- ~~Faculty login page will be visible on the home page of the system as well as student login page~~
+- ~~Faculty can login using __username__ or __email address__~~
 - Faculty can be block by the system after maximum of 3 login attempts
 - Faculty can be unblock by the admin
-- Faculty can use forgot password and enter their registered email to receive a new random password via email
+- ~~Faculty can use forgot password and enter their registered email to receive a new random password via email~~
 
 #### 2. Dashboard
 
@@ -97,18 +97,17 @@
     
 #### 3. Student
 
-- List of all students per year and semester
+- ~~List of all students per year and semester~~
 - Faculty can change student status to drop
-- Print specific student
+- ~~Print specific student~~
 
 #### 4. Grade
 
-- List of all handled students per subject
-- Upload and download student grade __per subject__
-- Can add/edit/delete quiz, activities, and exam
-- <https://frappe.io/datatable>
-- <https://github.com/datazenit/sensei-grid>
-- <https://handsontable.com/>
+- ~~List of all handled students per subject~~
+- ~~Upload~~ and download student grade __per subject__
+- ~~Can add/edit/delete quiz, activities, and exam~~
+- ~~Top 10 Students Table~~
+- ~~Failed Students Table~~ 
 
 #### ~~5. Chat~~ (NOT TO DO)
 
@@ -119,7 +118,7 @@
 
 #### 6. Profile
 
-- Faculty can edit their information (Username, Email, Password)
+- ~~Faculty can edit their information (Username, Email, Password)~~
 
 ## Student
 

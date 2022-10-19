@@ -1,97 +1,3 @@
-// var json = {
-//     "criteria": [{
-//         "name": "Activities/Project",
-//         "equiv": 30,
-//         "activities": [{
-//             "name": "1",
-//             "score": 100
-//         }]
-//     }, {
-//         "name": "Quizzes",
-//         "equiv": 20,
-//         "activities": [{
-//             "name": "1",
-//             "score": 80
-//         }, {
-//             "name": "2",
-//             "score": 120
-//         }]
-//     }, {
-//         "name": "Recitation",
-//         "equiv": 15,
-//         "activities": [{
-//             "name": "1",
-//             "score": 100
-//         }]
-//     }, {
-//         "name": "Promptness",
-//         "equiv": 5,
-//         "activities": [{
-//             "name": "1",
-//             "score": 100
-//         }]
-//     }, {
-//         "name": "Major Exam",
-//         "equiv": 30,
-//         "activities": [{
-//             "name": "ME",
-//             "score": 100
-//         }]
-//     }
-//     ],
-//     "students": [
-//         {
-//             "studentNo": "2013412425",
-//             "name": "Aniag, Christian",
-//             "grade": 0,
-//             "equiv": 5.0,
-//             "remarks": "Failed",
-//             "scores": [
-//                 {
-//                     "average": 50,
-//                     "score": [14]
-//                 }, {
-//                     "average": 80,
-//                     "score": [50, 90]
-//                 }, {
-//                     "average": 50,
-//                     "score": [20]
-//                 }, {
-//                     "average": 60,
-//                     "score": [52]
-//                 }, {
-//                     "average": 70,
-//                     "score": [65]
-//                 },
-//             ]
-//         },
-//         {
-//             "studentNo": "2013412425",
-//             "name": "Aniag, Christian",
-//             "grade": 0,
-//             "equiv": 5.0,
-//             "remarks": "Failed",
-//             "scores": [
-//                 {
-//                     "average": 100,
-//                     "score": [0]
-//                 }, {
-//                     "average": 100,
-//                     "score": [60, 110]
-//                 }, {
-//                     "average": 100,
-//                     "score": [0]
-//                 }, {
-//                     "average": 100,
-//                     "score": [0]
-//                 }, {
-//                     "average": 100,
-//                     "score": [0]
-//                 },
-//             ]
-//         }
-//     ]
-// };
 $(document).ready(function () {
     $("#uploadFileBtn").click(function (e) {
         e.preventDefault();
@@ -419,6 +325,7 @@ function fetchGrades(json) {
                 score_th = `<th>${criteria.equiv}%</th>`;
             }
             $.each(criteria.activities, function (i, activity) {
+                activity.isLock = (String(activity.isLock) === 'true');
                 if (cri_len - 1 != i) {
                     actionBtn_th += `<th data-criteria="${index}" data-act="${i}" class="minus-btn bg-light"><i class="fal fa-minus"></i></th>`;
                     lockBtn_th += `<th data-criteria="${index}" data-act="${i}" class="lock-btn bg-light ${activity.isLock ? 'active' : ''}">
@@ -458,6 +365,7 @@ function fetchGrades(json) {
                 }
                 for (let i = 0; i < criteria.score.length; i++) {
                     let isLock = json.criteria[index_criteria].activities[i].isLock;
+                    isLock = (String(isLock) === 'true');
                     const score = criteria.score[i];
                     score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-student="${index_student}" 
                         contenteditable='${isLock ? 'false' : 'true'}'>${score}</td>`;
@@ -517,6 +425,7 @@ function fetchGrades(json) {
         $("#gradesTable").html(tContent);
 
         displayTop10Students(json);
+        dropStudent(json);
 
         // LOCK ACTIVITY
         $(".lock-btn").click(function (e) {
@@ -524,7 +433,8 @@ function fetchGrades(json) {
             let i_criteria = $(this).data("criteria");
             let i_act = $(this).data("act");
             let isLock = json.criteria[i_criteria].activities[i_act].isLock;
-            json.criteria[i_criteria].activities[i_act].isLock = !isLock;
+            isLock = (String(isLock) === 'true');
+            json.criteria[i_criteria].activities[i_act].isLock = String(!isLock);
             fetchGrades(json);
         });
 
@@ -623,7 +533,6 @@ function fetchGrades(json) {
 
             // set remarks
             json.students[i_student].remarks = (equiv == 5.00) ? "Failed" : "Passed";
-
             fetchGrades(json);
         });
 
@@ -656,6 +565,78 @@ function displayTop10Students(json) {
 
         $("#top10StudentBody").html(content);
     });
+}
+
+function dropStudent(json) {
+    $(document).ready(function () {
+        let temp_json = keepCloning(json);
+        var content = ``;
+        $.each(temp_json.criteria, function (key_criteria, criteria) {
+            $.each(criteria.activities, function (key_act, activity) {
+                $.each(temp_json.students, function (key_stud, student) {
+                    if (student.scores !== null) {
+                        activity.isLock = (String(activity.isLock) === 'true');
+                        if (!activity.isLock) {
+                            student.scores[key_criteria].score[key_act] = activity.total;
+                        }
+                        let total_over = 0;
+                        $.each(criteria.activities, function (indexInArray, act) {
+                            total_over += parseInt(act.total);
+                        });
+                        let total_score = 0;
+                        $.each(student.scores[key_criteria].score, function (indexInArray, score) {
+                            total_score += parseInt(score);
+                        });
+                        let ave = (total_score / total_over) * 50 + 50;
+                        student.scores[key_criteria].average = ave;
+                        
+                        // set grade
+                        let grade = 0;
+                        $.each(temp_json.criteria, function (ind, cri) {
+                                let ave = parseFloat(student.scores[ind].average);
+                                grade += (ave * (cri.equiv / 100));
+                        });
+                        student.grade = grade;
+
+                        // set equiv
+                        let equiv = getEquiv(grade);
+                        student.equiv = equiv;
+
+                        // set remarks
+                        student.remarks = (equiv == 5.00) ? "Failed" : "Passed";
+
+                    }
+                });
+            });
+        });
+
+        var filtered = temp_json.students.filter(function (data) {
+            return data.remarks == "Failed";
+        });
+
+        $.each(filtered, function (i, val) {
+            content += `
+            <tr">
+                <td>${val.studentNo}</td>
+                <td class='text-start'>${val.name}</td>
+                <td>${parseFloat(val.grade).toFixed(2)}</td>
+                <td class='fw-bold'>${parseFloat(val.equiv).toFixed(2)}</td>
+            </tr>`;
+        });
+
+        $("#dropStudent").html(content);
+    });
+}
+
+function keepCloning(objectpassed) {
+    if (objectpassed === null || typeof objectpassed !== 'object') {
+        return objectpassed;
+    }
+    var temporary_storage = objectpassed.constructor();
+    for (var key in objectpassed) {
+        temporary_storage[key] = keepCloning(objectpassed[key]);
+    }
+    return temporary_storage;
 }
 
 function getEquiv(grade) {
