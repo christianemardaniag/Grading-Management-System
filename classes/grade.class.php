@@ -21,7 +21,7 @@ class Grade extends dbHandler
     {
     }
 
-    public function addClassRecordFromFile($data)
+    public function updateClassRecord($data)
     {
         $data = json_encode($data);
         $data = json_decode($data);
@@ -29,12 +29,15 @@ class Grade extends dbHandler
         foreach ($data->students as $student) {
             $criteria = json_encode($data->criteria);
             $grade = json_encode($student->scores);
-            $query = "UPDATE student_subject SET criteria='$criteria', grade='$grade', final_grade='$student->grade', 
+            if ($grade !== "\"\"") {
+                $query = "UPDATE student_subject SET criteria='$criteria', grade='$grade', final_grade='$student->grade', 
                 equiv='$student->equiv', remarks='$student->remarks' WHERE student_id='$student->studentNo' AND subject_code='$data->code'";
-            if (mysqli_query($this->conn, $query)) {
-                $status[] = (object) ['status' => true, 'msg' => ''];
-            } else {
-                $status[] = (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+
+                if (mysqli_query($this->conn, $query)) {
+                    $status[] = (object) ['status' => true, 'msg' => ''];
+                } else {
+                    $status[] = (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+                }
             }
         }
 

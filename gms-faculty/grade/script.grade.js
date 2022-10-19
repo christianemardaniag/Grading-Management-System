@@ -9,6 +9,47 @@ $(document).ready(function () {
         $("#fileUploadForm").submit();
     });
 
+    let infoContent = `
+    <div class="row d-flex align-items-center gy-2">
+        <div class="col-3">
+            <div class="plus-btn bg-light border text-center"><i class="fal fa-plus"></i></div>
+        </div>
+        <div class="col-9">
+            <div class="fw-bold">Add new activity</div>
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
+        </div>
+        <div class="col-3">
+            <div class="minus-btn bg-light border text-center"><i class="fal fa-minus"></i></div>
+        </div>
+        <div class="col-9">
+            <div class="fw-bold">Remove activity</div>
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
+        </div>
+        <div class="col-3">
+            <div class="lock-btn bg-light active border text-center"><i class="fas fa-lock"></i></div>
+        </div>
+        <div class="col-9">
+            <div class="fw-bold">Lock</div>
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
+        </div>
+        <div class="col-3">
+            <div class="lock-btn bg-light border text-center"><i class="fas fa-unlock-alt"></i></div>
+        </div>
+        <div class="col-9">
+            <div class="fw-bold">Unlock</div>
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
+        </div>
+    </div>
+    `;
+    $('#info-btn').popover({
+        placement: "left",
+        html: true,
+        sanitize: false,
+        title: "Info",
+        content: infoContent,
+        trigger: 'focus'
+    });
+
     $.post("../student/process.student.php", { GET_FACULTY_REQ: true },
         function (GET_FACULTY_RESP, textStatus, jqXHR) {
             console.log(GET_FACULTY_RESP);
@@ -33,7 +74,6 @@ $(document).ready(function () {
         },
         "JSON"
     );
-
 
     $("#filter-specialization").change(function (e) {
         e.preventDefault();
@@ -214,11 +254,10 @@ $(document).ready(function () {
     $("#uploadSpinner").hide();
     $("#upload").click(function (e) {
         e.preventDefault();
-        console.log(tempData);
         $.ajax({
             url: '../grade/process.grade.php',
             type: 'POST',
-            data: { UPLOAD_FILE_REQ: tempData },
+            data: { UPDATE_CLASS_RECORD_REQ: tempData },
             dataType: 'json',
             success: function (UPLOAD_FILE_RESP) {
                 var flag = true;
@@ -300,6 +339,43 @@ $(document).ready(function () {
                 $("#error").html(response.responseText);
             }
         });
+
+        $("#save-btn").click(function (e) {
+            e.preventDefault();
+            let temp_json = keepCloning(json);
+            temp_json.code = $("#filter-subject").val();
+            temp_json.section = $("#filter-section").val();
+            $.ajax({
+                type: "POST",
+                url: "../grade/process.grade.php",
+                data: { UPDATE_CLASS_RECORD_REQ: temp_json },
+                dataType: "JSON",
+                success: function (SAVE_CHANGES_RESP) {
+                    var flag = true;
+                    $.each(SAVE_CHANGES_RESP, function (indexInArray, valueOfElement) {
+                        if (!valueOfElement.status) {
+                            flag = false;
+                        }
+                    });
+                    if (flag) {
+                        $("#error").html('');
+                        $("#error").addClass('d-none');
+                        $("#saveChangesModal").modal("hide");
+                        displayStudents($("#filter-subject").val(), $("#filter-section").val());
+                    } else {
+                        $("#error").removeClass('d-none');
+                        console.error(SAVE_CHANGES_RESP);
+                        var content = `We encounter a problem on saving class record`;
+                        $("#error").html(content);
+                    }
+                }, error: function (response) {
+                    console.error(response.responseText);
+                    $("#error").removeClass('d-none');
+                    $("#error").html(response.responseText);
+                }
+            });
+        });
+
     }
 
 });  // END OF DOCUMENT READY FUNCTION
@@ -502,6 +578,10 @@ function fetchGrades(json) {
             });
         });
 
+        $("td").one("DOMSubtreeModified", function () {
+            $(this).addClass("table-warning");
+        });
+
         $("td").on("blur", function () {
             let i_score = $(this).data("score");
             let i_student = $(this).data("student");
@@ -589,12 +669,12 @@ function dropStudent(json) {
                         });
                         let ave = (total_score / total_over) * 50 + 50;
                         student.scores[key_criteria].average = ave;
-                        
+
                         // set grade
                         let grade = 0;
                         $.each(temp_json.criteria, function (ind, cri) {
-                                let ave = parseFloat(student.scores[ind].average);
-                                grade += (ave * (cri.equiv / 100));
+                            let ave = parseFloat(student.scores[ind].average);
+                            grade += (ave * (cri.equiv / 100));
                         });
                         student.grade = grade;
 
