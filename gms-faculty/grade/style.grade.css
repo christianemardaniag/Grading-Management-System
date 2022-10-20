@@ -9,7 +9,7 @@ td, th {
     vertical-align: middle!important;
 }
 
-.minus-btn, .plus-btn {
+.minus-btn, .plus-btn, .lock-btn {
     cursor: pointer;
     padding: 0px !important;
     margin: 0px !important;
@@ -25,4 +25,14 @@ td, th {
 .plus-btn:hover {
     background-color: rgb(0, 94, 23) !important;
     color: white;
+}
+
+.lock-btn:hover {
+    background-color: rgb(214, 214, 214) !important;
+    color: black;
+}
+
+.lock-btn.active {
+    background-color: rgb(170, 170, 170) !important;
+    color: black;
 }
