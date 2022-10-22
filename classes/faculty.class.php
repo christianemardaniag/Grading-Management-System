@@ -15,10 +15,7 @@ class Faculty extends dbHandler
     }
 
     // PUBLIC FUNCTIONS
-    public function getFacultyInfo()
-    {
-        return $this->facultyInfo;
-    }
+
 
     public function addFacultyFromFile($data)
     {
@@ -187,6 +184,11 @@ class Faculty extends dbHandler
         }
     }
 
+    public function getFacultyInfo()
+    {
+        return $this->facultyInfo;
+    }
+    
     private function setFacultyInfo($result)
     {
         $faculties = array();

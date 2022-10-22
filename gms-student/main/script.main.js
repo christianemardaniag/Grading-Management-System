@@ -1,9 +1,10 @@
 $(document).ready(function () {
-    $.post("process.main.php", function (data, textStatus, jqXHR) {
-        if (data) {
-            window.location.href = '../';
-        }
-    });
+    // $.post("process.main.php", function (data, textStatus, jqXHR) {
+    //     console.log(data);
+    //     if (data) {
+    //         window.location.href = '../';
+    //     }
+    // });
 
     let searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('url')) {
@@ -15,7 +16,7 @@ $(document).ready(function () {
         if (searchParams.has('url')) {
             let page = $(this).attr('id');
             searchParams.set('url', page);
-            history.replaceState('', '', `http://localhost/Grading-Management-System/gms-faculty/main/?url=${page}`)
+            history.replaceState('', '', `http://localhost/Grading-Management-System/gms-student/main/?url=${page}`)
             loadContent();
         }
     });

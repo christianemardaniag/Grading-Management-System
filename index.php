@@ -15,6 +15,7 @@
    ?>
    <a href="gms-admin">admin</a>
    <a href="gms-faculty">faculty</a>
+   <a href="gms-student">student</a>
 </body>
 
 </html>

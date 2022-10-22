@@ -106,8 +106,21 @@ class Student extends dbHandler
         if ($this->isEmailExist($details->email, $details->id_old)) {
             return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
         } else {
-
             $query = "UPDATE `student` SET `id`='$details->id',`fullName`='$details->fullName',`contact_no`='$details->contactNo',`gender`='$details->gender',`specialization`='$details->specialization',`program`='$details->program',`level`='$details->level',`section`='$details->section'/* ,`subjects`='$details->subjects' */ WHERE id='$details->id_old'";
+            if (mysqli_query($this->conn, $query)) {
+                return (object) ['status' => true, 'msg' => ''];
+            } else {
+                return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+            }
+        }
+    }
+
+    public function editStudentProfile($details)
+    {
+        if ($this->isEmailExist($details->email, $details->id_old)) {
+            return (object) ['status' => false, 'msg' => "Email Address is already exist!"];
+        } else {
+            $query = "UPDATE `student` SET `contact_no`='$details->contactNo', `email`='$details->email', `username`='$details->username', `password`='$details->password', `profile_picture`='$details->profile' WHERE id='$details->id_old'";
             if (mysqli_query($this->conn, $query)) {
                 return (object) ['status' => true, 'msg' => ''];
             } else {
@@ -156,11 +169,12 @@ class Student extends dbHandler
     private function withID($id)
     {
         $this->id = $id;
-        $query = "SELECT *, CONCAT(lastName,', ', firstName) AS fullName FROM student WHERE id=$id";
+        $query = "SELECT * FROM student WHERE id=$id";
         $result = mysqli_query($this->conn, $query);
         if (mysqli_num_rows($result)) {
             $this->studentInfo = $this->setStudentInfo($result);
             return $this->studentInfo;
+        } else {
         }
     }
 
