@@ -33,8 +33,10 @@ class Faculty extends dbHandler
                 } else {
                     $username = explode("@", $email)[0];
                     $password = $this->generateRandomPassword();
-                    $mail = new Mail(ADMIN);
-                    $mail->sendCredentials($email, $username, $password);
+                    if (ENABLE_MAIL) {
+                        $mail = new Mail(ADMIN);
+                        $mail->sendCredentials($email, $username, $password);
+                    }
                     $faculty_query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) 
                     VALUES ('" . $eachData[FACULTY_ID] . "','" . $eachData[FACULTY_FULLNAME] . "', 
                     '$username', '$email', '$password', '" . $eachData[FACULTY_CONTACT_NO] . "')";
@@ -65,9 +67,10 @@ class Faculty extends dbHandler
         } else {
             $query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) VALUES 
                 ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo')";
-            $mail = new Mail(ADMIN);
-            $mail->sendCredentials($details->email, $username, $password);
-
+            if (ENABLE_MAIL) {
+                $mail = new Mail(ADMIN);
+                $mail->sendCredentials($details->email, $username, $password);
+            }
             if (mysqli_query($this->conn, $query)) {
                 $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
                 foreach ($details->sub_sec as $eachData) {
@@ -188,7 +191,7 @@ class Faculty extends dbHandler
     {
         return $this->facultyInfo;
     }
-    
+
     private function setFacultyInfo($result)
     {
         $faculties = array();

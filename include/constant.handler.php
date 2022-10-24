@@ -1,4 +1,5 @@
 <?php
+const ENABLE_MAIL = false; // set 'true' to enable sending email
 
 const ADMIN = "admin";
 const FACULTY = "faculty";
@@ -19,7 +20,6 @@ const STUDENT_PROGRAM = 5;
 const STUDENT_LEVEL = 6;
 const STUDENT_SECTION = 7;
 const STUDENT_SPECIALIZATION = 8;
-const STUDENT_SUBJECTS = 9;
 
 // CONST FOR FACULTY FILE UPLOAD 
 const FACULTY_ID = 0;
