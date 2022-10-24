@@ -24,19 +24,24 @@ $(document).ready(function () {
     $.ajax({
         type: "POST",
         url: "../profile/process.profile.php",
-        data: { GET_FACULTY_REQ: true },
+        data: { GET_STUDENT_REQ: true },
         dataType: "JSON",
-        success: function (GET_FACULTY_RESP) {
-            console.log(GET_FACULTY_RESP);
-            $("#empID").html(GET_FACULTY_RESP.facultyID);
-            $("#fullName").val(GET_FACULTY_RESP.fullName);
-            $("#email").val(GET_FACULTY_RESP.email);
-            $("#contactNo").val(GET_FACULTY_RESP.contact_no);
-            $("#username").val(GET_FACULTY_RESP.username);
-            $("#profile_picture").attr("src", "../../"+GET_FACULTY_RESP.profile_picture);
-            $("#old_profile").val(GET_FACULTY_RESP.profile_picture);
+        success: function (GET_STUDENT_RESP) {
+            console.log(GET_STUDENT_RESP);
+            $("#studentNo").val(GET_STUDENT_RESP.studentNo);
+            $("#fullName").val(GET_STUDENT_RESP.fullName);
+            $("#gender").val(GET_STUDENT_RESP.gender);
+            $("#program").val(GET_STUDENT_RESP.program);
+            $("#specialization").val(GET_STUDENT_RESP.specialization);
+            $("#level").val(GET_STUDENT_RESP.level);
+            $("#section").val(GET_STUDENT_RESP.section);
+            $("#email").val(GET_STUDENT_RESP.email);
+            $("#contactNo").val(GET_STUDENT_RESP.contact_no);
+            $("#username").val(GET_STUDENT_RESP.username);
+            $("#profile_picture").attr("src", "../../"+GET_STUDENT_RESP.profile_picture);
+            $("#old_profile").val(GET_STUDENT_RESP.profile_picture);
         }, error: function (response) {
-            console.log(response.responseText);
+            console.error(response.responseText);
             $("#error").html(response.responseText);
         }
     });
@@ -44,7 +49,8 @@ $(document).ready(function () {
     $("#profileForm").submit(function (e) {
         e.preventDefault();
         var data = new FormData(this);
-        data.append("UPDATE_FACULTY_REQ", true);
+        data.append("UPDATE_STUDENT_REQ", true);
+        // console.log(data);
         $.ajax({
             type: "POST",
             url: "../profile/process.profile.php",
@@ -53,14 +59,14 @@ $(document).ready(function () {
             cache: false,
             processData: false,
             dataType: "JSON",
-            success: function (UPDATE_FACULTY_RESP) {
-                console.log(UPDATE_FACULTY_RESP);
-                if (UPDATE_FACULTY_RESP.status) {
+            success: function (UPDATE_STUDENT_RESP) {
+                console.log(UPDATE_STUDENT_RESP);
+                if (UPDATE_STUDENT_RESP.status) {
                     $("#successAlert").removeClass("d-none");
                     $("#errorAlert").addClass("d-none");
                     $("#pass").collapse("hide");
                 } else {
-                    $("#errorAlert").html(UPDATE_FACULTY_RESP.msg);
+                    $("#errorAlert").html(UPDATE_STUDENT_RESP.msg);
                     $("#successAlert").addClass("d-none");
                     $("#errorAlert").removeClass("d-none");
                 }

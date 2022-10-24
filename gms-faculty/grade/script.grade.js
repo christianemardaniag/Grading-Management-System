@@ -37,7 +37,7 @@ $(document).ready(function () {
         </div>
         <div class="col-9">
             <div class="fw-bold">Unlock</div>
-            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
+            <div>Activities that are unlocked can be edited by the student</div>
         </div>
     </div>
     `;

@@ -50,25 +50,4 @@ class Grade extends dbHandler
     {
     }
 
-    private function getCriteria()
-    {
-        // $query = "SELECT * FROM criteria";
-        // $result = mysqli_query($this->conn, $query);
-        // if (mysqli_num_rows($result)) {
-        //     $criteria = array();
-        //     while ($row = mysqli_fetch_assoc($result)) {
-        //         $criteria[] = (object) [
-        //             'name' => $row['name'],
-        //             'equiv' => $row['equiv'],
-        //             'username' => $row['username'],
-        //             'email' => $row['email'],
-        //             'contact_no' => $row['contact_no'],
-        //             'profile_picture' => $row['profile_picture'],
-        //             'status' => $row['status'],
-        //             'sub_sec' => $sub_sec,
-        //         ];
-        //     }
-        // }
-        // return $faculties;
-    }
 }
