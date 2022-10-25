@@ -71,7 +71,7 @@ $(document).ready(function () {
             accordionContent += `
             <div class="accordion-item">
                 <h2 class="accordion-header" id="subjectAccordion-${subjectIndex}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#subjectPanel-${subjectIndex}" aria-expanded="true" aria-controls="subjectPanel-${subjectIndex}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subjectPanel-${subjectIndex}" aria-expanded="true" aria-controls="subjectPanel-${subjectIndex}">
                         <div>${subject.code} - ${subject.description}</div>
                         <div class="ms-auto">
                             <span class="mx-2">
@@ -86,7 +86,7 @@ $(document).ready(function () {
                         </div>
                 </button>
                 </h2>
-                <div id="subjectPanel-${subjectIndex}" class="accordion-collapse collapse show" aria-labelledby="subjectAccordion-${subjectIndex}">
+                <div id="subjectPanel-${subjectIndex}" class="accordion-collapse collapse" aria-labelledby="subjectAccordion-${subjectIndex}">
                 <div class="accordion-body px-0">
                     <div class="me-2 table-responsive">
                         <table class="table table-bordered border-secondary table-sm text-center" id="gradesTable-${subjectIndex}">
