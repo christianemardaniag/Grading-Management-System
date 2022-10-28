@@ -2,3 +2,24 @@
 @import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Oswald&display=swap");
 @import url("https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css");
+
+.bg-brown {
+    background-color: #76320d !important;
+}
+.text-bg-brown {
+    background-color: #76320d !important;
+    color: white;
+}
+
+.table-red {
+    background-color: #5a0201 !important;
+    border-color: #373b3e;
+    color: #fff;
+}
+.bg-red {
+    background-color: #5a0201 !important;
+}
+.text-bg-red {
+    background-color: #5a0201 !important;
+    color: white;
+}

@@ -93,3 +93,7 @@ header {
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
 }
+
+body {
+    background: linear-gradient(180deg, rgb(251 255 0 / 14%), rgb(255 215 0 / 12%));
+}

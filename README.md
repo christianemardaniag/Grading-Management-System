@@ -37,7 +37,7 @@
 - ~~Search Bar: Faculty name, Employee No, email address~~
 - List of handled students per faculty
 - List of handled subject
-- Can print individual faculty with handled students
+- ~~Can print individual faculty with handled students~~
 - Can ~~add~~/edit/archive new faculty
 - ~~Admin will provide email and username to faculty for login~~
   - ~~NO DUPLICATION OF USERNAME~~
@@ -48,7 +48,7 @@
 
 - ~~List of all student~~
 - ~~Search Bar: Student name, Student No, email address~~
-- Upload and download list of students (excel file)
+- ~~Upload~~ and download list of students (excel file)
 - Add/Edit/Archive students
 
 #### ~~6. Subject~~
@@ -124,23 +124,23 @@
 
 #### 1. Login
 
-- Student login page will be visible on the home page of the system as well as faculty login page
-- Student can login using __username__ or __email address__
-- Student can be block by the system after maximum of 3 login attempts
+- ~~Student login page will be visible on the home page of the system as well as faculty login page~~
+- ~~Student can login using __username__ or __email address__~~
+- ~~Student can be block by the system after maximum of 3 login attempts~~
 - Student can be unblock by the admin
-- Student can use forgot password and enter their registered email to receive a new random password via email
+- ~~Student can use forgot password and enter their registered email to receive a new random password via email~~
 
 #### 2. Dashboard
 
-- Display personal information
-- can edit their information
-- Display current subjects
+- ~~Display personal information~~
+- ~~can edit their information~~
+- ~~Display current subjects~~
 - and more (to follow)
 
 #### 3. Grade (Replacement to Subject)
 
-- List of all subject enrolled
-- Input grade and preview possible final grade
+- ~~List of all subject enrolled~~
+- ~~Input grade and preview possible final grade~~
 - Download grade
 -
 
