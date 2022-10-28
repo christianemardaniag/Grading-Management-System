@@ -9,6 +9,10 @@ td, th {
     vertical-align: middle!important;
 }
 
+[contenteditable='true'] {
+    cursor: pointer;
+}
+
 .minus-btn, .plus-btn, .lock-btn {
     cursor: pointer;
     padding: 0px !important;

@@ -392,7 +392,7 @@ function fetchGrades(json) {
         $.each(json.criteria, function (index, criteria) {
             let cri_len = criteria.activities.length;
             act_ctr += cri_len;
-            colGroup += `<col span="${cri_len}" style="background-color: #d1e7dd;">
+            colGroup += `<col span="${cri_len}">
                     <col style="background-color: #ffe5d0;">`;
             criteria_th += `<th colspan="${cri_len + 1}">${criteria.name}</th>`;
             if (criteria.activities.length == 0) {
@@ -432,9 +432,6 @@ function fetchGrades(json) {
         });
         $.each(json.students, function (index_student, student) {
             let score_td = ``;
-            if (student.scores === null) {
-                score_td += `<td colspan=${act_ctr}>NO GRADES AVAILABLE</td>`
-            }
             $.each(student.scores, function (index_criteria, criteria) {
                 if (criteria.score.length == 0) {
                     score_td += `<td><b>50.00</b></td>`;
@@ -444,7 +441,7 @@ function fetchGrades(json) {
                     isLock = (String(isLock) === 'true');
                     const score = criteria.score[i];
                     score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-student="${index_student}" 
-                        contenteditable='${isLock ? 'false' : 'true'}'>${score}</td>`;
+                        contenteditable='${isLock ? 'false' : 'true'}' style="background-color: ${isLock ? 'rgb(170, 170, 170) !important' : '#feffe5'};">${score}</td>`;
                     if (i == criteria.score.length - 1) {
                         score_td += `<td><b>${parseFloat(criteria.average).toFixed(2)}</b></td>`;
                     }

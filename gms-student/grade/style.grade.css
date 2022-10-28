@@ -2,6 +2,10 @@ td, th {
     vertical-align: middle!important;
 }
 
+[contenteditable='true'] {
+    cursor: pointer;
+}
+
 .accordion-button::after {
     margin-left: 0 !important;
 }
