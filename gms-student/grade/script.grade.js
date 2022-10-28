@@ -1,11 +1,29 @@
 $(document).ready(function () {
+    var temp_subject = {};
+    $("#year_sem").change(function (e) { 
+        e.preventDefault();
+        var year_sem = $(this).val();
+        if (year_sem == "All") {
+            displayStudentGrades(temp_subject);
+        } else {
+            var year = year_sem.split('-')[0];
+            var sem = year_sem.split('-')[1];
+            var filtered = keepCloning(temp_subject);
+            filtered.subjects = filtered.subjects.filter(function (data) {
+                return data.level == year && data.semester == sem;
+            });
+            displayStudentGrades(filtered);
+        }
+    });
+
     $.ajax({
         type: "POST",
         url: "../grade/process.grade.php",
         data: { GET_STUDENT_GRADES_REQ: true },
         dataType: "JSON",
         success: function (GET_STUDENT_GRADES_RESP) {
-            var temp_subject = keepCloning(GET_STUDENT_GRADES_RESP);
+            temp_subject = keepCloning(GET_STUDENT_GRADES_RESP);
+
             console.log(temp_subject);
             displayStudentGrades(temp_subject);
         }, error: function (response) {
@@ -152,7 +170,6 @@ $(document).ready(function () {
         });
 
     }  // END OF displayStudentGrades 
-
 
     function displayGWA(grades) {
         const finalGrade = getGrade(grades);

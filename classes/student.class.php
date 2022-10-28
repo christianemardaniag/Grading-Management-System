@@ -198,13 +198,16 @@ class Student extends dbHandler
         while ($row = mysqli_fetch_assoc($result)) {
             $subjects = array();
             $id = $row['id'];
-            $query = "SELECT student_subject.*, subject.description FROM `student_subject` INNER JOIN subject on student_subject.subject_code=subject.code WHERE student_subject.student_id=$id";
+            $query = "SELECT student_subject.*, subject.description, subject.year_level, subject.semester 
+                FROM `student_subject` INNER JOIN subject on student_subject.subject_code=subject.code WHERE student_subject.student_id=$id";
             $res = mysqli_query($this->conn, $query);
             if (mysqli_num_rows($res)) {
                 while ($subrow = mysqli_fetch_assoc($res)) {
                     $subjects[] = (object) [
                         "code" => $subrow["subject_code"],
                         "description" => $subrow['description'],
+                        "level" => $subrow['year_level'],
+                        "semester" => $subrow['semester'],
                         "grade" => $subrow['final_grade'],
                         "equiv" => $subrow['equiv'],
                         "remarks" => $subrow['remarks'],
