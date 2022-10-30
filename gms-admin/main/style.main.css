@@ -55,8 +55,9 @@ header {
     font-size: large;
 }
 
+
 .active-nav {
-    background: linear-gradient(90deg, rgb(255 159 42), rgba(255, 255, 255, 0.3)) !important;
+    background: linear-gradient(90deg, rgb(255 188 0), rgba(255, 255, 255, 0.3)) !important;
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
 }
@@ -66,7 +67,7 @@ header {
 }
 
 .active-nav:hover {
-    background: linear-gradient(90deg, rgb(255 159 42), rgba(255, 255, 255, 0.3)) !important;
+    background: linear-gradient(90deg, rgb(255 188 0), rgba(255, 255, 255, 0.3)) !important;
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
 }
@@ -89,8 +90,7 @@ header {
 
 #header-title {
     padding: 10px 20px;
-    background: linear-gradient(32deg, rgb(255 159 42), rgba(255, 255, 255, 0));
+    background: linear-gradient(32deg, rgb(221 153 0), rgba(255, 255, 255, 0));
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
 }
-

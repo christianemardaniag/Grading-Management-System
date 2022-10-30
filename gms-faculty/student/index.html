@@ -19,16 +19,17 @@
         </div>
     </header>
 
-    <div class="mx-3">
+    <div class="me-2">
         <div id="error"></div>
 
-        <div class="py-3 mt-3">
-            <h5>Filter</h5>
+        <div class="shadow-sm bg-white p-3 my-2">
+            <div class="h5 dash-title">Filter</div>
             <div class="row row-cols-4 g-2">
                 <div class="col">
                     <div class="mb-3">
                         <label for="filter-level" class="form-label">Specialization</label>
-                        <select class="form-select mb-3" name="filter-specialization" id="filter-specialization" required>
+                        <select class="form-select mb-3" name="filter-specialization" id="filter-specialization"
+                            required>
                             <option value="All" selected>All</option>
                             <option value="General">General</option>
                             <option value="Business Analytics">Business Analytics</option>
@@ -40,38 +41,41 @@
                 <div class="col">
                     <div class="mb-3">
                         <label for="filter-subject" class="form-label">Subject</label>
-                        <select class="form-select mb-3" name="filter-subject" id="filter-subject" required>                            
+                        <select class="form-select mb-3" name="filter-subject" id="filter-subject" required>
                         </select>
                     </div>
-                </div> 
+                </div>
                 <div class="col">
                     <div class="mb-3">
                         <label for="filter-section" class="form-label">Section</label>
-                        <select class="form-select mb-3" name="filter-section" id="filter-section" required>                            
+                        <select class="form-select mb-3" name="filter-section" id="filter-section" required>
                         </select>
                     </div>
                 </div>
 
             </div>
-            
+
         </div>
 
-        <table class="table table-bordered table-striped table-hover compact display" id="studentsTable">
-            <thead>
-                <tr>
-                    <th>Student No</th>
-                    <th>Full Name</th>
-                    <th>CYS</th>
-                    <th>Specialization</th>
-                    <th>Email</th>
-                    <th>Contact No</th>
-                </tr>
-            </thead>
-            <tbody id="studentRecords">
+        <div class="shadow-sm bg-white p-3">
 
-            </tbody>
-        </table>
 
+            <table class="table table-bordered table-striped table-hover compact display" id="studentsTable">
+                <thead>
+                    <tr>
+                        <th>Student No</th>
+                        <th>Full Name</th>
+                        <th>CYS</th>
+                        <th>Specialization</th>
+                        <th>Email</th>
+                        <th>Contact No</th>
+                    </tr>
+                </thead>
+                <tbody id="studentRecords">
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </main>
 
@@ -313,7 +317,8 @@
         <div class="modal-content rounded-3">
             <div class="modal-body p-4 text-center">
                 <h5 class="">Remove <span id="remove-fullName"></span></h5>
-                <p class="mb-1">Are you sure you want to remove student <span id="remove-studentNo" class="h5"></span>?</p>
+                <p class="mb-1">Are you sure you want to remove student <span id="remove-studentNo" class="h5"></span>?
+                </p>
                 <p class="mb-0 text-danger fw-bolder">*This action is cannot be undone!
                 </p>
             </div>
@@ -425,7 +430,8 @@
                         <div class="col-8">
                             <div class="mb-3">
                                 <label for="edit-subjects" class="form-label">* Subjects</label>
-                                <input type="text" class="form-control" name="edit-subjects" id="edit-subjects" required>
+                                <input type="text" class="form-control" name="edit-subjects" id="edit-subjects"
+                                    required>
                                 <div class="form-text">Subject Code (Separeted with comma)</div>
                             </div>
                         </div>
