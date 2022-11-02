@@ -18,9 +18,14 @@ $(document).ready(function () {
     //     }
     // ];
 
-    $.post("../dashboard/process.dashboard.php", { GET_FACULTY_REQ: true },
-        function (GET_FACULTY_RESP, textStatus, jqXHR) {
+    $.ajax({
+        type: "POST",
+        url: "../dashboard/process.dashboard.php",
+        data: { GET_FACULTY_REQ: true },
+        dataType: "JSON",
+        success: function (GET_FACULTY_RESP) {
             let studentCount = 0;
+            let passedCtr = 0;
             let yearLevelCount = [0, 0, 0, 0];
             $.each(GET_FACULTY_RESP.sub_sec, function (indexInArray, sub) {
                 let subjects = {};
@@ -50,6 +55,13 @@ $(document).ready(function () {
                                     case "4th Year": yearLevelCount[3]++; break;
                                     default: break;
                                 }
+                                $.each(stud.subjects, function (indexInArray, sub2) {
+                                    if (subjects.code == sub2.code) {
+                                        if (parseFloat(sub2.grade) >= 75) {
+                                            passedCtr++;
+                                        }
+                                    }
+                                });
                             });
 
                             studentCount += filteredStudent.length;
@@ -58,17 +70,27 @@ $(document).ready(function () {
                         });
                         $("#studentCount").html(studentCount);
                         data.push(subjects);
+
+                        // CHART #1: Total Handled Student and per year level
                         studentsPerYearLevelChart.data.datasets[0].data = yearLevelCount;
                         studentsPerYearLevelChart.update();
-
+                        // CHART #2: Passing Rate all student
+                        let failedPercent = (studentCount - passedCtr) / studentCount * 100;
+                        let passedPercent = (passedCtr / studentCount) * 100;
+                        $("#prPassed").html(passedPercent + "%");
+                        $("#prFailed").html(failedPercent + "%");
+                        passingRateChart.data.datasets[0].data = [passedPercent, failedPercent];
+                        passingRateChart.update();
                     }
                 });
 
             });
+            $("#loadingScreen").modal("hide");
         },
-        "JSON"
-    );
-
+        beforeSend: function () {
+            $("#loadingScreen").modal("show");
+        }
+    });
 
 });
 
@@ -84,6 +106,31 @@ var studentsPerYearLevelChart = new Chart(ctxstudentsPerYearLevelChart, {
                 '#eeb902',
                 '#f79c06',
                 '#bb7e00',
+                '#76320d',
+            ],
+        }]
+    }, options: {
+        // maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: false
+            }
+        }
+    },
+});
+
+var ctxpassingRateChart = document.getElementById('passingRateChart').getContext('2d');
+var passingRateChart = new Chart(ctxpassingRateChart, {
+    type: 'doughnut',
+    data: {
+        labels: ["Passed", "Failed"],
+        datasets: [{
+            data: [0, 0],
+            backgroundColor: [
+                '#eeb902',
                 '#76320d',
             ],
         }]

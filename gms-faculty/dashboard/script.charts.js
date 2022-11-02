@@ -1,18 +1,18 @@
 $(document).ready(function () {
-    $.ajax({
-        type: "post",
-        url: "../dashboard/process.dashboard.php",
-        data: { respondentChart: true },
-        dataType: "JSON",
-        success: function (response) {
-            var resp = 0;
-            $.each(response, function (i, data) {
-                resp += parseInt(data.total);
-                addData(studentsPerYearLevelChart, data.strand, data.total);
-            });
-            $("#totalRespondent").html(resp.toLocaleString());
-        }
-    });
+    // $.ajax({
+    //     type: "post",
+    //     url: "../dashboard/process.dashboard.php",
+    //     data: { respondentChart: true },
+    //     dataType: "JSON",
+    //     success: function (response) {
+    //         var resp = 0;
+    //         $.each(response, function (i, data) {
+    //             resp += parseInt(data.total);
+    //             addData(studentsPerYearLevelChart, data.strand, data.total);
+    //         });
+    //         $("#totalRespondent").html(resp.toLocaleString());
+    //     }
+    // });
 });
 
 
@@ -43,32 +43,32 @@ $(document).ready(function () {
 //     },
 // });
 
-var ctxpassingRateChart = document.getElementById('passingRateChart').getContext('2d');
-var studentsPerYearLevelChart = new Chart(ctxpassingRateChart, {
-    type: 'doughnut',
-    data: {
-        labels: ["Passed", "Failed"],
-        datasets: [{
-            data: [30, 70],
-            backgroundColor: [
-                '#eeb902',
-                '#76320d',
-                '#f79c06',
-                '#bb7e00',
-            ],
-        }]
-    }, options: {
-        // maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            },
-            title: {
-                display: false
-            }
-        }
-    },
-});
+// var ctxpassingRateChart = document.getElementById('passingRateChart').getContext('2d');
+// var passingRateChart = new Chart(ctxpassingRateChart, {
+//     type: 'doughnut',
+//     data: {
+//         labels: ["Passed", "Failed"],
+//         datasets: [{
+//             data: [30, 70],
+//             backgroundColor: [
+//                 '#eeb902',
+//                 '#76320d',
+//                 '#f79c06',
+//                 '#bb7e00',
+//             ],
+//         }]
+//     }, options: {
+//         // maintainAspectRatio: false,
+//         plugins: {
+//             legend: {
+//                 display: false
+//             },
+//             title: {
+//                 display: false
+//             }
+//         }
+//     },
+// });
 
 var ctxgradeCriteriaAverageChart = document.getElementById('gradeCriteriaAverageChart').getContext('2d');
 var gradeCriteriaAverageChart = new Chart(ctxgradeCriteriaAverageChart, {
