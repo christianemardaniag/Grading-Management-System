@@ -1,34 +1,47 @@
 $(document).ready(function () {
-
-});
-
-
-var ctxstudentsPerYearLevelChart = document.getElementById('studentsChart').getContext('2d');
-var studentsPerYearLevelChart = new Chart(ctxstudentsPerYearLevelChart, {
-    type: 'doughnut',
-    data: {
-        labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
-        datasets: [{
-            data: [30, 24, 32, 29],
-            backgroundColor: [
-                '#eeb902',
-                '#f79c06',
-                '#bb7e00',
-                '#76320d',
-            ],
-        }]
-    }, options: {
-        // maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            },
-            title: {
-                display: false
-            }
+    $.ajax({
+        type: "post",
+        url: "../dashboard/process.dashboard.php",
+        data: { respondentChart: true },
+        dataType: "JSON",
+        success: function (response) {
+            var resp = 0;
+            $.each(response, function (i, data) {
+                resp += parseInt(data.total);
+                addData(studentsPerYearLevelChart, data.strand, data.total);
+            });
+            $("#totalRespondent").html(resp.toLocaleString());
         }
-    },
+    });
 });
+
+
+// var ctxstudentsPerYearLevelChart = document.getElementById('studentsChart').getContext('2d');
+// var studentsPerYearLevelChart = new Chart(ctxstudentsPerYearLevelChart, {
+//     type: 'doughnut',
+//     data: {
+//         labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
+//         datasets: [{
+//             data: [30, 24, 32, 29],
+//             backgroundColor: [
+//                 '#eeb902',
+//                 '#f79c06',
+//                 '#bb7e00',
+//                 '#76320d',
+//             ],
+//         }]
+//     }, options: {
+//         // maintainAspectRatio: false,
+//         plugins: {
+//             legend: {
+//                 display: false
+//             },
+//             title: {
+//                 display: false
+//             }
+//         }
+//     },
+// });
 
 var ctxpassingRateChart = document.getElementById('passingRateChart').getContext('2d');
 var studentsPerYearLevelChart = new Chart(ctxpassingRateChart, {
