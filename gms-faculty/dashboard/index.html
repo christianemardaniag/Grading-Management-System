@@ -5,25 +5,26 @@
     </header>
 
     <div id="error" class="alert alert-danger py-1 d-none"></div>
-
     <div class="row gx-2 mx-0 mb-2">
         <div class="col-4 h-100">
-            <div>
-                <div class="shadow-sm px-3 py-4 bg-white mb-2">
-                    <div class="row">
-                        <div class="col">
-                            <div class="dash-title">Students</div>
-                            <div class="h1 fw-bold mt-1">100</div>
+            <!-- CHART #1: Total Handled Student and per year level -->
+            <div class="shadow-sm px-3 py-4 bg-white mb-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="dash-title">Students</div>
+                        <div id="studentCount" class="h1 fw-bold mt-1">
+                            0
                         </div>
-                        <div class="col">
-                            <div class="ms-auto" style="width: 100px;">
-                                <canvas id="studentsChart"></canvas>
-                            </div>
+                    </div>
+                    <div class="col">
+                        <div class="ms-auto" style="width: 100px;">
+                            <canvas id="studentsChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- CHART #2: Passing Rate all student -->
             <div class="shadow-sm px-3 py-4 bg-white">
                 <div class="row h-100">
                     <div class="col">
@@ -31,11 +32,11 @@
                         <div class="d-flex">
                             <div class="me-3">
                                 Passed
-                                <div class="h5">30%</div>
+                                <div id="prPassed" class="h5">0%</div>
                             </div>
                             <div>
                                 Failed
-                                <div class="h5">70%</div>
+                                <div id="prFailed" class="h5">0%</div>
                             </div>
                         </div>
                     </div>
@@ -48,13 +49,13 @@
 
             </div>
         </div>
+
         <div class="col-8">
             <div class="shadow-sm px-3 pt-4 pb-3 bg-white">
                 <div class="d-flex justify-content-between">
                     <div class="dash-title">Grade Criteria Average</div>
                     <div>
-                        <select class="form-select mb-3" id="filter-subject" style="width: 250px;">
-                            <option value="IT 401" selected>IT 401</option>
+                        <select class="form-select mb-3" id="filter-subject" style="width: auto;">
                         </select>
                     </div>
                 </div>
@@ -879,21 +880,26 @@
                 </div>
             </div>
         </div>
-        <button class="carousel-control-prev bg-dark rounded-circle p-3" type="button"
-            data-bs-target="#toDropCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev bg-dark rounded-circle p-3" type="button" data-bs-target="#toDropCarousel"
+            data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next bg-dark rounded-circle p-3" type="button"
-            data-bs-target="#toDropCarousel" data-bs-slide="next">
+        <button class="carousel-control-next bg-dark rounded-circle p-3" type="button" data-bs-target="#toDropCarousel"
+            data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
     </div>
 
-    
 
-</main>
+  <!-- LOADING SCREEN -->
+  <div class="modal" id="loadingScreen" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+        <div class="spinner-border d-block mx-auto text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+  </div>
 
 <script src="../dashboard/script.dashboard.js"></script>
-<script src="../dashboard/script.charts.js"></script>

@@ -89,10 +89,9 @@
 
 - Display __current__ total number of handled students per sem including all section
 - Display __current__ bar graph chart for total number of students __per section__
-- Display all assigned subjects (Table)
-- Display top 10 students over all section
-- Display top 3 students per section
+- Display top 10 students over all section per subject
 - Display average per criteria
+- Bagsak
 - Highest Average per section and subject
     
 #### 3. Student

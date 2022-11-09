@@ -16,16 +16,16 @@ class Student extends dbHandler
 
     // PUBLIC FUNCTIONS
 
-
     public function addStudentFromFile($data)
     {
         $data = json_encode($data);
         $data = json_decode($data);
         $query = "INSERT INTO student(id, fullName, username, email, password, contact_no, gender, specialization, program, level, section) VALUES ";
         $sql = "INSERT INTO student_subject(student_id, subject_code) VALUES";
+        $subjects = new Subject();
+        $subs = $subjects->getAllSubject();
         $status = array();
         $has_student = false;
-        $has_subject = false;
         foreach ($data->body as $eachData) {
             $email = strtolower($eachData[STUDENT_EMAIL]);
             if ($this->isEmailExist($email)) {
@@ -33,8 +33,10 @@ class Student extends dbHandler
             } else {
                 $username = explode("@", $email)[0];
                 $password = $this->generateRandomPassword();
-                // $mail = new Mail(ADMIN);
-                // $mail->sendCredentials($email, $username, $password);
+                if (ENABLE_MAIL) {
+                    $mail = new Mail(ADMIN);
+                    $mail->sendCredentials($email, $username, $password);
+                }
                 $query .= "(
                     '" . $eachData[STUDENT_STUDENT_NO]      . "',
                     '" . $eachData[STUDENT_FULLNAME]        . "', 
@@ -46,9 +48,8 @@ class Student extends dbHandler
                     '" . $eachData[STUDENT_LEVEL]           . "', 
                     '" . $eachData[STUDENT_SECTION]         . "'),";
                 $has_student = true;
-                foreach (explode(", ", $eachData[STUDENT_SUBJECTS]) as $subject) {
-                    $sql .= "('" . $eachData[STUDENT_STUDENT_NO] . "', '$subject'),";
-                    $has_subject = true;
+                foreach ($subs as $s) {
+                    $sql .= "('" . $eachData[STUDENT_STUDENT_NO] . "', '$s->code'),";
                 }
             }
         }
@@ -56,14 +57,10 @@ class Student extends dbHandler
         $query = rtrim($query, ",");
         if ($has_student) {
             if (mysqli_query($this->conn, $query)) {
-                if ($has_subject) {
-                    if (mysqli_query($this->conn, $sql)) {
-                        $status[] = (object) ['status' => true, 'msg' => ''];
-                    } else {
-                        $status[] = (object) ['status' => false, 'sql' => $sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
-                    }
-                } else {
+                if (mysqli_query($this->conn, $sql)) {
                     $status[] = (object) ['status' => true, 'msg' => ''];
+                } else {
+                    $status[] = (object) ['status' => false, 'sql' => $sql, 'msg' => "Error description: " . mysqli_error($this->conn)];
                 }
             } else {
                 $status[] = (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
@@ -81,13 +78,16 @@ class Student extends dbHandler
         } else {
             $query = "INSERT INTO student(id, fullName, username, email, password, contact_no, gender, specialization, program, level, section) VALUES 
                 ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo', '$details->gender', '$details->specialization', '$details->program', '$details->level', '$details->section')";
-            // $mail = new Mail(ADMIN);
-            // $mail->sendCredentials($details->email, $username, $password);
-
+            if (ENABLE_MAIL) {
+                $mail = new Mail(ADMIN);
+                $mail->sendCredentials($details->email, $username, $password);
+            }
+            $subjects = new Subject();
+            $subs = $subjects->getAllSubject();
             if (mysqli_query($this->conn, $query)) {
                 $sql = "INSERT INTO student_subject(student_id, subject_code) VALUES";
-                foreach (explode(", ", $details->subjects) as $subject) {
-                    $sql .= "('$details->id', '$subject'),";
+                foreach ($subs as $s) {
+                    $sql .= "('" . $details->id . "', '$s->code'),";
                 }
                 $sql = rtrim($sql, ",");
                 if (mysqli_query($this->conn, $sql)) {
@@ -187,24 +187,39 @@ class Student extends dbHandler
         }
     }
 
+    public function getHandledStudent($facultyID)
+    {
+        $query = "SELECT * FROM student WHERE section IN (SELECT faculty_subject.sections FROM `faculty_subject` WHERE faculty_id=$facultyID) AND status='" . ACTIVE . "'";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)) {
+            return $this->setStudentInfo($result, $facultyID);
+        }
+    }
+
     public function getStudentInfo()
     {
         return $this->studentInfo;
     }
 
-    private function setStudentInfo($result)
+    private function setStudentInfo($result, $facultyID = 0)
     {
         $students = array();
         while ($row = mysqli_fetch_assoc($result)) {
             $subjects = array();
             $id = $row['id'];
-            $query = "SELECT student_subject.*, subject.description FROM `student_subject` INNER JOIN subject on student_subject.subject_code=subject.code WHERE student_subject.student_id=$id";
+            $query = "SELECT student_subject.*, subject.description, subject.year_level, subject.semester 
+                FROM `student_subject` INNER JOIN subject on student_subject.subject_code=subject.code WHERE student_subject.student_id=$id";
+            if ($facultyID) {
+                $query = "SELECT student_subject.*, subject.description, subject.year_level, subject.semester FROM `student_subject` INNER JOIN subject on student_subject.subject_code=subject.code WHERE student_subject.student_id=$id AND subject_code IN (SELECT faculty_subject.subject_code FROM `faculty_subject` WHERE faculty_id=$facultyID)";
+            }
             $res = mysqli_query($this->conn, $query);
             if (mysqli_num_rows($res)) {
                 while ($subrow = mysqli_fetch_assoc($res)) {
                     $subjects[] = (object) [
                         "code" => $subrow["subject_code"],
                         "description" => $subrow['description'],
+                        "level" => $subrow['year_level'],
+                        "semester" => $subrow['semester'],
                         "grade" => $subrow['final_grade'],
                         "equiv" => $subrow['equiv'],
                         "remarks" => $subrow['remarks'],
