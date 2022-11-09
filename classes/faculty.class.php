@@ -47,7 +47,9 @@ class Faculty extends dbHandler
                     }
                 }
             }
-            $sub_sec_sql .= "('" . $eachData[FACULTY_ID] . "','" . $eachData[FACULTY_SUBJECTS] . "','" . $eachData[FACULTY_SECTION] . "'),";
+            foreach (explode(", ", $eachData[FACULTY_SECTION]) as $section) {
+                $sub_sec_sql .= "('" . $eachData[FACULTY_ID] . "','" . $eachData[FACULTY_SUBJECTS] . "','$section'),";
+            }
         }
         $sub_sec_sql = rtrim($sub_sec_sql, ",");
         if (mysqli_query($this->conn, $sub_sec_sql)) {
@@ -74,7 +76,9 @@ class Faculty extends dbHandler
             if (mysqli_query($this->conn, $query)) {
                 $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
                 foreach ($details->sub_sec as $eachData) {
-                    $sub_sec_sql .= "('$details->id', '$eachData->subject', '$eachData->sections'),";
+                    foreach (explode(", ", $eachData->sections) as $section) {
+                        $sub_sec_sql .= "('$details->id', '$eachData->subject', '$eachData->sections'),";
+                    }
                 }
                 $sub_sec_sql = rtrim($sub_sec_sql, ",");
                 if (mysqli_query($this->conn, $sub_sec_sql)) {
@@ -228,6 +232,29 @@ class Faculty extends dbHandler
             ];
         }
         return $faculties;
+    }
+
+    public function getSubjectSection($id)
+    {
+        $sub_sec = array();
+        $query = "SELECT * FROM faculty_subject WHERE faculty_id='$id' GROUP BY subject_code";
+        $result2 = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result2)) {
+            while ($row2 = mysqli_fetch_assoc($result2)) {
+                $code = $row2['subject_code'];
+                $query2 = "SELECT description FROM subject WHERE code='$code'";
+                $res = mysqli_query($this->conn, $query2);
+                if (mysqli_num_rows($res)) {
+                    $subrow = mysqli_fetch_assoc($res);
+                    $sub_sec[] = (object) [
+                        "code" => $code,
+                        "description" => $subrow['description'],
+                        "sections" => $row2['sections'],
+                    ];
+                }
+            }
+        }
+        return $sub_sec;
     }
 
     private function isEmailExist($email, $id = "")

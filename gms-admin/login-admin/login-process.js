@@ -38,8 +38,9 @@ $(document).ready(function () {
     $("#forgotPasswordForm").submit(function (event) {
         event.preventDefault();
         $.ajax({
-            url: "../../process/general.process.php",
+            url: "../process/general.process.php",
             type: "post",
+            dataType: "JSON",
             data: {
                 email: $("#fpEmail").val(),
                 'forgot-password': 'admin'
@@ -61,6 +62,8 @@ $(document).ready(function () {
                 }
                 $("#fPSpinner").hide();
                 $("#forgotbtn").removeAttr("disabled");
+            }, error: function(response) {
+                console.error(response);
             }
         });
     });

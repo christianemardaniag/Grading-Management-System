@@ -187,12 +187,21 @@ class Student extends dbHandler
         }
     }
 
+    public function getHandledStudent($facultyID)
+    {
+        $query = "SELECT * FROM student WHERE section IN (SELECT faculty_subject.sections FROM `faculty_subject` WHERE faculty_id=$facultyID) AND status='" . ACTIVE . "'";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)) {
+            return $this->setStudentInfo($result, $facultyID);
+        }
+    }
+
     public function getStudentInfo()
     {
         return $this->studentInfo;
     }
 
-    private function setStudentInfo($result)
+    private function setStudentInfo($result, $facultyID = 0)
     {
         $students = array();
         while ($row = mysqli_fetch_assoc($result)) {
@@ -200,6 +209,9 @@ class Student extends dbHandler
             $id = $row['id'];
             $query = "SELECT student_subject.*, subject.description, subject.year_level, subject.semester 
                 FROM `student_subject` INNER JOIN subject on student_subject.subject_code=subject.code WHERE student_subject.student_id=$id";
+            if ($facultyID) {
+                $query = "SELECT student_subject.*, subject.description, subject.year_level, subject.semester FROM `student_subject` INNER JOIN subject on student_subject.subject_code=subject.code WHERE student_subject.student_id=$id AND subject_code IN (SELECT faculty_subject.subject_code FROM `faculty_subject` WHERE faculty_id=$facultyID)";
+            }
             $res = mysqli_query($this->conn, $query);
             if (mysqli_num_rows($res)) {
                 while ($subrow = mysqli_fetch_assoc($res)) {
