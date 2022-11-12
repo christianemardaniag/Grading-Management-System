@@ -628,6 +628,7 @@ function displayTop10Students(json) {
             if (a.v < b.v) { return 1 }
             return 0;
         });
+        console.log(outstandingStudent);
         $.each(outstandingStudent, function (i, val) {
             content += `
             <tr class="${((i < 3) ? "table-info" : "")}">

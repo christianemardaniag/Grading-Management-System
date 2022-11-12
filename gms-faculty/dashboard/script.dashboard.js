@@ -11,11 +11,12 @@ $(document).ready(function () {
             let passedCtr = 0;
             let yearLevelCount = [0, 0, 0, 0];
             $.each(myStudents, function (indexInArray, stud) {
-                switch (stud.level) {
-                    case "1st Year": yearLevelCount[0]++; break;
-                    case "2nd Year": yearLevelCount[1]++; break;
-                    case "3rd Year": yearLevelCount[2]++; break;
-                    case "4th Year": yearLevelCount[3]++; break;
+                console.log();
+                switch (stud.level.toUpperCase()) {
+                    case "1ST YEAR": yearLevelCount[0]++; break;
+                    case "2ND YEAR": yearLevelCount[1]++; break;
+                    case "3RD YEAR": yearLevelCount[2]++; break;
+                    case "4TH YEAR": yearLevelCount[3]++; break;
                     default: break;
                 }
                 $.each(stud.subjects, function (indexInArray, sub2) {
@@ -35,22 +36,23 @@ $(document).ready(function () {
             // CHART #2: Passing Rate all student
             let failedPercent = (studentCount - passedCtr) / studentCount * 100;
             let passedPercent = (passedCtr / studentCount) * 100;
-            $("#prPassed").html(passedPercent + "%");
-            $("#prFailed").html(failedPercent + "%");
-            passingRateChart.data.datasets[0].data = [passedPercent, failedPercent];
+            $("#prPassed").html(passedPercent.toFixed(0) + "%");
+            $("#prFailed").html(failedPercent.toFixed(0) + "%");
+            passingRateChart.data.datasets[0].data = [passedPercent.toFixed(0), failedPercent.toFixed(0)];
             passingRateChart.update();
 
 
             $("#loadingScreen").modal("hide");
         },
-        beforeSend: function () {
+        beforeSend: function (response) {
             $("#loadingScreen").modal("show");
         }, error: function (response) {
+            console.log(response.responseText);
             $("#error").html(response.responseText);
         }
     });
 
-    // Get faculty subject for chart #3 
+    // Get faculty subject for chart #3 and top in subject table
     $.ajax({
         type: "POST",
         url: "../dashboard/process.dashboard.php",
@@ -64,7 +66,7 @@ $(document).ready(function () {
                 } else {
                     option += `<option value="${val.code}">${val.code} - ${val.description}</option>`;
                 }
-                getTopInSubject(val.code);
+                getTopInSubject(val.code, indexInArray, GET_FACULTY_RESP.length);
             });
             $("#filter-subject").html(option);
             gradeCriteriaAverage($("#filter-subject").val());
@@ -76,38 +78,90 @@ $(document).ready(function () {
         gradeCriteriaAverage($(this).val());
     });
 
-    function getTopInSubject(subjectCode) {
+    var temp = `<div class="carousel-item active" data-bs-interval="20000">
+                    <div class="row mx-0 g-2">`;
+    function getTopInSubject(subjectCode, index, length) {
         var content = ``;
+        let topStudents = ``;
         var outstandingStudent = [];
+        $.each(myStudents, function (key, student) {
+            $.each(student.subjects, function (indexInArray, subject) {
+                if (subjectCode == subject.code) {
+                    outstandingStudent.push({ v: subject.grade, k: key });
+                }
+            });
+            outstandingStudent.sort(function (a, b) {
+                if (a.v > b.v) { return -1 }
+                if (a.v < b.v) { return 1 }
+                return 0;
+            });
+        });
 
-        var obj = myStudents,
-            groupBySubject = obj.reduce(function (r, a) {
-                r[a.subjects] = r[a.subjects] || [];
-                r[a.subjects].push(a);
-                return r;
-            }, Object.create(null));
-            console.log(groupBySubject);
-        // $.each(myStudents.subjects, function (key, value) {
-        //     outstandingStudent.push({ v: value.grade, k: key });
-        // });
-        // outstandingStudent.sort(function (a, b) {
-        //     if (a.v > b.v) { return -1 }
-        //     if (a.v < b.v) { return 1 }
-        //     return 0;
-        // });
-        // $.each(outstandingStudent, function (i, val) {
-        //     content += `
-        //     <tr class="${((i < 3) ? "table-info" : "")}">
-        //         <td>${i + 1}.</td>
-        //         <td>${json.students[val.k].studentNo}</td>
-        //         <td class='text-start'>${json.students[val.k].name}</td>
-        //         <td>${parseFloat(json.students[val.k].grade).toFixed(2)}</td>
-        //         <td class='fw-bold'>${parseFloat(json.students[val.k].equiv).toFixed(2)}</td>
-        //     </tr>`;
+        for (let i = 0; i < 10; i++) {
+            topStudents += `
+            <tr class="${((i < 3) ? "table-warning" : "")}">
+                <td>${i + 1}.</td>
+                <td>${myStudents[outstandingStudent[i].k].studentNo}</td>
+                <td class="text-truncate" style="max-width: 150px;">${myStudents[outstandingStudent[i].k].fullName}</td>
+                <td>${myStudents[outstandingStudent[i].k].section}</td>
+                <td class='fw-bold'>${parseFloat(outstandingStudent[i].v).toFixed(2)}</td>
+                <td>${getEquiv(outstandingStudent[i].v).toFixed(2)}</td>
+            </tr>
+            `;
+        }
+      
+        // console.log(topStudents);
 
-        // });
+        temp += `
+            <div class="col">
+                <div class="shadow-sm px-3 pt-4 pb-3 bg-white">
+                    <div class="d-flex justify-content-between">
+                        <div class="dash-title">Top in Subject</div>
+                        <h5>${subjectCode}</h5>
+                    </div>
+                    <table class="table table-sm table-stripped table-bordered text-center"
+                        style="font-size: 14px;">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Rank</th>
+                                <th>Student No.</th>
+                                <th>Name</th>
+                                <th>Section</th>
+                                <th>Grade</th>
+                                <th>Equiv</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${topStudents}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        // if (index % 2 == 0) {
 
-        // $("#top10StudentBody").html(content);
+        // }
+        if (index % 2 != 0) {
+            // content = `
+            // <div class="carousel-item active" data-bs-interval="20000">
+            //     <div class="row mx-0 g-2">
+            //         ${temp}  
+            //     </div>
+            // </div>
+            // `;
+
+            content = temp;
+            temp = `<div class="carousel-item" data-bs-interval="20000">
+            <div class="row mx-0 g-2">`;
+        }
+
+        if (index == length-1) {
+            content = temp;
+            temp = `<div class="carousel-item" data-bs-interval="20000">
+            <div class="row mx-0 g-2">`;
+        }
+        
+        $("#topInSubjectContent").append(content);
     }
 
     function gradeCriteriaAverage(subjectCode) {
@@ -134,20 +188,44 @@ $(document).ready(function () {
                 });
             });
             $.each(criteria, function (i, val) {
-                criteria[i] = criteria[i] / section.length;
+                criteria[i] = (criteria[i] / section.length).toFixed(0);
             });
             avePerSec.push({
                 label: [label],
                 data: criteria,
                 backgroundColor: [bgColor[ctr++]]
             });
-            
+
         });
         gradeCriteriaAverageChart.data.datasets = avePerSec;
         gradeCriteriaAverageChart.update();
     }
 });
 
+function getEquiv(grade) {
+    grade = Math.floor(grade);
+    if (grade <= 74) {
+        return 5.00;
+    } else if (grade <= 75) {
+        return 3.00;
+    } else if (grade <= 78) {
+        return 2.75;
+    } else if (grade <= 81) {
+        return 2.50;
+    } else if (grade <= 84) {
+        return 2.25;
+    } else if (grade <= 87) {
+        return 2.00;
+    } else if (grade <= 90) {
+        return 1.75;
+    } else if (grade <= 93) {
+        return 1.50;
+    } else if (grade <= 96) {
+        return 1.25;
+    } else if (grade <= 100) {
+        return 1.00;
+    }
+}
 
 var ctxstudentsPerYearLevelChart = document.getElementById('studentsChart').getContext('2d');
 var studentsPerYearLevelChart = new Chart(ctxstudentsPerYearLevelChart, {
@@ -197,8 +275,8 @@ var gradeCriteriaAverageChart = new Chart(ctxgradeCriteriaAverageChart, {
             title: { display: false },
             datalabels: {
                 anchor: 'end',
-                align: 'top',
-                color: 'black'
+                align: 'bottom',
+                color: 'white'
             }
         },
         scales: {
