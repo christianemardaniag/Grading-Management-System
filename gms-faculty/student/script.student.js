@@ -1,54 +1,92 @@
 $(document).ready(function () {
+    $.ajax({
+        type: "POST",
+        url: "../student/process.student.php",
+        data: { GET_FACULTY_REQ: true },
+        dataType: "JSON",
+        success: function (GET_FACULTY_RESP) {
+            let option = `<option value="All" selected>All</option>`;
+            $.each(GET_FACULTY_RESP, function (indexInArray, val) {
+                option += `<option value="${val.code}">${val.code} - ${val.description}</option>`;
+            });
 
-    $.post("../student/process.student.php", { GET_FACULTY_REQ: true },
-        function (GET_FACULTY_RESP, textStatus, jqXHR) {
-            console.log(GET_FACULTY_RESP);
-            let subContent = `<option value="All" selected>All</option>`;
-            let secContent = ``;
-            let uniSec = [];
-            $.each(GET_FACULTY_RESP.sub_sec, function (indexInArray, subject) {
-                subContent += `<option value="${subject.code}">${subject.code} - ${subject.description}</option>`;
-                $.each(subject.sections.split(", "), function (indexInArray, section) {
-                    if ($.inArray(section, uniSec) == -1) {
-                        uniSec.push(section);
-                    }
-                });
-            });
-            $.each(uniSec, function (indexInArray, section) {
-                console.log();
-                secContent += `<option value="${section}">${section}</option>`;
-            });
-            $("#filter-subject").html(subContent);
-            $("#filter-section").html(secContent);
-            displayStudents($("#filter-specialization").val(), $("#filter-subject").val(), $("#filter-section").val());
+            // let subContent = `<option value="All" selected>All</option>`;
+            // let secContent = ``;
+            // let uniSec = [];
+            // $.each(GET_FACULTY_RESP.sub_sec, function (indexInArray, subject) {
+            //     subContent += `<option value="${subject.code}">${subject.code} - ${subject.description}</option>`;
+            //     $.each(subject.sections.split(", "), function (indexInArray, section) {
+            //         if ($.inArray(section, uniSec) == -1) {
+            //             uniSec.push(section);
+            //         }
+            //     });
+            // });
+            // $.each(uniSec, function (indexInArray, section) {
+            //     console.log();
+            //     secContent += `<option value="${section}">${section}</option>`;
+            // });
+            $("#filter-subject").html(option);
+            // $("#filter-section").html(secContent);
+            displayStudents($("#filter-subject").val(), $("#filter-section").val());
         },
-        "JSON"
-    );
-
-    $("#filter-specialization").change(function (e) {
-        e.preventDefault();
-        displayStudents($("#filter-specialization").val(), $("#filter-subject").val(), $("#filter-section").val());
+        beforeSend: function (response) {
+            $("#loadingScreen").modal("show");
+        }
     });
+
+
+    // $("#filter-specialization").change(function (e) {
+    //     e.preventDefault();
+    //     displayStudents($("#filter-subject").val(), $("#filter-section").val());
+    // });
 
     $("#filter-subject").change(function (e) {
         e.preventDefault();
-        displayStudents($("#filter-specialization").val(), $("#filter-subject").val(), $("#filter-section").val());
+        getSectionBySubjectCode($(this).val());
+        displayStudents($(this).val(), $("#filter-section").val());
     });
 
     $("#filter-section").change(function (e) {
         e.preventDefault();
-        displayStudents($("#filter-specialization").val(), $("#filter-subject").val(), $("#filter-section").val());
+        displayStudents($("#filter-subject").val(), $(this).val());
     });
+    getSectionBySubjectCode();
+    function getSectionBySubjectCode(subjectCode = "All") {
+        $.ajax({
+            type: "POST",
+            url: "../student/process.student.php",
+            data: { "GET_SECTION_REQ": subjectCode },
+            dataType: "JSON",
+            success: function (GET_SECTION_RESP) {
+                var filtered = GET_SECTION_RESP.filter(function (val) {
+                    if (subjectCode == "All") return true;
+                    return val.code == subjectCode;
+                });
+                const unique = [...new Set(GET_SECTION_RESP.map(item => item.sections))];
+                $("#filter-section").removeAttr("disabled");
+                $("#filter-section-spinner").fadeOut();
+                let op = ``;
+                $.each(unique, function (indexInArray, section) { 
+                     op += `<option value="${section}">${section}</option>`;
+                });
+                $("#filter-section").html(op);
+                displayStudents($("#filter-subject").val(), $("#filter-section").val());
+            }, beforeSend: function () {
+                $("#filter-section-spinner").fadeIn();
+                $("#filter-section").attr("disabled", true);
+            }, error: function (response) {
+                console.error(response.responseText);
+            }
+        });
+    }
 
-
-    function displayStudents(specialization = 'All', subject = 'All', section = '') {
+    function displayStudents(subject = 'All', section = '') {
         $.ajax({
             type: "POST",
             url: "../student/process.student.php",
             data: { GET_STUDENTS_REQ: true },
             dataType: "JSON",
             success: function (GET_STUDENTS_RESP) {
-                // console.log(GET_STUDENTS_RESP);
                 var filtered = GET_STUDENTS_RESP.filter(function (student) {
                     let sub = false;
                     $.each(student.subjects, function (indexInArray, eachSub) {
@@ -57,12 +95,9 @@ $(document).ready(function () {
                         }
                         sub = (subject == "All") ? true : eachSub.code == subject;
                     });
-                    let spec = (specialization == "All") ? true : student.specialization == specialization;
                     let sec = student.section == section;
-
-                    return spec && sec && sub;
+                    return sec && sub;
                 });
-                console.log(filtered);
                 content = ``;
                 $.each(filtered, function (indexInArray, student) {
                     content += `
@@ -70,7 +105,6 @@ $(document).ready(function () {
                             <td>${student.studentNo}</td>
                             <td>${student.fullName}</td>
                             <td>${student.program} ${student.section}</td>
-                            <td>${student.specialization}</td>
                             <td>${student.email}</td>
                             <td>${student.contact_no}</td>
                         </tr>
@@ -107,12 +141,13 @@ $(document).ready(function () {
                     $("#view-section").html(selectedStudent.section);
 
                     $("#viewStudentModal").modal("show");
-
                 });
+                $("#loadingScreen").modal("hide");
             }, error: function (response) {
                 console.error(response);
                 $("#error").html(response.responseText);
             }
         });
     }
+
 });

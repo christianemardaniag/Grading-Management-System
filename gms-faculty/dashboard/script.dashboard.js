@@ -41,35 +41,33 @@ $(document).ready(function () {
             passingRateChart.data.datasets[0].data = [passedPercent.toFixed(0), failedPercent.toFixed(0)];
             passingRateChart.update();
 
+            $.ajax({
+                type: "POST",
+                url: "../dashboard/process.dashboard.php",
+                data: { GET_FACULTY_REQ: true },
+                dataType: "json",
+                success: function (GET_FACULTY_RESP) {
+                    let option = ``;
+                    $.each(GET_FACULTY_RESP, function (indexInArray, val) {
+                        if (indexInArray == 0) {
+                            option += `<option value="${val.code}" selected>${val.code} - ${val.description}</option>`;
+                        } else {
+                            option += `<option value="${val.code}">${val.code} - ${val.description}</option>`;
+                        }
+                        getTopInSubject(val.code, indexInArray, GET_FACULTY_RESP.length);
+                    });
+                    $("#filter-subject").html(option);
+                    gradeCriteriaAverage($("#filter-subject").val());
+                    $("#loadingScreen").modal("hide");
+                }
+            });
 
-            $("#loadingScreen").modal("hide");
         },
         beforeSend: function (response) {
             $("#loadingScreen").modal("show");
         }, error: function (response) {
             console.log(response.responseText);
             $("#error").html(response.responseText);
-        }
-    });
-
-    // Get faculty subject for chart #3 and top in subject table
-    $.ajax({
-        type: "POST",
-        url: "../dashboard/process.dashboard.php",
-        data: { GET_FACULTY_REQ: true },
-        dataType: "json",
-        success: function (GET_FACULTY_RESP) {
-            let option = ``;
-            $.each(GET_FACULTY_RESP, function (indexInArray, val) {
-                if (indexInArray == 0) {
-                    option += `<option value="${val.code}" selected>${val.code} - ${val.description}</option>`;
-                } else {
-                    option += `<option value="${val.code}">${val.code} - ${val.description}</option>`;
-                }
-                getTopInSubject(val.code, indexInArray, GET_FACULTY_RESP.length);
-            });
-            $("#filter-subject").html(option);
-            gradeCriteriaAverage($("#filter-subject").val());
         }
     });
 
@@ -109,7 +107,7 @@ $(document).ready(function () {
             </tr>
             `;
         }
-      
+
         // console.log(topStudents);
 
         temp += `
@@ -138,29 +136,18 @@ $(document).ready(function () {
                 </div>
             </div>
         `;
-        // if (index % 2 == 0) {
-
-        // }
         if (index % 2 != 0) {
-            // content = `
-            // <div class="carousel-item active" data-bs-interval="20000">
-            //     <div class="row mx-0 g-2">
-            //         ${temp}  
-            //     </div>
-            // </div>
-            // `;
-
             content = temp;
             temp = `<div class="carousel-item" data-bs-interval="20000">
             <div class="row mx-0 g-2">`;
         }
 
-        if (index == length-1) {
+        if (index == length - 1) {
             content = temp;
             temp = `<div class="carousel-item" data-bs-interval="20000">
             <div class="row mx-0 g-2">`;
         }
-        
+
         $("#topInSubjectContent").append(content);
     }
 

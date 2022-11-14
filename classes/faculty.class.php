@@ -168,6 +168,24 @@ class Faculty extends dbHandler
         return $prog;
     }
 
+    public function getSectionBySubjectCode($facultyID, $subjectCode)
+    {
+        $sub_sec = array();
+        $query = "SELECT faculty_subject.*, subject.description FROM `faculty_subject` INNER JOIN subject ON subject_code=code WHERE faculty_id=$facultyID";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $sub_sec[] = (object) [
+                    "code" => $row['subject_code'],
+                    "description" => $row['description'],
+                    "sections" => $row['sections'],
+                ];
+            }
+        }
+
+        return $sub_sec;
+    }
+
 
     // PRIVATE FUNCTIONS
 
