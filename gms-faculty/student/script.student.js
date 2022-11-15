@@ -8,37 +8,13 @@ $(document).ready(function () {
             let option = `<option value="All" selected>All</option>`;
             $.each(GET_FACULTY_RESP, function (indexInArray, val) {
                 option += `<option value="${val.code}">${val.code} - ${val.description}</option>`;
-            });
-
-            // let subContent = `<option value="All" selected>All</option>`;
-            // let secContent = ``;
-            // let uniSec = [];
-            // $.each(GET_FACULTY_RESP.sub_sec, function (indexInArray, subject) {
-            //     subContent += `<option value="${subject.code}">${subject.code} - ${subject.description}</option>`;
-            //     $.each(subject.sections.split(", "), function (indexInArray, section) {
-            //         if ($.inArray(section, uniSec) == -1) {
-            //             uniSec.push(section);
-            //         }
-            //     });
-            // });
-            // $.each(uniSec, function (indexInArray, section) {
-            //     console.log();
-            //     secContent += `<option value="${section}">${section}</option>`;
-            // });
+            }); 
             $("#filter-subject").html(option);
-            // $("#filter-section").html(secContent);
-            displayStudents($("#filter-subject").val(), $("#filter-section").val());
         },
         beforeSend: function (response) {
             $("#loadingScreen").modal("show");
         }
     });
-
-
-    // $("#filter-specialization").change(function (e) {
-    //     e.preventDefault();
-    //     displayStudents($("#filter-subject").val(), $("#filter-section").val());
-    // });
 
     $("#filter-subject").change(function (e) {
         e.preventDefault();

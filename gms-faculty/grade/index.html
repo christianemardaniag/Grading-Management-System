@@ -9,7 +9,7 @@
         </div>
     </header>
 
-    <div class="mt-3">
+    <div class="mt-3 ms-2">
         <div class="row row-cols-4 g-2">
             <div class="col">
                 <div class="mb-3">
@@ -21,6 +21,9 @@
             <div class="col">
                 <div class="mb-3">
                     <label for="filter-section" class="form-label">Section</label>
+                    <span class="spinner-border spinner-border-sm" id="filter-section-spinner" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
                     <select class="form-select mb-3" name="filter-section" id="filter-section" required>
                     </select>
                 </div>
@@ -30,9 +33,15 @@
 
 
     <div class="shadow-sm bg-white p-3 me-2">
-        <div class="d-flex justify-content-end me-2">
-            <button type="button" id="info-btn" class="btn btn-link-dark fs-4 p-0"><i
-                    class="fas fa-info-square"></i></button>
+        <div class="d-flex justify-content-end me-2 d-print-none">
+            <div class="mb-3 mx-2">
+                <button class="btn btn-dark d-print-none" data-bs-toggle="modal" data-bs-target="#top10Modal">Top 10 in Class</button>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-dark d-print-none" data-bs-toggle="modal" data-bs-target="#unofficialDropModal">Unofficial Drop</button>
+            </div>
+            <!-- <button type="button" id="info-btn" class="btn btn-link-dark fs-4 p-0"><i
+                    class="fas fa-info-square"></i></button> -->
         </div>
 
         <div class="me-2 table-responsive">
@@ -42,46 +51,10 @@
             </table>
         </div>
         <div id="error" class="alert alert-danger d-none"></div>
-        <div class="d-flex justify-content-end me-2">
+        <div class="d-flex justify-content-end me-2 d-print-none">
             <button type="button" data-bs-toggle="modal" data-bs-target="#saveChangesModal"
                 class="btn btn-dark px-5">Save
                 Changes</button>
-        </div>
-    </div>
-    <!-- TODO: Make it modal -->
-    <div class="row mt-3 mx-0">
-        <div class="col">
-            <h5>TOP PERFORMING</h5>
-            <table class="table table-bordered text-center">
-                <thead>
-                    <tr class="table-dark">
-                        <td>No.</td>
-                        <td>Student No</td>
-                        <td>Name</td>
-                        <td>Grade</td>
-                        <td>Equiv</td>
-                    </tr>
-                </thead>
-                <tbody id="top10StudentBody">
-
-                </tbody>
-            </table>
-        </div>
-        <div class="col">
-            <h5>There's no way these kids are going to pass bruh</h5>
-            <table class="table table-striped table-bordered text-center">
-                <thead>
-                    <tr class="table-dark">
-                        <td>Student No</td>
-                        <td>Name</td>
-                        <td>Grade</td>
-                        <td>Equiv</td>
-                    </tr>
-                </thead>
-                <tbody id="dropStudent">
-
-                </tbody>
-            </table>
         </div>
     </div>
 </main>
@@ -154,5 +127,68 @@
         </div>
     </div>
 </div><!-- END OF SAVE CLASS RECORD MODAL -->
+
+<!-- TOP PERFORMING MODAL -->
+<div class="modal bg-dark fade py-5" tabindex="-1" id="top10Modal">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-body p-4 text-center">
+                <h4>TOP 10 in <span class="subjectModal"></span></h4>
+                <h6>Section <span class="sectionModal"></span></h6>
+                <table class="table table-bordered text-center table-sm">
+                    <thead>
+                        <tr class="table-dark">
+                            <td>No.</td>
+                            <td>Student No</td>
+                            <td>Name</td>
+                            <td>Grade</td>
+                            <td>Equiv</td>
+                        </tr>
+                    </thead>
+                    <tbody id="top10StudentBody">
+    
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-lg btn-primary mt-5 w-100 d-print-none" onclick="window.print()">Print</button>
+            </div>
+        </div>
+    </div>
+</div><!-- END OF TOP PERFORMING MODAL -->
+
+<!-- UNOFFICIAL DROP MODAL -->
+<div class="modal bg-dark fade py-5" tabindex="-1" id="unofficialDropModal">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-body p-4 text-center">
+                <h4>UNOFFICIAL DROP in <span class="subjectModal"></span></h4>
+                <h6>Section <span class="sectionModal"></span></h6>
+                <table class="table table-striped table-bordered text-center table-sm">
+                    <thead>
+                        <tr class="table-dark">
+                            <td>Student No</td>
+                            <td>Name</td>
+                            <td>Grade</td>
+                            <td>Equiv</td>
+                        </tr>
+                    </thead>
+                    <tbody id="dropStudent">
+    
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-lg btn-primary mt-5 w-100 d-print-none" onclick="window.print()">Print</button>
+            </div>
+        </div>
+    </div>
+</div><!-- END OF UNOFFICIAL DROP MODAL -->
+
+<!-- LOADING SCREEN -->
+<div class="modal" id="loadingScreen" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+        <div class="spinner-border d-block mx-auto text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
 
 <script src="../grade/script.grade.js"></script>

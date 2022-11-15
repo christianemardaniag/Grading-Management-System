@@ -50,39 +50,59 @@ $(document).ready(function () {
         trigger: 'focus'
     });
 
-    $.post("../student/process.student.php", { GET_FACULTY_REQ: true },
-        function (GET_FACULTY_RESP, textStatus, jqXHR) {
-            console.log(GET_FACULTY_RESP);
-            let subContent = ``;
-            let secContent = ``;
-            let uniSec = [];
-            $.each(GET_FACULTY_RESP.sub_sec, function (indexInArray, subject) {
-                subContent += `<option value="${subject.code}">${subject.code} - ${subject.description}</option>`;
-                $.each(subject.sections.split(", "), function (indexInArray, section) {
-                    if ($.inArray(section, uniSec) == -1) {
-                        uniSec.push(section);
-                    }
-                });
+    $.ajax({
+        type: "POST",
+        url: "../student/process.student.php",
+        data: { GET_FACULTY_REQ: true },
+        dataType: "JSON",
+        success: function (GET_FACULTY_RESP) {
+            let option = ``;
+            let firstSubj = "";
+            $.each(GET_FACULTY_RESP, function (indexInArray, val) {
+                if (indexInArray == 0) firstSubj = val.code;
+                option += `<option value="${val.code}">${val.code} - ${val.description}</option>`;
             });
-            $.each(uniSec, function (indexInArray, section) {
-                console.log();
-                secContent += `<option value="${section}">${section}</option>`;
-            });
-            $("#filter-subject").html(subContent);
-            $("#filter-section").html(secContent);
-            displayStudents($("#filter-subject").val(), $("#filter-section").val());
+            $("#filter-subject").html(option);
+            getSectionBySubjectCode(firstSubj);
         },
-        "JSON"
-    );
-
-    $("#filter-specialization").change(function (e) {
-        e.preventDefault();
-        displayStudents($("#filter-subject").val(), $("#filter-section").val());
+        beforeSend: function (response) {
+            $("#loadingScreen").modal("show");
+        }
     });
+
+
+    function getSectionBySubjectCode(subjectCode) {
+        $.ajax({
+            type: "POST",
+            url: "../student/process.student.php",
+            data: { "GET_SECTION_REQ": subjectCode },
+            dataType: "JSON",
+            success: function (GET_SECTION_RESP) {
+                var filtered = GET_SECTION_RESP.filter(function (val) {
+                    return val.code == subjectCode;
+                });
+                const unique = [...new Set(GET_SECTION_RESP.map(item => item.sections))];
+                $("#filter-section").removeAttr("disabled");
+                $("#filter-section-spinner").fadeOut();
+                let op = ``;
+                $.each(unique, function (indexInArray, section) {
+                    op += `<option value="${section}">${section}</option>`;
+                });
+                $("#filter-section").html(op);
+                displayStudents($("#filter-subject").val(), $("#filter-section").val());
+            }, beforeSend: function () {
+                $("#filter-section-spinner").fadeIn();
+                $("#filter-section").attr("disabled", true);
+            }, error: function (response) {
+                console.error(response.responseText);
+            }
+        });
+    }
 
     $("#filter-subject").change(function (e) {
         e.preventDefault();
-        displayStudents($("#filter-subject").val(), $("#filter-section").val());
+        getSectionBySubjectCode($(this).val());
+        displayStudents($(this).val(), $("#filter-section").val());
     });
 
     $("#filter-section").change(function (e) {
@@ -334,6 +354,8 @@ $(document).ready(function () {
                     });
                 });
                 fetchGrades(json);
+            }, beforeSend: function() {
+                $("#loadingScreen").modal("show");
             }, error: function (response) {
                 console.error(response);
                 $("#error").html(response.responseText);
@@ -377,6 +399,11 @@ $(document).ready(function () {
         });
 
     }
+
+    $("#top10Modal, #unofficialDropModal").on("show.bs.modal", function () {
+        $(".subjectModal").html($("#filter-subject").val());
+        $(".sectionModal").html($("#filter-section").val());
+    });
 
 });  // END OF DOCUMENT READY FUNCTION
 
@@ -499,6 +526,7 @@ function fetchGrades(json) {
 
         displayTop10Students(json);
         dropStudent(json);
+        $("#loadingScreen").modal("hide");
 
         // LOCK ACTIVITY
         $(".lock-btn").click(function (e) {
@@ -630,14 +658,16 @@ function displayTop10Students(json) {
         });
         console.log(outstandingStudent);
         $.each(outstandingStudent, function (i, val) {
-            content += `
-            <tr class="${((i < 3) ? "table-info" : "")}">
+            if (i < 10) {
+                content += `
+                <tr class="${((i < 3) ? "table-info" : "")}">
                 <td>${i + 1}.</td>
                 <td>${json.students[val.k].studentNo}</td>
                 <td class='text-start'>${json.students[val.k].name}</td>
-                <td>${parseFloat(json.students[val.k].grade).toFixed(2)}</td>
-                <td class='fw-bold'>${parseFloat(json.students[val.k].equiv).toFixed(2)}</td>
-            </tr>`;
+                <td class='fw-bold'>${parseFloat(json.students[val.k].grade).toFixed(2)}</td>
+                <td>${parseFloat(json.students[val.k].equiv).toFixed(2)}</td>
+                </tr>`;
+            }
 
         });
 
