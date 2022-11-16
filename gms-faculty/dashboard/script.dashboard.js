@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    // $("#dropStudentTable").DataTable();
+    $('#dropStudentTable').DataTable();
     var myStudents = [];
     $.ajax({
         type: "POST",
@@ -107,8 +109,6 @@ $(document).ready(function () {
             </tr>
             `;
         }
-
-        // console.log(topStudents);
 
         temp += `
             <div class="col">

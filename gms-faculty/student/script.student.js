@@ -8,7 +8,7 @@ $(document).ready(function () {
             let option = `<option value="All" selected>All</option>`;
             $.each(GET_FACULTY_RESP, function (indexInArray, val) {
                 option += `<option value="${val.code}">${val.code} - ${val.description}</option>`;
-            }); 
+            });
             $("#filter-subject").html(option);
         },
         beforeSend: function (response) {
@@ -42,8 +42,8 @@ $(document).ready(function () {
                 $("#filter-section").removeAttr("disabled");
                 $("#filter-section-spinner").fadeOut();
                 let op = ``;
-                $.each(unique, function (indexInArray, section) { 
-                     op += `<option value="${section}">${section}</option>`;
+                $.each(unique, function (indexInArray, section) {
+                    op += `<option value="${section}">${section}</option>`;
                 });
                 $("#filter-section").html(op);
                 displayStudents($("#filter-subject").val(), $("#filter-section").val());
@@ -117,6 +117,19 @@ $(document).ready(function () {
                     $("#view-section").html(selectedStudent.section);
 
                     $("#viewStudentModal").modal("show");
+
+                    $("#dropBtn").click(function (e) {
+                        e.preventDefault();
+                        $.ajax({
+                            type: "POST",
+                            url: "../student/process.student.php",
+                            data: { DROP_STUDENT_REQ: studentNo },
+                            dataType: "JSON",
+                            success: function (DROP_STUDENT_RESP) {
+                                console.log(DROP_STUDENT_RESP);
+                            }
+                        });
+                    });
                 });
                 $("#loadingScreen").modal("hide");
             }, error: function (response) {

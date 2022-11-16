@@ -40,14 +40,13 @@ if (isset($_POST['GET_STUDENTS_REQ'])) {
 		'program' => $_POST['edit-program'],
 		'specialization' => $_POST['edit-specialization'],
 		'level' => $_POST['edit-level'],
-		'section' => $_POST['edit-section'],
-		'subjects' => $_POST['edit-subjects'],
+		'section' => $_POST['edit-section']
 	];
 	echo json_encode((array)$student->editStudent($details));
 } elseif (isset($_POST['GET_PROGRAM_DESTINCT_REQ'])) {
 	echo json_encode((array)$student->getDestinctProgram());
 } elseif (isset($_POST['GET_SECTION_DESTINCT_REQ'])) {
-	echo json_encode((array)$student->getSections($_POST["program"], $_POST["level"]));
+	echo json_encode((array)$student->getSections($_POST["level"]));
 } elseif (isset($_POST['REMOVE_STUDENT_REQ'])) {
 	echo json_encode((array)$student->removeStudent($_POST["REMOVE_STUDENT_REQ"]));
 }

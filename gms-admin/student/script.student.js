@@ -11,8 +11,6 @@ $(document).ready(function () {
         $("#fileUploadForm").submit();
     });
 
-
-
     $.post("../student/process.student.php", { GET_PROGRAM_DESTINCT_REQ: true },
         function (GET_PROGRAM_DESTINCT_RESP, textStatus, jqXHR) {
             let content = `<option value="All" selected>All</option>`;
@@ -29,47 +27,45 @@ $(document).ready(function () {
     function getSectionsFilter() {
         $.post("../student/process.student.php", {
             GET_SECTION_DESTINCT_REQ: true,
-            program: $("#filter-program").val(),
             level: $("#filter-level").val()
         },
             function (GET_SECTION_DESTINCT_RESP, textStatus, jqXHR) {
+                console.log(textStatus);
                 let content = `<option value="All" selected>All</option>`;
                 $.each(GET_SECTION_DESTINCT_RESP, function (indexInArray, section) {
                     content += `<option value="${section}">${section}</option>`;
                 });
-                console.log();
                 $("#filter-section").html(content);
             },
             "JSON"
         );
     }
 
+    // $("#filter-specialization").change(function (e) {
+    //     e.preventDefault();
+    //     getSectionsFilter();
+    //     displayStudents($(this).val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+    // });
 
-    $("#filter-specialization").change(function (e) {
-        e.preventDefault();
-        getSectionsFilter();
-        displayStudents($(this).val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
-    });
-
-    $("#filter-program").change(function (e) {
-        e.preventDefault();
-        getSectionsFilter();
-        displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
-    });
+    // $("#filter-program").change(function (e) {
+    //     e.preventDefault();
+    //     getSectionsFilter();
+    //     displayStudents($("#filter-level").val(), $("#filter-section").val());
+    // });
 
     $("#filter-level").change(function (e) {
         e.preventDefault();
         getSectionsFilter();
-        displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+        displayStudents($("#filter-level").val(), $("#filter-section").val());
     });
 
     $("#filter-section").change(function (e) {
         e.preventDefault();
-        displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+        displayStudents($("#filter-level").val(), $("#filter-section").val());
     });
 
 
-    function displayStudents(specialization = 'All', program = 'All', level = 'All', section = 'All') {
+    function displayStudents(level = 'All', section = 'All') {
         $.ajax({
             type: "POST",
             url: "../student/process.student.php",
@@ -77,12 +73,12 @@ $(document).ready(function () {
             dataType: "JSON",
             success: function (GET_STUDENTS_RESP) {
                 var filtered = GET_STUDENTS_RESP.filter(function (student) {
-                    let spec = (specialization == "All") ? true : student.specialization == specialization;
-                    let prog = (program == "All") ? true : student.program == program;
-                    let lev = (level == "All") ? true : student.level == level;
+                    // let spec = (specialization == "All") ? true : student.specialization == specialization;
+                    // let prog = (program == "All") ? true : student.program == program;
+                    let lev = (level == "All") ? true : student.level.toUpperCase() == level;
                     let sec = (section == "All") ? true : student.section == section;
 
-                    return spec && prog && lev && sec;
+                    return lev && sec;
                 });
                 content = ``;
                 $.each(filtered, function (indexInArray, student) {
@@ -104,7 +100,7 @@ $(document).ready(function () {
                 $("#studentRecords").html(content);
                 $("#studentsTable").DataTable({
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    "pageLength": 50
+                    "pageLength": 10
                 });
 
                 var selectedStudent = "";
@@ -136,7 +132,7 @@ $(document).ready(function () {
                     });
                     $("#view-subjects").html(subjects);
                     $("#viewStudentModal").modal("show");
-
+                    $("#studentSubjectViewModal").DataTable();
                     $("#removeStudentModal").on("show.bs.modal", function () {
                         $("#remove-fullName").html(selectedStudent.fullName);
                         $("#remove-studentNo").html(selectedStudent.studentNo);
@@ -150,7 +146,7 @@ $(document).ready(function () {
                             data: { REMOVE_STUDENT_REQ: selectedStudent.studentNo },
                             dataType: "JSON",
                             success: function (REMOVE_STUDENT_RESP) {
-                                displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+                                displayStudents($("#filter-level").val(), $("#filter-section").val());
                                 $("#removeStudentModal").modal("hide");
                             }
                         });
@@ -174,10 +170,13 @@ $(document).ready(function () {
                     });
                     $("#edit-subjects").val(sub.slice(0, -1));
                 });
-
+                $("#loadingScreen").modal("hide");
             }, error: function (response) {
                 console.error(response);
                 $("#error").html(response.responseText);
+            },
+            beforeSend: function (response) {
+                $("#loadingScreen").modal("show");
             }
         });
 
@@ -350,7 +349,7 @@ $(document).ready(function () {
                     $("#editNewStudentError").html(EDIT_STUDENT_RESP.msg);
                     $("#editNewStudentError").fadeIn();
                 }
-                displayStudents($("#filter-specialization").val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
+                displayStudents($("#filter-level").val(), $("#filter-section").val());
             },
             error: function (response) {
                 console.error(response.responseText);

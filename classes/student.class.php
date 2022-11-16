@@ -151,10 +151,10 @@ class Student extends dbHandler
         return $prog;
     }
 
-    public function getSections($program, $level)
+    public function getSections($level)
     {
         $prog = array();
-        $query = "SELECT DISTINCT(section) FROM student WHERE program='$program' AND level='$level'";
+        $query = "SELECT DISTINCT(section) FROM student WHERE level='$level'";
         $result = mysqli_query($this->conn, $query);
         if (mysqli_num_rows($result)) {
             while ($row = mysqli_fetch_assoc($result))

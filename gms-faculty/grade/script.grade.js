@@ -149,6 +149,22 @@ $(document).ready(function () {
                         content += `</tr>`;
                     }
 
+                    let message = {
+                        client: {
+                            id: "",
+                            name: ""
+                        },
+                        employee: {
+                            id: "",
+                            name: ""
+                        },
+                        message: {
+                            content: "",
+                            dateTime: "",
+                            status: ""
+                        }
+                    }
+
                     // * GET CRITERIA AND ACTIVITIES
                     // "criteria": [{
                     //     "name": "Activities/Project",

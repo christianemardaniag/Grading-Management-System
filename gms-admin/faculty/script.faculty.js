@@ -71,7 +71,6 @@ $(document).ready(function () {
                 $("#facultyRecords > tr").click(function (e) {
                     e.preventDefault();
                     facultyID = $(this).data("id");
-                    console.log(GET_FACULTIES_RESP);
                     selectedFaculty = GET_FACULTIES_RESP.filter(function (eachFaculty) {
                         return eachFaculty.facultyID == facultyID;
                     })[0];
@@ -142,10 +141,13 @@ $(document).ready(function () {
                     $("#edit-subCtr").val(selectedFaculty.sub_sec.length);
                     $("#edit-facultySubjects").html(sub_sec);
                 });
-
+                $("#loadingScreen").modal("hide");
             }, error: function (response) {
                 console.error(response);
                 $("#error").html(response.responseText);
+            },
+            beforeSend: function (response) {
+                $("#loadingScreen").modal("show");
             }
         });
 

@@ -77,7 +77,7 @@ class Faculty extends dbHandler
                 $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
                 foreach ($details->sub_sec as $eachData) {
                     foreach (explode(", ", $eachData->sections) as $section) {
-                        $sub_sec_sql .= "('$details->id', '$eachData->subject', '$eachData->sections'),";
+                        $sub_sec_sql .= "('$details->id', '$eachData->subject', '$section'),";
                     }
                 }
                 $sub_sec_sql = rtrim($sub_sec_sql, ",");
@@ -273,6 +273,14 @@ class Faculty extends dbHandler
             }
         }
         return $sub_sec;
+    }
+
+    public function dropStudent($studentNo)
+    {
+        // $query = "UPDATE `student` SET `status`='drop' WHERE id='$studentNo'";
+        // if (mysqli_query($this->conn, $query)) {
+        //     return (object) ['status' => true, 'msg' => ''];
+        // }
     }
 
     private function isEmailExist($email, $id = "")
