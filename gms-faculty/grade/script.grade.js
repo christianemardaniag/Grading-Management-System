@@ -1,4 +1,13 @@
 $(document).ready(function () {
+    $("#export").click(function (e) {
+        e.preventDefault();
+        $("#gradesTable").table2excel({
+            // exclude: ".excludeThisClass",
+            name: "Worksheet Name",
+            filename: "grades.xls", 
+            preserveColors: false
+        });
+    });
     $("#uploadFileBtn").click(function (e) {
         e.preventDefault();
         $("#fileUpload").trigger('click');
@@ -370,7 +379,7 @@ $(document).ready(function () {
                     });
                 });
                 fetchGrades(json);
-            }, beforeSend: function() {
+            }, beforeSend: function () {
                 $("#loadingScreen").modal("show");
             }, error: function (response) {
                 console.error(response);

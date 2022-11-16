@@ -33,12 +33,16 @@
 
 
     <div class="shadow-sm bg-white p-3 me-2">
+        
         <div class="d-flex justify-content-end me-2 d-print-none">
+            <div class="mb-3">
+                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#top10Modal">Top 10 in Class</button>
+            </div>
             <div class="mb-3 mx-2">
-                <button class="btn btn-dark d-print-none" data-bs-toggle="modal" data-bs-target="#top10Modal">Top 10 in Class</button>
+                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#unofficialDropModal">Unofficial Drop</button>
             </div>
             <div class="mb-3">
-                <button class="btn btn-dark d-print-none" data-bs-toggle="modal" data-bs-target="#unofficialDropModal">Unofficial Drop</button>
+                <button id="export" class="btn btn-dark">Export to Excel</button>
             </div>
             <!-- <button type="button" id="info-btn" class="btn btn-link-dark fs-4 p-0"><i
                     class="fas fa-info-square"></i></button> -->
