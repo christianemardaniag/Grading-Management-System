@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // $("#dropStudentTable").DataTable();
-    $('#dropStudentTable').DataTable();
+    
     var myStudents = [];
     $.ajax({
         type: "POST",
@@ -8,12 +8,10 @@ $(document).ready(function () {
         data: { GET_STUDENTS_REQ: true },
         dataType: "JSON",
         success: function (GET_STUDENTS_RESP) {
-            console.log(GET_STUDENTS_RESP);
             myStudents = GET_STUDENTS_RESP;
             let passedCtr = 0;
             let yearLevelCount = [0, 0, 0, 0];
-            $.each(myStudents, function (indexInArray, stud) {
-                console.log();
+            $.each(myStudents, function (stud_index, stud) {
                 switch (stud.level.toUpperCase()) {
                     case "1ST YEAR": yearLevelCount[0]++; break;
                     case "2ND YEAR": yearLevelCount[1]++; break;
@@ -25,9 +23,12 @@ $(document).ready(function () {
                     if (parseFloat(sub2.grade) >= 75) {
                         passedCtr++;
                     }
+                    getUnofficialDropStudents(sub2, stud_index);
                 });
             });
-
+            $('#dropStudentTable').DataTable({
+                order: [[5, 'asc']],
+            });
             let studentCount = myStudents.length;
             $("#studentCount").html(studentCount);
 
@@ -77,6 +78,87 @@ $(document).ready(function () {
         e.preventDefault();
         gradeCriteriaAverage($(this).val());
     });
+
+    function getUnofficialDropStudents(students, index) {
+        let temp_json = keepCloning(students);
+        console.log(temp_json);
+        $.each(temp_json.criteria, function (key_criteria, criteria) {
+            $.each(criteria.activities, function (key_act, activity) {
+                activity.isLock = (String(activity.isLock) === 'true');
+                if (!activity.isLock) {
+                    temp_json.scores[key_criteria].score[key_act] = activity.total;
+                }
+                let total_over = 0;
+                $.each(criteria.activities, function (indexInArray, act) {
+                    total_over += parseInt(act.total);
+                });
+                let total_score = 0;
+                $.each(temp_json.scores[key_criteria].score, function (indexInArray, score) {
+                    total_score += parseInt(score);
+                });
+                let ave = (total_score / total_over) * 50 + 50;
+                temp_json.scores[key_criteria].average = ave;
+
+                // set grade
+                let grade = 0;
+                $.each(temp_json.criteria, function (ind, cri) {
+                    let ave = parseFloat(temp_json.scores[ind].average);
+                    grade += (ave * (cri.equiv / 100));
+                });
+                temp_json.grade = grade;
+
+                // set equiv
+                let equiv = getEquiv(grade);
+                temp_json.equiv = equiv;
+
+                // set remarks
+                temp_json.remarks = (equiv == 5.00) ? "Failed" : "Passed";
+            });
+        });
+        if (temp_json.remarks == "Failed") {
+            // console.log(myStudents[index]);
+            let content = `
+            <tr>
+                <td>${myStudents[index].studentNo}</td>
+                <td class='text-start'>${myStudents[index].fullName}</td>
+                <td>${temp_json.code}</td>
+                <td>${temp_json.description}</td>
+                <td>${myStudents[index].section}</td>
+                <td class='fw-bold'>${parseFloat(temp_json.grade).toFixed(2)}</td>
+                <td>${parseFloat(temp_json.equiv).toFixed(2)}</td>
+            </tr>`;
+            $("#dropStudentContent").append(content);
+        }
+        
+        // console.log(temp_json);
+
+        // var filtered = temp_json.students.filter(function (data) {
+        //     return data.remarks == "Failed";
+        // });
+
+        // $.each(filtered, function (i, val) {
+        //     content += `
+        //     <tr">
+        //         <td>${val.studentNo}</td>
+        //         <td class='text-start'>${val.name}</td>
+        //         <td>${parseFloat(val.grade).toFixed(2)}</td>
+        //         <td class='fw-bold'>${parseFloat(val.equiv).toFixed(2)}</td>
+        //     </tr>`;
+        // });
+
+        // $("#dropStudentTable").html(content);
+    }
+
+    function keepCloning(objectpassed) {
+        if (objectpassed === null || typeof objectpassed !== 'object') {
+            return objectpassed;
+        }
+        var temporary_storage = objectpassed.constructor();
+        for (var key in objectpassed) {
+            temporary_storage[key] = keepCloning(objectpassed[key]);
+        }
+        return temporary_storage;
+    }
 
     var temp = `<div class="carousel-item active" data-bs-interval="20000">
                     <div class="row mx-0 g-2">`;
