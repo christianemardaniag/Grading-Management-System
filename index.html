@@ -1,0 +1,203 @@
+<!doctype HTML>
+<html>
+
+<head>
+    <title>GMS Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="include/main.style.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            background-color: #f5f5f5;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+        }
+
+        .form-signin .form-floating:focus-within {
+            z-index: 2;
+        }
+
+        .form-signin input[type="text"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="d-flex align-items-center vh-100">
+        <main class="form-signin w-100 m-auto text-center">
+            <form id="loginForm">
+                <div class="text-dark">
+                    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                    <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_smiseifr.json"
+                        background="transparent" speed="1" style="width: 300px; height: 150px;" loop autoplay>
+                    </lottie-player>
+                    <div class="m-0 fw-bold">GRADING MANAGEMENT SYSTEM</div>
+                    <div class="btn-group w-100 my-2" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="userType" id="btnradio2" value="student"
+                            autocomplete="off" checked>
+                        <label class="btn btn-outline-dark" for="btnradio2">Student</label>
+                        <input type="radio" class="btn-check" name="userType" id="btnradio1" value="faculty"
+                            autocomplete="off">
+                        <label class="btn btn-outline-dark" for="btnradio1">Faculty</label>
+                    </div>
+                </div>
+
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="username" name="username"
+                        placeholder="name@example.com">
+                    <label for="username">Username</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <label for="password">Password</label>
+                </div>
+
+                <button type="button" class="btn btn-link link-dark text-decoration-none" data-bs-toggle="modal"
+                    data-bs-target="#forgotPasswordModal">
+                    Forgot Password?
+                </button>
+                <div class="alert alert-danger my-1 p-2" role="alert" id="errorAlert">
+                </div>
+                <button class="w-100 btn btn-lg btn-primary my-2" type="submit">Sign in</button>
+                <p class="mt-5 text-muted">GMS &copy; 2022</p>
+                <p class="mb-3 text-muted"></p>
+            </form>
+        </main>
+    </div>
+    <div class="fixed-bottom">
+        <a href="gms-admin" class="text-decoration-none text-secondary"><i class="fal fa-shield"></i></a>
+    </div>
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Forgot Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="forgotPasswordForm">
+                    <div class="modal-body">
+                        <p>Enter your <span class="fw-bold text-uppercase">REGISTERED <span id="modalUserType"></span>
+                                EMAIL</span></p>
+                        <p>We will send to your new password to your email.</p>
+                        <input type="email" name="fpEmail" id="fpEmail" class="form-control"
+                            placeholder="Registered Email" required>
+                        <div class="alert alert-danger my-1" role="alert" id="errorAlertFP">
+                            You have entered unregistered email address!
+                        </div>
+                        <div class="alert alert-success my-1" role="alert" id="successAlertFP">
+                            Your new password has been sent to your email address
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" id="forgotbtn">
+                            Send Email
+                            <div id="fPSpinner" class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $("#fPSpinner").hide();
+            $("#errorAlert").hide();
+            $("#errorAlertFP").hide();
+            $("#successAlertFP").hide();
+
+            $('#forgotPasswordModal').on('show.bs.modal', function (e) {
+                let userType = $("[name='userType']:checked").val();
+                $("#errorAlertFP").hide();
+                $("#successAlertFP").hide();
+                $("#modalUserType").html(userType);
+                $("#forgotPasswordForm").trigger("reset");
+            })
+
+            $("#loginForm").submit(function (event) {
+                event.preventDefault();
+                let userType = $("[name='userType']:checked").val();
+                console.log(userType);
+                var data = $(this).serializeArray();  // Form Data
+                data.push({ name: 'login', value: userType });
+                $.ajax({
+                    type: "POST",
+                    url: "process/general.process.php",
+                    data: data,
+                    dataType: "JSON",
+                    success: function (response) {
+                        if (response.status) {
+                            window.location.href = 'gms-' + userType + '/main?url=dashboard';
+                        } else {
+                            $("#errorAlert").html(response.msg);
+                            $("#errorAlert").fadeIn();
+                        }
+                    },
+                    error: function (response) {
+                        // $("#errorAlert").html(response.responseText);
+                        $("#errorAlert").html("We encounter a problem when logging your account. Contact developer for more info");
+                        $("#errorAlert").show();
+                        console.log(response.responseText);
+                    }
+                });
+            });
+
+            $("#forgotPasswordForm").submit(function (event) {
+                event.preventDefault();
+                let userType = $("[name='userType']:checked").val();
+                $.ajax({
+                    url: "../process/general.process.php",
+                    type: "post",
+                    data: {
+                        email: $("#fpEmail").val(),
+                        'forgot-password': userType
+                    },
+                    beforeSend: function () {
+                        $("#fPSpinner").show();
+                        $("#forgotbtn").attr("disabled", "disabled");
+                    },
+                    success: function (response) {
+                        if (response) {
+                            $("#successAlertFP").fadeIn();
+                            $("#successAlertFP").html(response.msg);
+                            $("#errorAlertFP").hide();
+                            $("#forgotPasswordForm").trigger("reset");
+                        } else {
+                            $("#errorAlertFP").fadeIn();
+                            $("#errorAlertFP").html(response.msg);
+                            $("#successAlertFP").hide();
+                        }
+                        $("#fPSpinner").hide();
+                        $("#forgotbtn").removeAttr("disabled");
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
