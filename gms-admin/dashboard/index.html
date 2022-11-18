@@ -1,5 +1,44 @@
 <main>
-    <header >
+    <header>
         <div id="header-title" class="h3">Dashboard</div>
     </header>
+    <div class="row gx-2 mx-0 mb-2">
+        <div class="col-auto h-100">
+            <div class="shadow-sm px-3 py-4 bg-white mb-2">
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="dash-title">Number of Student</div>
+                        <div id="studentCount" class="h1 fw-bold mt-1">
+                            0
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="ms-auto" style="width: 100px;">
+                            <!-- CHART #1: NUMBER OF STUDENT PER  YEAR LEVEL -->
+                            <canvas id="chart1"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-2 border-top">
+                    <div class="" style="height: 150px; width: 350px;">
+                        <!-- CHART #2: PASSING RATE PER YEAR LEVEL -->
+                        <canvas id="chart2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
 </main>
+
+<!-- LOADING SCREEN -->
+<div class="modal" id="loadingScreen" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+        <div class="spinner-border d-block mx-auto text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<script src="../dashboard/script.dashboard.js"></script>

@@ -1,6 +1,4 @@
 $(document).ready(function () {
-    // $("#dropStudentTable").DataTable();
-    
     var myStudents = [];
     $.ajax({
         type: "POST",
@@ -81,7 +79,6 @@ $(document).ready(function () {
 
     function getUnofficialDropStudents(students, index) {
         let temp_json = keepCloning(students);
-        console.log(temp_json);
         $.each(temp_json.criteria, function (key_criteria, criteria) {
             $.each(criteria.activities, function (key_act, activity) {
                 activity.isLock = (String(activity.isLock) === 'true');
@@ -116,7 +113,6 @@ $(document).ready(function () {
             });
         });
         if (temp_json.remarks == "Failed") {
-            // console.log(myStudents[index]);
             let content = `
             <tr>
                 <td>${myStudents[index].studentNo}</td>
@@ -129,24 +125,6 @@ $(document).ready(function () {
             </tr>`;
             $("#dropStudentContent").append(content);
         }
-        
-        // console.log(temp_json);
-
-        // var filtered = temp_json.students.filter(function (data) {
-        //     return data.remarks == "Failed";
-        // });
-
-        // $.each(filtered, function (i, val) {
-        //     content += `
-        //     <tr">
-        //         <td>${val.studentNo}</td>
-        //         <td class='text-start'>${val.name}</td>
-        //         <td>${parseFloat(val.grade).toFixed(2)}</td>
-        //         <td class='fw-bold'>${parseFloat(val.equiv).toFixed(2)}</td>
-        //     </tr>`;
-        // });
-
-        // $("#dropStudentTable").html(content);
     }
 
     function keepCloning(objectpassed) {

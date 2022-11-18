@@ -164,8 +164,6 @@ class Student extends dbHandler
     }
 
 
-    // PRIVATE FUNCTIONS
-
     private function withID($id)
     {
         $this->id = $id;
