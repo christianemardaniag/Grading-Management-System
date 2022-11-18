@@ -35,7 +35,7 @@ $(document).ready(function () {
             }
             chart2.data.datasets[0].data = prCtr;
             chart2.data.datasets[1].data = frCtr;
-            chart2.update();
+            // chart2.update();
 
             $("#loadingScreen").modal("hide");
         },
@@ -90,12 +90,12 @@ var chart2 = new Chart(ctxChart2, {
         labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
         datasets: [{
             label: ["Passed"],
-            data: [30, 35, 20, 52],
-            backgroundColor: ['#eeb902']
+            data: [87, 97, 76, 84],
+            backgroundColor: '#f79c06',
         }, {
             label: ["Failed"],
-            data: [10, 25, 27, 32],
-            backgroundColor: ['#76320d']
+            data: [13, 3, 24, 16],
+            backgroundColor: '#76320d'
         }]
     }, options: {
         maintainAspectRatio: false,
@@ -106,6 +106,46 @@ var chart2 = new Chart(ctxChart2, {
                 anchor: 'end',
                 align: 'bottom',
                 color: 'white'
+            }
+        }, scales: {
+            y: { min: 0, max: 100 }
+        }
+    },
+});
+
+// CHART #3: PASSING RATE PER SUBJECT
+var ctxChart3 = document.getElementById('chart3').getContext('2d');
+var chart3 = new Chart(ctxChart3, {
+    type: 'line',
+    plugins: [ChartDataLabels],
+    data: {
+        labels: ["IT 107", "PCM 101", "MMW 101", "UTS 101", "PAL101", "PE 11", "NSTP 11"],
+        datasets: [{
+            label: ["Passed"],
+            data: [87, 97, 76, 84, 67, 84, 94],
+            backgroundColor: ['#eeb90215'],
+            borderColor: '#eeb902',
+            fill: true,
+            tension: 0.4
+        }
+        // , {
+        //     label: ["Failed"],
+        //     data: [13, 3, 24, 16, 33, 16, 6],
+        //     // backgroundColor: ['#76320d'],
+        //     borderColor: '#bb7e00',
+        //     fill: true,
+        //     tension: 0.4
+        // }
+    ]
+    }, options: {
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'top' },
+            title: { display: false },
+            datalabels: {
+                anchor: 'end',
+                align: 'bottom',
+                color: 'black'
             }
         }, scales: {
             y: { min: 0, max: 100 }

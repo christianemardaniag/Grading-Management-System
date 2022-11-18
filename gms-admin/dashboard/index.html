@@ -19,15 +19,245 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-2 border-top">
-                    <div class="" style="height: 150px; width: 350px;">
-                        <!-- CHART #2: PASSING RATE PER YEAR LEVEL -->
-                        <canvas id="chart2"></canvas>
+            </div>
+            <div class="shadow-sm px-3 py-4 bg-white">
+                <div class="row h-100">
+                    <div class="mt-2">
+                        <div class="dash-title">Passing Rate per Year Level</div>
+                        <div class="" style="height: 150px; width: 350px;">
+                            <!-- CHART #2: PASSING RATE PER YEAR LEVEL -->
+                            <canvas id="chart2"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
-        <div class="col"></div>
+        <div class="col">
+            <div class="shadow-sm px-3 py-4 bg-white">
+                <div class="d-flex justify-content-between">
+                    <div class="dash-title">Passing Rate per Subject</div>
+                    <div>
+                        <select class="form-select mb-3 w-auto" id="year_sem">
+                            <option value="1-1" selected>1ST YEAR - 1ST SEMESTER</option>
+                            <option value="1-2">1ST YEAR - 2ND SEMESTER</option>
+                            <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                            <option value="2-1">2ND YEAR - 1ST SEMESTER</option>
+                            <option value="2-2">2ND YEAR - 2ND SEMESTER</option>
+                            <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                            <option value="3-1">3RD YEAR - 1ST SEMESTER</option>
+                            <option value="3-2">3RD YEAR - 2ND SEMESTER</option>
+                            <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                            <option value="4-1">4TH YEAR - 1ST SEMESTER</option>
+                            <option value="4-2">4TH YEAR - 2ND SEMESTER</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="height: 289px;">
+                    <!-- CHART #3: PASSING RATE PER SUBJECT -->
+                    <canvas id="chart3"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cols-3 gx-2">
+        <div class="col">
+            <div class="shadow-sm bg-white px-3 py-4">
+                <div class="dash-title">Candidate for Summa Cum laude</div>
+                <table class="table table-sm table-striped text-center" style="font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <th>Student No.</th>
+                            <th>Name</th>
+                            <th>Section</th>
+                            <th>Grade</th>
+                            <th>Equiv</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2019117363</td>
+                            <td>BENAVENTE, Angelica Arceo 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">98.00</td>
+                            <td>1.00</td>
+                        </tr>
+                        <tr>
+                            <td>2019115366</td>
+                            <td>CASTRO, Aliza Claire Semillano 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">97.00</td>
+                            <td>1.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col">
+            <div class="shadow-sm bg-white px-3 py-4">
+                <div class="dash-title">Candidate for Magna Cum laude</div>
+                <table class="table table-sm table-striped text-center" style="font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <th>Student No.</th>
+                            <th>Name</th>
+                            <th>Section</th>
+                            <th>Grade</th>
+                            <th>Equiv</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2019115105</td>
+                            <td>DE VERA, Blessie Grace Ruga 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">95.00</td>
+                            <td>1.25</td>
+                        </tr>
+                        <tr>
+                            <td>2019115366</td>
+                            <td>CASTRO, Aliza Claire Semillano 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">94.00</td>
+                            <td>1.25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col">
+            <div class="shadow-sm bg-white px-3 py-4">
+                <div class="dash-title">Candidate for Cum laude</div>
+                <table class="table table-sm table-striped text-center" style="font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <th>Student No.</th>
+                            <th>Name</th>
+                            <th>Section</th>
+                            <th>Grade</th>
+                            <th>Equiv</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2019114957</td>
+                            <td>MAÑEGO, Ma. Althea Baculi 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">91.00</td>
+                            <td>1.50</td>
+                        </tr>
+                        <tr>
+                            <td>2019117073</td>
+                            <td>OLITEN, Tricia Mae Dela Cruz 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">90.00</td>
+                            <td>1.75</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row gx-2 my-2">
+        <div class="col ">
+            <div class="shadow-sm bg-white px-3 py-4">
+                <div class="dash-title">Candidate for President's List Award</div>
+                <table class="table table-sm table-striped text-center" style="font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <th>Student No.</th>
+                            <th>Name</th>
+                            <th>Section</th>
+                            <th>Grade</th>
+                            <th>Equiv</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2019117363</td>
+                            <td>BENAVENTE, Angelica Arceo 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">98.00</td>
+                            <td>1.00</td>
+                        </tr>
+                        <tr>
+                            <td>2019115366</td>
+                            <td>CASTRO, Aliza Claire Semillano 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">97.00</td>
+                            <td>1.00</td>
+                        </tr>
+                        <tr>
+                            <td>2019114957</td>
+                            <td>MAÑEGO, Ma. Althea Baculi 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">91.00</td>
+                            <td>1.50</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col">
+            <div class="shadow-sm bg-white px-3 py-4">
+                <div class="dash-title">Candidate for Dean's List Award</div>
+                <table class="table table-sm table-striped text-center" style="font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <th>Student No.</th>
+                            <th>Name</th>
+                            <th>Section</th>
+                            <th>Grade</th>
+                            <th>Equiv</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2019115105</td>
+                            <td>DE VERA, Blessie Grace Ruga 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">95.00</td>
+                            <td>1.25</td>
+                        </tr>
+                        <tr>
+                            <td>2019115366</td>
+                            <td>CASTRO, Aliza Claire Semillano 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">94.00</td>
+                            <td>1.25</td>
+                        </tr>
+                        <tr>
+                            <td>2019117073</td>
+                            <td>OLITEN, Tricia Mae Dela Cruz 🤞</td>
+                            <td>4A</td>
+                            <td class="fw-bold">90.00</td>
+                            <td>1.75</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="shadow-sm pt-4 pb-3 bg-white">
+        <div class="dash-title">Unofficial Drop Student</div>
+        <table class="table table-sm table-stripped table-bordered text-center compact display" style="font-size: 14px;"
+            id="dropStudentTable">
+            <thead class="table-red">
+                <tr>
+                    <th class="text-center">Student No.</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Subject Code</th>
+                    <th class="text-center">Subject Description</th>
+                    <th class="text-center">Section</th>
+                    <th class="text-center">Grade</th>
+                    <th class="text-center">Equiv</th>
+                </tr>
+            </thead>
+            <tbody id="dropStudentContent">
+
+            </tbody>
+        </table>
     </div>
 </main>
 
