@@ -3,9 +3,9 @@ $(document).ready(function () {
     $("#year_sem").change(function (e) { 
         e.preventDefault();
         var year_sem = $(this).val();
-        if (year_sem == "All") {
-            displayStudentGrades(temp_subject);
-        } else {
+        // if (year_sem == "All") {
+        //     displayStudentGrades(temp_subject);
+        // } else {
             var year = year_sem.split('-')[0];
             var sem = year_sem.split('-')[1];
             var filtered = keepCloning(temp_subject);
@@ -13,7 +13,7 @@ $(document).ready(function () {
                 return data.level == year && data.semester == sem;
             });
             displayStudentGrades(filtered);
-        }
+        // }
     });
 
     $.ajax({

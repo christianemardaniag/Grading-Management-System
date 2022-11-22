@@ -1,5 +1,7 @@
 $(document).ready(function () {
     var myStudents = [];
+    var allSubjects;
+    var yearLevelCount = [0, 0, 0, 0];
     $.ajax({
         type: "POST",
         url: "../dashboard/process.dashboard.php",
@@ -8,7 +10,6 @@ $(document).ready(function () {
         success: function (GET_STUDENTS_RESP) {
             myStudents = GET_STUDENTS_RESP;
             console.log(myStudents);
-            let yearLevelCount = [0, 0, 0, 0];
             let prCtr = [0, 0, 0, 0];
             let frCtr = [0, 0, 0, 0];
             $.each(myStudents, function (stud_index, stud) {
@@ -19,6 +20,7 @@ $(document).ready(function () {
                     case "4TH YEAR": yearLevelCount[3]++; isPassed(stud) ? prCtr[3]++ : frCtr[3]++; break;
                     default: break;
                 }
+                candidateForAcademicHonor(stud);
             });
 
             let studentCount = myStudents.length;
@@ -35,7 +37,7 @@ $(document).ready(function () {
             }
             chart2.data.datasets[0].data = prCtr;
             chart2.data.datasets[1].data = frCtr;
-            // chart2.update();
+            chart2.update();
 
             $("#loadingScreen").modal("hide");
         },
@@ -61,25 +63,157 @@ $(document).ready(function () {
     function getGrade(arr) {
         return arr.reduce((a, b) => parseFloat(a) + parseFloat(b)) / arr.length
     }
+
+    $.ajax({
+        type: "POST",
+        url: "../dashboard/process.dashboard.php",
+        data: { GET_ALL_SUBJECTS_REQ: true },
+        dataType: "JSON",
+        success: function (response) {
+            allSubjects = response;
+            getGradePerYearSem($("#year_sem").val());
+        },
+        error: function (response) {
+            console.error(response);
+            $("#errorLog").html(response.responseText);
+        },
+        beforeSend: function (response) {
+            $("#chart3Spinner").fadeIn();
+        }
+    });
+
+    $("#year_sem").change(function (e) {
+        e.preventDefault();
+        $("#chart3Spinner").fadeIn();
+        getGradePerYearSem($(this).val());
+    });
+
+    function getGradePerYearSem(year) {
+        var subjectsPerLevel = [];
+        var filteredSubject = allSubjects.filter(function (data) {
+            return data.year_level == year;
+        });
+        $.each(filteredSubject, function (indexInArray, sub) {
+            subjectsPerLevel.push(sub.code);
+        });
+        var ratePerSubject = [];
+        var len = subjectsPerLevel.length;
+        for (let i = 0; i < len; i++) {
+            ratePerSubject.push(0);
+        }
+        $.each(myStudents, function (indexInArray, student) {
+            let level = ["1ST YEAR", "2ND YEAR", "3RD YEAR", "4TH YEAR"];
+            if (level[year - 1] == student.level.toUpperCase()) {
+                $.each(subjectsPerLevel, function (ind, subject) {
+                    $.each(student.subjects, function (indexInArray, sub) {
+                        if (sub.code == subject) {
+                            if (sub.grade >= 75) {
+                                ratePerSubject[ind]++;
+                            }
+                        }
+
+                    });
+                });
+            }
+        });
+        for (let x = 0; x < len; x++) {
+            ratePerSubject[x] = ratePerSubject[x] / yearLevelCount[year - 1] * 100;
+        }
+        chart3.data.labels = subjectsPerLevel;
+        chart3.data.datasets[0].data = ratePerSubject;
+        chart3.update();
+        $("#chart3Spinner").fadeOut();
+    }
+
+    function candidateForAcademicHonor(stud) {
+        var grades = [];
+        $.each(stud.subjects, function (indexInArray, sub2) {
+            grades.push(parseInt(sub2.grade));
+        });
+        var grade = parseFloat(getGrade(grades));
+        let content = `
+        <tr>
+            <td>${stud.studentNo}</td>
+            <td>${stud.fullName}</td>
+            <td>${stud.section}</td>
+            <td class="fw-bold">${grade}</td>
+            <td>${getEquiv(grade)}</td>
+        </tr>
+        `;
+        if (!grades.some((x) => { return x < 90; })) {
+            if (grade >= 97) {
+                $("#summaCumLaudeTableContent").append(content);
+            }
+        } else if (!grades.some((x) => { return x <= 84; })) {
+            if (grade >= 94) {
+                $("#summaCumLaudeTableContent").append(content);
+            }
+        } else if (!grades.some((x) => { return x <= 81; })) {
+            if (grade >= 79) {
+                $("#summaCumLaudeTableContent").append(content);
+            }
+        }
+    }
+
+    function getEquiv(grade) {
+        grade = Math.floor(grade);
+        if (grade <= 74) {
+            return 5.00;
+        } else if (grade <= 75) {
+            return 3.00;
+        } else if (grade <= 78) {
+            return 2.75;
+        } else if (grade <= 81) {
+            return 2.50;
+        } else if (grade <= 84) {
+            return 2.25;
+        } else if (grade <= 87) {
+            return 2.00;
+        } else if (grade <= 90) {
+            return 1.75;
+        } else if (grade <= 93) {
+            return 1.50;
+        } else if (grade <= 96) {
+            return 1.25;
+        } else if (grade <= 100) {
+            return 1.00;
+        }
+    }
+
 });
 
-// CHART #1: NUMBER OF STUDENT PER  YEAR LEVEL
-var ctxChart1 = document.getElementById('chart1').getContext('2d');
-var chart1 = new Chart(ctxChart1, {
-    type: 'doughnut',
+// CHART #3: PASSING RATE PER SUBJECT
+var ctxChart3 = document.getElementById('chart3').getContext('2d');
+var chart3 = new Chart(ctxChart3, {
+    type: 'line',
+    plugins: [ChartDataLabels],
     data: {
-        labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
+        labels: ["IT 107", "PCM 101", "MMW 101", "UTS 101", "PAL101", "PE 11", "NSTP 11"],
         datasets: [{
-            data: [],
-            backgroundColor: ['#eeb902', '#f79c06', '#bb7e00', '#76320d'],
-        }]
+            label: ["Passed"],
+            data: [87, 97, 76, 84, 67, 84, 94],
+            backgroundColor: ['#eeb90215'],
+            borderColor: '#eeb902',
+            fill: true,
+            tension: 0.4
+        }
+        ]
     }, options: {
+        maintainAspectRatio: false,
         plugins: {
-            legend: { display: false },
-            title: { display: false }
+            legend: { position: 'top' },
+            title: { display: false },
+            datalabels: {
+                anchor: 'end',
+                align: 'bottom',
+                color: 'black'
+            }
+        }, scales: {
+            y: { min: 0, max: 100 }
         }
     },
 });
+
 
 // CHART #2: PASSING RATE PER YEAR LEVEL
 var ctxChart2 = document.getElementById('chart2').getContext('2d');
@@ -113,43 +247,20 @@ var chart2 = new Chart(ctxChart2, {
     },
 });
 
-// CHART #3: PASSING RATE PER SUBJECT
-var ctxChart3 = document.getElementById('chart3').getContext('2d');
-var chart3 = new Chart(ctxChart3, {
-    type: 'line',
-    plugins: [ChartDataLabels],
+// CHART #1: NUMBER OF STUDENT PER  YEAR LEVEL
+var ctxChart1 = document.getElementById('chart1').getContext('2d');
+var chart1 = new Chart(ctxChart1, {
+    type: 'doughnut',
     data: {
-        labels: ["IT 107", "PCM 101", "MMW 101", "UTS 101", "PAL101", "PE 11", "NSTP 11"],
+        labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
         datasets: [{
-            label: ["Passed"],
-            data: [87, 97, 76, 84, 67, 84, 94],
-            backgroundColor: ['#eeb90215'],
-            borderColor: '#eeb902',
-            fill: true,
-            tension: 0.4
-        }
-        // , {
-        //     label: ["Failed"],
-        //     data: [13, 3, 24, 16, 33, 16, 6],
-        //     // backgroundColor: ['#76320d'],
-        //     borderColor: '#bb7e00',
-        //     fill: true,
-        //     tension: 0.4
-        // }
-    ]
+            data: [],
+            backgroundColor: ['#eeb902', '#f79c06', '#bb7e00', '#76320d'],
+        }]
     }, options: {
-        maintainAspectRatio: false,
         plugins: {
-            legend: { position: 'top' },
-            title: { display: false },
-            datalabels: {
-                anchor: 'end',
-                align: 'bottom',
-                color: 'black'
-            }
-        }, scales: {
-            y: { min: 0, max: 100 }
+            legend: { display: false },
+            title: { display: false }
         }
     },
 });
-

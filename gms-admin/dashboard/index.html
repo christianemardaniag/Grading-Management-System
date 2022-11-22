@@ -2,6 +2,7 @@
     <header>
         <div id="header-title" class="h3">Dashboard</div>
     </header>
+    <!-- <div id="errorLog" class="alert bg-danger"></div> -->
     <div class="row gx-2 mx-0 mb-2">
         <div class="col-auto h-100">
             <div class="shadow-sm px-3 py-4 bg-white mb-2">
@@ -36,20 +37,15 @@
         <div class="col">
             <div class="shadow-sm px-3 py-4 bg-white">
                 <div class="d-flex justify-content-between">
-                    <div class="dash-title">Passing Rate per Subject</div>
+                    <div class="dash-title">Passing Rate per Subject <div class="spinner-border spinner-border-sm" role="status" id="chart3Spinner">
+                        <span class="visually-hidden">Loading...</span>
+                    </div></div>
                     <div>
                         <select class="form-select mb-3 w-auto" id="year_sem">
-                            <option value="1-1" selected>1ST YEAR - 1ST SEMESTER</option>
-                            <option value="1-2">1ST YEAR - 2ND SEMESTER</option>
-                            <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
-                            <option value="2-1">2ND YEAR - 1ST SEMESTER</option>
-                            <option value="2-2">2ND YEAR - 2ND SEMESTER</option>
-                            <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
-                            <option value="3-1">3RD YEAR - 1ST SEMESTER</option>
-                            <option value="3-2">3RD YEAR - 2ND SEMESTER</option>
-                            <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
-                            <option value="4-1">4TH YEAR - 1ST SEMESTER</option>
-                            <option value="4-2">4TH YEAR - 2ND SEMESTER</option>
+                            <option value="1" selected>1ST YEAR</option>
+                            <option value="2">2ND YEAR</option>
+                            <option value="3">3RD YEAR</option>
+                            <option value="4">4TH YEAR</option>
                         </select>
                     </div>
                 </div>
@@ -75,8 +71,8 @@
                             <th>Equiv</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
+                    <tbody id="summaCumLaudeTableContent">
+                        <!-- <tr>
                             <td>2019117363</td>
                             <td>BENAVENTE, Angelica Arceo 🤞</td>
                             <td>4A</td>
@@ -89,7 +85,7 @@
                             <td>4A</td>
                             <td class="fw-bold">97.00</td>
                             <td>1.00</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -107,8 +103,8 @@
                             <th>Equiv</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
+                    <tbody id="magnaCumLaudeTableContent">
+                        <!-- <tr>
                             <td>2019115105</td>
                             <td>DE VERA, Blessie Grace Ruga 🤞</td>
                             <td>4A</td>
@@ -121,7 +117,7 @@
                             <td>4A</td>
                             <td class="fw-bold">94.00</td>
                             <td>1.25</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -139,8 +135,8 @@
                             <th>Equiv</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
+                    <tbody id="cumLaudeTableContent">
+                        <!-- <tr>
                             <td>2019114957</td>
                             <td>MAÑEGO, Ma. Althea Baculi 🤞</td>
                             <td>4A</td>
@@ -153,7 +149,7 @@
                             <td>4A</td>
                             <td class="fw-bold">90.00</td>
                             <td>1.75</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
