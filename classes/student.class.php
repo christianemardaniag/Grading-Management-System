@@ -21,7 +21,7 @@ class Student extends dbHandler
         $data = json_encode($data);
         $data = json_decode($data);
         $query = "INSERT INTO student(id, fullName, username, email, password, contact_no, gender, specialization, program, level, section) VALUES ";
-        $sql = "INSERT INTO student_subject(student_id, subject_code) VALUES";
+        $sql = "INSERT INTO student_subject(student_id, subject_code, criteria) VALUES";
         $subjects = new Subject();
         $subs = $subjects->getAllSubject();
         $status = array();
@@ -48,8 +48,11 @@ class Student extends dbHandler
                     '" . $eachData[STUDENT_LEVEL]           . "', 
                     '" . $eachData[STUDENT_SECTION]         . "'),";
                 $has_student = true;
+                $criteria = new Criteria();
+                $cri = $criteria->getEquiv();
+                $content = '[{"activities":[{"name":"1","total":"120","isLock":"false"},{"name":"2","total":"120","isLock":"false"},{"name":"P","total":"200","isLock":"false"}],"equiv":"' . $cri[0] . '","name":"Activities/Project"},{"activities":[{"name":"1","total":"60","isLock":"false"},{"name":"2","total":"60","isLock":"false"}],"equiv":"' . $cri[1] . '","name":"Quizes"},{"activities":[{"name":"1","total":"2","isLock":"false"},{"name":"2","total":"7","isLock":"false"},{"name":"3","total":"100","isLock":"false"}],"equiv":"' . $cri[2] . '","name":"Recitation"},{"activities":[{"name":"1","total":"10","isLock":"false"}],"equiv":"' . $cri[3] . '","name":"Promptness"},{"activities":[{"name":"ME","total":"100","isLock":"false"},{"name":"FE","total":"100","isLock":"false"}],"equiv":"' . $cri[4] . '","name":"Major Exam"}]';
                 foreach ($subs as $s) {
-                    $sql .= "('" . $eachData[STUDENT_STUDENT_NO] . "', '$s->code'),";
+                    $sql .= "('" . $eachData[STUDENT_STUDENT_NO] . "', '$s->code', '$content'),";
                 }
             }
         }
@@ -85,9 +88,12 @@ class Student extends dbHandler
             $subjects = new Subject();
             $subs = $subjects->getAllSubject();
             if (mysqli_query($this->conn, $query)) {
-                $sql = "INSERT INTO student_subject(student_id, subject_code) VALUES";
+                $sql = "INSERT INTO student_subject(student_id, subject_code, criteria) VALUES";
+                $criteria = new Criteria();
+                $cri = $criteria->getEquiv();
+                $content = '[{"activities":[{"name":"1","total":"120","isLock":"false"},{"name":"2","total":"120","isLock":"false"},{"name":"P","total":"200","isLock":"false"}],"equiv":"' . $cri[0] . '","name":"Activities/Project"},{"activities":[{"name":"1","total":"60","isLock":"false"},{"name":"2","total":"60","isLock":"false"}],"equiv":"' . $cri[1] . '","name":"Quizes"},{"activities":[{"name":"1","total":"2","isLock":"false"},{"name":"2","total":"7","isLock":"false"},{"name":"3","total":"100","isLock":"false"}],"equiv":"' . $cri[2] . '","name":"Recitation"},{"activities":[{"name":"1","total":"10","isLock":"false"}],"equiv":"' . $cri[3] . '","name":"Promptness"},{"activities":[{"name":"ME","total":"100","isLock":"false"},{"name":"FE","total":"100","isLock":"false"}],"equiv":"' . $cri[4] . '","name":"Major Exam"}]';
                 foreach ($subs as $s) {
-                    $sql .= "('" . $details->id . "', '$s->code'),";
+                    $sql .= "('" . $details->id . "', '$s->code', $content),";
                 }
                 $sql = rtrim($sql, ",");
                 if (mysqli_query($this->conn, $sql)) {

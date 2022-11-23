@@ -1,5 +1,22 @@
 <main>
-    <header >
+    <header>
         <div id="header-title" class="h3">Criteria</div>
     </header>
+    <!-- <div class="alert bg-light" id="error"></div> -->
+    <div class="shadow-sm p-3 bg-white" style="width: 400px;">
+        <form id="criteriaForm">
+            <div class="row d-flex align-items-center mb-3 g-2" id="listOfCriteria">
+
+            </div>
+            <div class="alert alert-success text-center py-1" role="alert" id="alertSuccess">
+                Save Successfully
+            </div>
+            <div class="alert alert-danger text-center py-1" role="alert" id="alertError">
+                Total equivalent must be equal to 100%
+            </div>
+            <input type="submit" class="btn btn-dark w-100" id="saveBtn" value="Save Changes">
+        </form>
+    </div>
 </main>
+
+<script src="../criteria/script.criteria.js"></script>
