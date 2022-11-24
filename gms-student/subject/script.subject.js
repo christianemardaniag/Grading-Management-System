@@ -10,7 +10,7 @@ $(document).ready(function () {
         success: function (response) {
             subjects = response;
             displaySubjects(response);
-            // $("#allSubjectTable").DataTable();
+            $("#allSubjectTable").DataTable();
         },
         error: function (response) {
             console.error(response);
