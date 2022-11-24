@@ -1,6 +1,6 @@
 $(document).ready(function () {
     displayFaculties();
-
+    displayBlockedFaculty();
     $("#uploadFileBtn").click(function (e) {
         e.preventDefault();
         $("#fileUpload").trigger('click');
@@ -38,6 +38,55 @@ $(document).ready(function () {
 
     });
 
+    function displayBlockedFaculty() {
+        console.log("vliasda");
+        $.ajax({
+            type: "POST",
+            url: "../faculty/process.faculty.php",
+            data: { GET_BLOCKED_FACULTY_REQ: true },
+            dataType: "JSON",
+            success: function (GET_BLOCKED_FACULTY_RESP) {
+                console.log(GET_BLOCKED_FACULTY_RESP);
+                content = ``;
+                $.each(GET_BLOCKED_FACULTY_RESP, function (indexInArray, faculty) {
+                    content += `
+                        <tr">
+                            <td>${faculty.id}</td>
+                            <td>${faculty.fullName}</td>
+                            <td>${faculty.email}</td>
+                            <td>${faculty.contact_no}</td>
+                            <td><button type="button" class="btn btn-dark btn-sm unblock" data-id="${faculty.id}">Unblock</button></td>
+                        </tr>
+                     `;
+                });
+                $("#blockedFacultyRecords").html(content);
+                if ($.fn.DataTable.isDataTable("#blockedFacultiesTable")) {
+                    $('#blockedFacultiesTable').DataTable().clear().destroy();
+                }
+                $("#blockedFacultiesTable").DataTable();
+                $(".unblock").click(function (e) {
+                    e.preventDefault();
+                    var id = $(this).data("id");
+                    $.ajax({
+                        type: "POST",
+                        url: "../faculty/process.faculty.php",
+                        data: { UNBLOCK_FACULTY_REQ: id },
+                        dataType: "JSON",
+                        success: function (UNBLOCK_FACULTY_RESP) {
+                            if(UNBLOCK_FACULTY_RESP.status) {
+                                $(".toast-body").html(id + " has been successfully unblocked")
+                                $("#liveToast").toast("show");
+                                displayBlockedFaculty();
+                                displayFaculties();
+                            } else {
+                                console.error(UNBLOCK_FACULTY_RESP.msg);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
 
     function displayFaculties() {
         $.ajax({
@@ -64,7 +113,7 @@ $(document).ready(function () {
                 $("#facultyRecords").html(content);
                 $("#facultiesTable").DataTable({
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    "pageLength": 50
+                    "pageLength": 10
                 });
 
                 var selectedFaculty = "";

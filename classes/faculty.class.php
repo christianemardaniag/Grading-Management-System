@@ -209,6 +209,34 @@ class Faculty extends dbHandler
         }
     }
 
+    public function getBlockedFaculty()
+    {
+        $query = "SELECT * FROM faculty WHERE status='" . BLOCKED . "'";
+        $result = mysqli_query($this->conn, $query);
+        $data = array();
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = (object) [
+                    "id" => $row['id'],
+                    "fullName" => $row['fullName'],
+                    "email" => $row['email'],
+                    "contact_no" => $row['contact_no'],
+                ];
+            }
+        }
+        return $data;
+    }
+
+    public function unblockFaculty($id)
+    {
+        $query = "UPDATE `faculty` SET `status`='" . ACTIVE . "', `attempt`='2' WHERE id='$id'";
+        if (mysqli_query($this->conn, $query)) {
+            return (object) ['status' => true, 'msg' => ''];
+        } else {
+            return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+        }
+    }
+
     public function getFacultyInfo()
     {
         return $this->facultyInfo;
