@@ -3,10 +3,10 @@
         <div id="header-title" class="h3">Dashboard</div>
     </header>
     <div class="progress mb-3 me-2">
-        <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar"
+        <div id="studentProgress" class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar"
             style="width: 75%"></div>
     </div>
-    <div class="text-bg-dark py-1 px-3 mb-2 mx-1 rounded">
+    <div id="hasHonor" class="text-bg-dark py-1 px-3 mb-2 mx-1 rounded">
         <div class="d-flex justify-content-start align-items-center">
             <div>
                 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -15,9 +15,11 @@
                 </lottie-player>
             </div>
             <div>
-                <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Libre+Baskerville:wght@700&display=swap"
+                    rel="stylesheet">
                 <h5 class="" style="font-family: 'Dancing Script', cursive;">Congratulations</h5>
-                <h3 class="" style="font-family: 'Libre Baskerville', serif;">Summa Cum Laude</h3>
+                <h3 id="academicHonor" style="font-family: 'Libre Baskerville', serif;">Summa Cum Laude</h3>
             </div>
         </div>
     </div>
@@ -25,7 +27,7 @@
         <div class="col">
             <div class="shadow-sm bg-white py-4 px-3 d-flex justify-content-between">
                 <div class="dash-title">GWA</div>
-                <div id="studentCount" class="h2 fw-bold mt-1 text-end">
+                <div id="gwa-grade" class="h2 fw-bold mt-1 text-end">
                     90.00
                 </div>
             </div>
@@ -33,7 +35,7 @@
         <div class="col">
             <div class="shadow-sm bg-white py-4 px-3 d-flex justify-content-between">
                 <div class="dash-title">Equivalent</div>
-                <div id="studentCount" class="h2 fw-bold mt-1 text-end">
+                <div id="gwa-equiv" class="h2 fw-bold mt-1 text-end">
                     1.25
                 </div>
             </div>
@@ -41,7 +43,7 @@
         <div class="col">
             <div class="shadow-sm bg-white py-4 px-3 d-flex justify-content-between">
                 <div class="dash-title">Remarks</div>
-                <div id="studentCount" class="h2 fw-bold mt-1 text-end">
+                <div id="gwa-remarks" class="h2 fw-bold mt-1 text-end">
                     PASSED
                 </div>
             </div>
@@ -61,9 +63,7 @@
         <div class="col-8">
             <div class="shadow-sm bg-white pb-2 pt-4 px-3">
                 <div class="d-flex justify-content-between">
-                    <div class="dash-title">Grade per Subject <div class="spinner-border spinner-border-sm" role="status" id="chart3Spinner">
-                        <span class="visually-hidden">Loading...</span>
-                    </div></div>
+                    <div class="dash-title">Grade per Subject</div>
                     <div>
                         <select class="form-select form-select-sm w-auto" id="year_sem">
                             <option value="1" selected>1ST YEAR</option>
@@ -82,5 +82,15 @@
     </div>
 
 </main>
+
+<!-- LOADING SCREEN -->
+<div class="modal" id="loadingScreen" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+        <div class="spinner-border d-block mx-auto text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
 
 <script src="../dashboard/script.dashboard.js"></script>

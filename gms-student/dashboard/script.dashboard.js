@@ -1,5 +1,143 @@
 $(document).ready(function () {
+    $("#hasHonor").hide();
+    $.ajax({
+        type: "POST",
+        url: "../dashboard/process.dashboard.php",
+        data: { GET_STUDENT_GRADES_REQ: true },
+        dataType: "JSON",
+        success: function (GET_STUDENT_GRADES_RESP) {
+            // console.log(GET_STUDENT_GRADES_RESP);
+            studentGrades(GET_STUDENT_GRADES_RESP.subjects);
+            $("#loadingScreen").modal("hide");
+        }, error: function (response) {
+            console.error(response);
+        }, beforeSend: function (response) {
+            $("#loadingScreen").modal("show");
+        }
+    });
 
+    function studentGrades(subjects) {
+        var grades = [];
+        var gradesPerLevel = [];
+        var obj = subjects,
+            groupByYear = obj.reduce(function (r, a) {
+                r[a.level] = r[a.level] || [];
+                r[a.level].push(a);
+                return r;
+            }, Object.create(null));
+
+        getSubjectPerLevel(groupByYear);
+
+        $.each(groupByYear, function (indexInArray, year) {
+            var tempGrade = [];
+            $.each(year, function (indexInArray, val) {
+                tempGrade.push(val.grade)
+            });
+            gradesPerLevel.push(getGrade(tempGrade).toFixed(2));
+        });
+
+        // CHART #1
+        chart1.data.datasets[0].data = gradesPerLevel;
+        chart1.update();
+
+        $("#year_sem").change(function (e) {
+            e.preventDefault();
+            getSubjectPerLevel(groupByYear);
+        });
+
+        var lock = 0;
+        var total = 0;
+        $.each(subjects, function (subjectIndex, subject) {
+            grades.push(subject.grade);
+            $.each(subject.criteria, function (indexInArray, criteria) {
+                $.each(criteria.activities, function (indexInArray, act) {
+                    act.isLock = (String(act.isLock) === 'true');
+                    if (act.isLock) lock++;
+                    total++;
+                });
+            });
+        });
+        var prog = (lock / total) * 100;
+        $("#studentProgress").width(prog);
+        displayGWA(grades);
+        candidateForAcademicHonor(grades);
+    }  // END OF studentGrades 
+
+    function getSubjectPerLevel(subLevel) {
+        var level = $("#year_sem").val();
+        var subCode = [];
+        var subGrade = [];
+        $.each(subLevel[level], function (indexInArray, val) {
+            subCode.push(val.code);
+            subGrade.push(val.grade);
+        });
+        chart2.data.labels = subCode;
+        chart2.data.datasets[0].data = subGrade;
+        chart2.update();
+    }
+
+    function displayGWA(grades) {
+        const finalGrade = getGrade(grades);
+        $("#gwa-grade").html(getGrade(grades).toFixed(2));
+        $("#gwa-equiv").html(getEquiv(finalGrade).toFixed(2));
+        $("#gwa-remarks").html(getRemarks(finalGrade));
+    }
+
+    function candidateForAcademicHonor(grades) {
+        if (!grades.some((x) => { return x < 90; })) {
+            if (grade >= 97) {
+                $("#academicHonor").html("Summa Cum Laude");
+                $("#hasHonor").fadeIn();
+            }
+        } else if (!grades.some((x) => { return x <= 84; })) {
+            if (grade >= 94) {
+                $("#academicHonor").html("Magna Cum Laude");
+                $("#hasHonor").fadeIn();
+            }
+        } else if (!grades.some((x) => { return x <= 81; })) {
+            if (grade >= 79) {
+                $("#academicHonor").html("Cum Laude");
+                $("#hasHonor").fadeIn();
+            }
+        }
+    }
+
+    function getGrade(arr) {
+        return arr.reduce((a, b) => parseFloat(a) + parseFloat(b)) / arr.length
+    }
+
+    function getRemarks(grade) {
+        if (grade < 75) {
+            return "FAILED";
+        } else {
+            return "PASSED";
+        }
+    }
+
+    function getEquiv(grade) {
+        grade = Math.floor(grade);
+        if (grade <= 74) {
+            return 5.00;
+        } else if (grade <= 75) {
+            return 3.00;
+        } else if (grade <= 78) {
+            return 2.75;
+        } else if (grade <= 81) {
+            return 2.50;
+        } else if (grade <= 84) {
+            return 2.25;
+        } else if (grade <= 87) {
+            return 2.00;
+        } else if (grade <= 90) {
+            return 1.75;
+        } else if (grade <= 93) {
+            return 1.50;
+        } else if (grade <= 96) {
+            return 1.25;
+        } else if (grade <= 100) {
+            return 1.00;
+        }
+    }
 });
 
 // CHART #1: GRADE PER YEAR LEVEL

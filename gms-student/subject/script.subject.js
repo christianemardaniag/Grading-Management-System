@@ -11,11 +11,14 @@ $(document).ready(function () {
             subjects = response;
             displaySubjects(response);
             $("#allSubjectTable").DataTable();
+            $("#loadingScreen").modal("hide");
         },
         error: function (response) {
             console.error(response);
             $("#errorAlert").removeClass("d-none");
             $("#errorAlert").html(response.responseText);
+        }, beforeSend: function (response) {
+            $("#loadingScreen").modal("show");
         }
     });
 

@@ -1,19 +1,15 @@
 $(document).ready(function () {
     var temp_subject = {};
-    $("#year_sem").change(function (e) { 
+    $("#year_sem").change(function (e) {
         e.preventDefault();
         var year_sem = $(this).val();
-        // if (year_sem == "All") {
-        //     displayStudentGrades(temp_subject);
-        // } else {
-            var year = year_sem.split('-')[0];
-            var sem = year_sem.split('-')[1];
-            var filtered = keepCloning(temp_subject);
-            filtered.subjects = filtered.subjects.filter(function (data) {
-                return data.level == year && data.semester == sem;
-            });
-            displayStudentGrades(filtered);
-        // }
+        var year = year_sem.split('-')[0];
+        var sem = year_sem.split('-')[1];
+        var filtered = keepCloning(temp_subject);
+        filtered.subjects = filtered.subjects.filter(function (data) {
+            return data.level == year && data.semester == sem;
+        });
+        displayStudentGrades(filtered);
     });
 
     $.ajax({
@@ -23,12 +19,20 @@ $(document).ready(function () {
         dataType: "JSON",
         success: function (GET_STUDENT_GRADES_RESP) {
             temp_subject = keepCloning(GET_STUDENT_GRADES_RESP);
-
-            console.log(temp_subject);
-            displayStudentGrades(temp_subject);
+            var year_sem = $("#year_sem").val();
+            var year = year_sem.split('-')[0];
+            var sem = year_sem.split('-')[1];
+            var filtered = keepCloning(temp_subject);
+            filtered.subjects = filtered.subjects.filter(function (data) {
+                return data.level == year && data.semester == sem;
+            });
+            displayStudentGrades(filtered);
+            $("#loadingScreen").modal("hide");
         }, error: function (response) {
             console.error(response);
             // $("#error").html(response.responseText);
+        }, beforeSend: function (response) {
+            $("#loadingScreen").modal("show");
         }
     });
 
@@ -165,7 +169,7 @@ $(document).ready(function () {
 
             // set remarks
             subject.remarks = (equiv == 5.00) ? "Failed" : "Passed";
-        
+
             displayStudentGrades(temp_subject);
         });
 
