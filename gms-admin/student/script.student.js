@@ -1,6 +1,6 @@
 $(document).ready(function () {
     displayStudents();
-
+    displayBlockedStudent();
     $("#uploadFileBtn").click(function (e) {
         e.preventDefault();
         $("#fileUpload").trigger('click');
@@ -30,7 +30,6 @@ $(document).ready(function () {
             level: $("#filter-level").val()
         },
             function (GET_SECTION_DESTINCT_RESP, textStatus, jqXHR) {
-                console.log(textStatus);
                 let content = `<option value="All" selected>All</option>`;
                 $.each(GET_SECTION_DESTINCT_RESP, function (indexInArray, section) {
                     content += `<option value="${section}">${section}</option>`;
@@ -64,6 +63,56 @@ $(document).ready(function () {
         displayStudents($("#filter-level").val(), $("#filter-section").val());
     });
 
+    function displayBlockedStudent() {
+        $.ajax({
+            type: "POST",
+            url: "../student/process.student.php",
+            data: { GET_BLOCKED_STUDENT_REQ: true },
+            dataType: "JSON",
+            success: function (GET_BLOCKED_STUDENT_RESP) {
+                console.log(GET_BLOCKED_STUDENT_RESP);
+                content = ``;
+                $.each(GET_BLOCKED_STUDENT_RESP, function (indexInArray, student) {
+                    content += `
+                        <tr>
+                            <td>${student.studentNo}</td>
+                            <td>${student.fullName}</td>
+                            <td>${student.program} ${student.section}</td>
+                            <td>${student.specialization}</td>
+                            <td>${student.email}</td>
+                            <td>${student.contact_no}</td>
+                            <td><button type="button" class="btn btn-dark btn-sm unblock" data-id="${student.studentNo}">Unblock</button></td>
+                        </tr>
+                     `;
+                });
+                $("#blockedStudentRecords").html(content);
+                if ($.fn.DataTable.isDataTable("#blockedStudentsTable")) {
+                    $('#blockedStudentsTable').DataTable().clear().destroy();
+                }
+                $("#blockedStudentsTable").DataTable();
+                $(".unblock").click(function (e) {
+                    e.preventDefault();
+                    var id = $(this).data("id");
+                    $.ajax({
+                        type: "POST",
+                        url: "../student/process.student.php",
+                        data: { UNBLOCK_STUDENT_REQ: id },
+                        dataType: "JSON",
+                        success: function (UNBLOCK_STUDENT_RESP) {
+                            if(UNBLOCK_STUDENT_RESP.status) {
+                                $(".toast-body").html(id + " has been successfully unblocked")
+                                $("#liveToast").toast("show");
+                                displayBlockedStudent();
+                                displayStudents();
+                            } else {
+                                console.error(UNBLOCK_STUDENT_RESP.msg);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
 
     function displayStudents(level = 'All', section = 'All') {
         $.ajax({

@@ -59,16 +59,17 @@
                 <div class="col">
                     <div class="mb-3">
                         <label for="filter-section" class="form-label">Section</label>
-                        <select class="form-select mb-3" name="filter-section" id="filter-section" required>                            
+                        <select class="form-select mb-3" name="filter-section" id="filter-section" required>
                         </select>
                     </div>
                 </div>
 
             </div>
-            
+
         </div>
 
-        <table class="table table-light shadow-sm table-bordered table-striped table-hover display compact" id="studentsTable">
+        <table class="table table-light shadow-sm table-bordered table-striped table-hover display compact"
+            id="studentsTable">
             <thead>
                 <tr>
                     <th>Student No</th>
@@ -84,6 +85,37 @@
             </tbody>
         </table>
 
+
+        <div class="my-5">
+            <h3>Blocked Student</h3>
+            <table class="table table-light shadow-sm table-bordered table-striped table-hover display compact"
+                id="blockedStudentsTable">
+                <thead>
+                    <tr>
+                        <th>Student No</th>
+                        <th>Full Name</th>
+                        <th>CYS</th>
+                        <th>Specialization</th>
+                        <th>Email</th>
+                        <th>Contact No</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="blockedStudentRecords">
+
+                </tbody>
+            </table>
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast align-items-center text-bg-dark border-0" role="alert"
+                    aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body"></div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -302,12 +334,12 @@
 
             </div>
             <div class="modal-footer d-print-none">
-                <button class="btn btn-danger px-3 " data-bs-target="#removeStudentModal"
-                    data-bs-toggle="modal"><i class="fal fa-trash"></i> Remove</button>
+                <button class="btn btn-danger px-3 " data-bs-target="#removeStudentModal" data-bs-toggle="modal"><i
+                        class="fal fa-trash"></i> Remove</button>
                 <button class="btn btn-dark px-4" onclick="window.print()"><i class="fal fa-print"></i>
                     Print</button>
-                <button class="btn btn-dark px-3" data-bs-target="#editStudentModal"
-                    data-bs-toggle="modal"><i class="fal fa-edit"></i> Edit</button>
+                <button class="btn btn-dark px-3" data-bs-target="#editStudentModal" data-bs-toggle="modal"><i
+                        class="fal fa-edit"></i> Edit</button>
             </div>
         </div>
     </div>
@@ -319,7 +351,8 @@
         <div class="modal-content rounded-3">
             <div class="modal-body p-4 text-center">
                 <h5 class="">Remove <span id="remove-fullName"></span></h5>
-                <p class="mb-1">Are you sure you want to remove student <span id="remove-studentNo" class="h5"></span>?</p>
+                <p class="mb-1">Are you sure you want to remove student <span id="remove-studentNo" class="h5"></span>?
+                </p>
                 <p class="mb-0 text-danger fw-bolder">*This action is cannot be undone!
                 </p>
             </div>

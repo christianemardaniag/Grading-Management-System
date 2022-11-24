@@ -169,7 +169,6 @@ class Student extends dbHandler
         return $prog;
     }
 
-
     private function withID($id)
     {
         $this->id = $id;
@@ -263,5 +262,37 @@ class Student extends dbHandler
     {
         $data = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz!@#$%&*';
         return substr(str_shuffle($data), 0, 8);
+    }
+
+    public function getBlockedStudent()
+    {
+        $query = "SELECT * FROM student WHERE status='" . BLOCKED . "'";
+        $result = mysqli_query($this->conn, $query);
+        $data = array();
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = (object) [
+                    "studentNo" => $row['id'],
+                    "fullName" => $row['fullName'],
+                    "email" => $row['email'],
+                    "contact_no" => $row['contact_no'],
+                    'specialization' => $row['specialization'],
+                    'program' => $row['program'],
+                    'level' => $row['level'],
+                    'section' => $row['section'],
+                ];
+            }
+        }
+        return $data;
+    }
+
+    public function unblockStudent($id)
+    {
+        $query = "UPDATE `student` SET `status`='" . ACTIVE . "', `attempt`='2' WHERE id='$id'";
+        if (mysqli_query($this->conn, $query)) {
+            return (object) ['status' => true, 'msg' => ''];
+        } else {
+            return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
+        }
     }
 }

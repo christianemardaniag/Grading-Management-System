@@ -49,4 +49,8 @@ if (isset($_POST['GET_STUDENTS_REQ'])) {
 	echo json_encode((array)$student->getSections($_POST["level"]));
 } elseif (isset($_POST['REMOVE_STUDENT_REQ'])) {
 	echo json_encode((array)$student->removeStudent($_POST["REMOVE_STUDENT_REQ"]));
+} elseif (isset($_POST['GET_BLOCKED_STUDENT_REQ'])) {
+	echo json_encode((array)$student->getBlockedStudent());
+} elseif (isset($_POST['UNBLOCK_STUDENT_REQ'])) {
+	echo json_encode((array)$student->unblockStudent($_POST['UNBLOCK_STUDENT_REQ']));
 }

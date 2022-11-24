@@ -39,7 +39,6 @@ $(document).ready(function () {
     });
 
     function displayBlockedFaculty() {
-        console.log("vliasda");
         $.ajax({
             type: "POST",
             url: "../faculty/process.faculty.php",
