@@ -12,12 +12,46 @@ $(document).ready(function () {
             console.log(myStudents);
             let prCtr = [0, 0, 0, 0];
             let frCtr = [0, 0, 0, 0];
+            let maleCtr = [0, 0, 0, 0];
+            let femaleCtr = [0, 0, 0, 0];
             $.each(myStudents, function (stud_index, stud) {
                 switch (stud.level.toUpperCase()) {
-                    case "1ST YEAR": yearLevelCount[0]++; isPassed(stud) ? prCtr[0]++ : frCtr[0]++; break;
-                    case "2ND YEAR": yearLevelCount[1]++; isPassed(stud) ? prCtr[1]++ : frCtr[1]++; break;
-                    case "3RD YEAR": yearLevelCount[2]++; isPassed(stud) ? prCtr[2]++ : frCtr[2]++; break;
-                    case "4TH YEAR": yearLevelCount[3]++; isPassed(stud) ? prCtr[3]++ : frCtr[3]++; break;
+                    case "1ST YEAR":
+                        yearLevelCount[0]++;
+                        isPassed(stud) ? prCtr[0]++ : frCtr[0]++;
+                        if (stud.gender == "Male") {
+                            if (isPassed(stud)) maleCtr[0]++;
+                        } else {
+                            if (isPassed(stud)) femaleCtr[0]++;
+                        }
+                        break;
+                    case "2ND YEAR":
+                        yearLevelCount[1]++;
+                        isPassed(stud) ? prCtr[1]++ : frCtr[1]++;
+                        if (stud.gender == "Male") {
+                            if (isPassed(stud)) maleCtr[1]++;
+                        } else {
+                            if (isPassed(stud)) femaleCtr[1]++;
+                        }
+                        break;
+                    case "3RD YEAR":
+                        yearLevelCount[2]++;
+                        isPassed(stud) ? prCtr[2]++ : frCtr[2]++;
+                        if (stud.gender == "Male") {
+                            if (isPassed(stud)) maleCtr[2]++;
+                        } else {
+                            if (isPassed(stud)) femaleCtr[2]++;
+                        }
+                        break;
+                    case "4TH YEAR":
+                        yearLevelCount[3]++;
+                        isPassed(stud) ? prCtr[3]++ : frCtr[3]++;
+                        if (stud.gender == "Male") {
+                            if (isPassed(stud)) maleCtr[3]++;
+                        } else {
+                            if (isPassed(stud)) femaleCtr[3]++;
+                        }
+                        break;
                     default: break;
                 }
                 candidateForAcademicHonor(stud);
@@ -32,14 +66,21 @@ $(document).ready(function () {
 
             // CHART #2: PASSING RATE PER YEAR LEVEL
             for (let x = 0; x < yearLevelCount.length; x++) {
-                frCtr[x] = frCtr[x] / yearLevelCount[x] * 100;
-                prCtr[x] = prCtr[x] / yearLevelCount[x] * 100;
+                frCtr[x] = Math.ceil(frCtr[x] / yearLevelCount[x] * 100);
+                prCtr[x] = Math.ceil(prCtr[x] / yearLevelCount[x] * 100);
+                maleCtr[x] = Math.ceil(maleCtr[x] / yearLevelCount[x] * 100);
+                femaleCtr[x] = Math.ceil(femaleCtr[x] / yearLevelCount[x] * 100);
             }
             chart2.data.datasets[0].data = prCtr;
             chart2.data.datasets[1].data = frCtr;
             chart2.update();
 
+            chart4.data.datasets[0].data = maleCtr;
+            chart4.data.datasets[1].data = femaleCtr;
+            chart4.update();
+
             $("#loadingScreen").modal("hide");
+            $(".table").DataTable();
         },
         beforeSend: function (response) {
             $("#loadingScreen").modal("show");
@@ -52,6 +93,7 @@ $(document).ready(function () {
     function isPassed(stud) {
         var grades = [];
         $.each(stud.subjects, function (indexInArray, sub2) {
+            
             grades.push(sub2.grade);
         });
         if (parseFloat(getGrade(grades)) >= 75) {
@@ -128,7 +170,7 @@ $(document).ready(function () {
     function candidateForAcademicHonor(stud) {
         var grades = [];
         $.each(stud.subjects, function (indexInArray, sub2) {
-            grades.push(parseInt(sub2.grade));
+            grades.push(parseFloat(sub2.grade));
         });
         var grade = parseFloat(getGrade(grades));
         let content = `
@@ -136,8 +178,8 @@ $(document).ready(function () {
             <td>${stud.studentNo}</td>
             <td>${stud.fullName}</td>
             <td>${stud.section}</td>
-            <td class="fw-bold">${grade}</td>
-            <td>${getEquiv(grade)}</td>
+            <td>${parseFloat(grade).toFixed(2)}</td>
+            <td class="fw-bold">${getEquiv(grade).toFixed(2)}</td>
         </tr>
         `;
         if (!grades.some((x) => { return x < 90; })) {
@@ -182,6 +224,38 @@ $(document).ready(function () {
 
 });
 
+// CHART #4: PASSING RATE PER YEAR LEVEL
+var ctxChart4 = document.getElementById('chart4').getContext('2d');
+var chart4 = new Chart(ctxChart4, {
+    type: 'bar',
+    plugins: [ChartDataLabels],
+    data: {
+        labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
+        datasets: [{
+            label: ["Male"],
+            data: [87, 97, 76, 84],
+            backgroundColor: '#f79c06',
+        }, {
+            label: ["Female"],
+            data: [56, 30, 74, 96],
+            backgroundColor: '#76320d'
+        }]
+    }, options: {
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'top' },
+            title: { display: false },
+            datalabels: {
+                anchor: 'end',
+                align: 'bottom',
+                color: 'white'
+            }
+        }, scales: {
+            y: { min: 0, max: 100 }
+        }
+    },
+});
+
 // CHART #3: PASSING RATE PER SUBJECT
 var ctxChart3 = document.getElementById('chart3').getContext('2d');
 var chart3 = new Chart(ctxChart3, {
@@ -193,7 +267,7 @@ var chart3 = new Chart(ctxChart3, {
             label: ["Passed"],
             data: [87, 97, 76, 84, 67, 84, 94],
             backgroundColor: ['#eeb90215'],
-            borderColor: '#eeb902',
+            // borderColor: 'gray',
             fill: true,
             tension: 0.4
         }
@@ -201,16 +275,19 @@ var chart3 = new Chart(ctxChart3, {
     }, options: {
         maintainAspectRatio: false,
         plugins: {
-            legend: { position: 'top' },
+            legend: { display: false },
             title: { display: false },
             datalabels: {
-                anchor: 'end',
-                align: 'bottom',
-                color: 'black'
+                display: false
+                // anchor: 'start',
+                // align: 'bottom',
+                // color: 'black'
             }
         }, scales: {
             y: { min: 0, max: 100 }
-        }
+        },
+        pointBackgroundColor: "#eeb902",
+        radius: 5,
     },
 });
 

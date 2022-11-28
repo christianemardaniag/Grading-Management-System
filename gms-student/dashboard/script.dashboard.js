@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("#hasHonor").hide();
+    // $("#hasHonor").hide();
     $.ajax({
         type: "POST",
         url: "../dashboard/process.dashboard.php",
@@ -7,7 +7,7 @@ $(document).ready(function () {
         dataType: "JSON",
         success: function (GET_STUDENT_GRADES_RESP) {
             // console.log(GET_STUDENT_GRADES_RESP);
-            studentGrades(GET_STUDENT_GRADES_RESP.subjects);
+            // studentGrades(GET_STUDENT_GRADES_RESP.subjects);
             $("#loadingScreen").modal("hide");
         }, error: function (response) {
             console.error(response);
@@ -58,7 +58,7 @@ $(document).ready(function () {
             });
         });
         var prog = (lock / total) * 100;
-        $("#studentProgress").width(prog);
+        $("#studentProgress").width(prog+"%");
         displayGWA(grades);
         candidateForAcademicHonor(grades);
     }  // END OF studentGrades 
@@ -84,18 +84,19 @@ $(document).ready(function () {
     }
 
     function candidateForAcademicHonor(grades) {
-        if (!grades.some((x) => { return x < 90; })) {
-            if (grade >= 97) {
+        const finalGrade = getGrade(grades);
+        if (!grades.some((x) => { return x < 85; })) {
+            if (finalGrade >= 95) {
                 $("#academicHonor").html("Summa Cum Laude");
                 $("#hasHonor").fadeIn();
             }
-        } else if (!grades.some((x) => { return x <= 84; })) {
-            if (grade >= 94) {
+        } else if (!grades.some((x) => { return x <= 82; })) {
+            if (finalGrade >= 92) {
                 $("#academicHonor").html("Magna Cum Laude");
                 $("#hasHonor").fadeIn();
             }
-        } else if (!grades.some((x) => { return x <= 81; })) {
-            if (grade >= 79) {
+        } else if (!grades.some((x) => { return x <= 79; })) {
+            if (finalGrade >= 88) {
                 $("#academicHonor").html("Cum Laude");
                 $("#hasHonor").fadeIn();
             }
