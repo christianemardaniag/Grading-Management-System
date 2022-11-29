@@ -120,8 +120,8 @@ $(document).ready(function () {
                 <td>${temp_json.code}</td>
                 <td>${temp_json.description}</td>
                 <td>${myStudents[index].section}</td>
-                <td class='fw-bold'>${parseFloat(temp_json.grade).toFixed(2)}</td>
-                <td>${parseFloat(temp_json.equiv).toFixed(2)}</td>
+                <td>${parseFloat(temp_json.grade).toFixed(2)}</td>
+                <td class='fw-bold'>${parseFloat(temp_json.equiv).toFixed(2)}</td>
             </tr>`;
             $("#dropStudentContent").append(content);
         }
@@ -164,8 +164,8 @@ $(document).ready(function () {
                 <td>${myStudents[outstandingStudent[i].k].studentNo}</td>
                 <td class="text-truncate" style="max-width: 150px;">${myStudents[outstandingStudent[i].k].fullName}</td>
                 <td>${myStudents[outstandingStudent[i].k].section}</td>
-                <td class='fw-bold'>${parseFloat(outstandingStudent[i].v).toFixed(2)}</td>
-                <td>${getEquiv(outstandingStudent[i].v).toFixed(2)}</td>
+                <td>${parseFloat(outstandingStudent[i].v).toFixed(2)}</td>
+                <td class='fw-bold'>${getEquiv(outstandingStudent[i].v).toFixed(2)}</td>
             </tr>
             `;
         }

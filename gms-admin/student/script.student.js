@@ -173,11 +173,13 @@ $(document).ready(function () {
                     $("#view-section").html(selectedStudent.section);
                     let subjects = ``;
                     $.each(selectedStudent.subjects, function (indexInArray, subject) {
-                        subjects += `
+                        if (subject.level == selectedStudent.level.charAt(0)){
+                            subjects += `
                             <tr>
-                                <td>${subject.code}</td>
-                                <td>${subject.description}</td>
+                            <td>${subject.code}</td>
+                            <td>${subject.description}</td>
                             </tr>`;
+                        }
                     });
                     $("#view-subjects").html(subjects);
                     $("#viewStudentModal").modal("show");

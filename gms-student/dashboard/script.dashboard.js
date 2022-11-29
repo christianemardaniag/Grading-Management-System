@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    // $("#hasHonor").hide();
+    $("#hasHonor").hide();
     $.ajax({
         type: "POST",
         url: "../dashboard/process.dashboard.php",
@@ -7,7 +7,7 @@ $(document).ready(function () {
         dataType: "JSON",
         success: function (GET_STUDENT_GRADES_RESP) {
             // console.log(GET_STUDENT_GRADES_RESP);
-            // studentGrades(GET_STUDENT_GRADES_RESP.subjects);
+            studentGrades(GET_STUDENT_GRADES_RESP.subjects);
             $("#loadingScreen").modal("hide");
         }, error: function (response) {
             console.error(response);
@@ -31,7 +31,7 @@ $(document).ready(function () {
         $.each(groupByYear, function (indexInArray, year) {
             var tempGrade = [];
             $.each(year, function (indexInArray, val) {
-                tempGrade.push(val.grade)
+                tempGrade.push(getEquiv(val.grade).toFixed(2));
             });
             gradesPerLevel.push(getGrade(tempGrade).toFixed(2));
         });
@@ -58,7 +58,7 @@ $(document).ready(function () {
             });
         });
         var prog = (lock / total) * 100;
-        $("#studentProgress").width(prog+"%");
+        $("#studentProgress").width(prog + "%");
         displayGWA(grades);
         candidateForAcademicHonor(grades);
     }  // END OF studentGrades 
@@ -69,7 +69,7 @@ $(document).ready(function () {
         var subGrade = [];
         $.each(subLevel[level], function (indexInArray, val) {
             subCode.push(val.code);
-            subGrade.push(val.grade);
+            subGrade.push(getEquiv(val.grade).toFixed(2));
         });
         chart2.data.labels = subCode;
         chart2.data.datasets[0].data = subGrade;
@@ -144,7 +144,7 @@ $(document).ready(function () {
 // CHART #1: GRADE PER YEAR LEVEL
 var ctxChart1 = document.getElementById('chart1').getContext('2d');
 var chart1 = new Chart(ctxChart1, {
-    type: 'bar',
+    type: 'line',
     plugins: [ChartDataLabels],
     data: {
         labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
@@ -159,13 +159,15 @@ var chart1 = new Chart(ctxChart1, {
             legend: { display: false },
             title: { display: false },
             datalabels: {
-                anchor: 'end',
+                anchor: 'start',
                 align: 'bottom',
-                color: 'white'
+                color: 'black'
             }
         }, scales: {
-            y: { min: 50, max: 100 }
-        }
+            y: { min: 1, max: 5, reverse: true },
+        }, 
+        pointBackgroundColor: "#eeb902",
+        radius: 7,
     },
 });
 
@@ -196,8 +198,9 @@ var chart2 = new Chart(ctxChart2, {
             }
         }, scales: {
             y: {
-                min: 50,
-                max: 100,
+                min: 1,
+                max: 5,
+                reverse: true 
             },
         },
         pointBackgroundColor: "#eeb902",

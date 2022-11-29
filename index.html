@@ -149,6 +149,7 @@
                     data: data,
                     dataType: "JSON",
                     success: function (response) {
+                        $("#errorAlert").fadeOut();
                         if (response.status) {
                             window.location.href = 'gms-' + userType + '/main?url=dashboard';
                         } else {
