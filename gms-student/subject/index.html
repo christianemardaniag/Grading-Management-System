@@ -7,6 +7,23 @@
     </header>
 
     <div class="mx-3">
+        <div class="my-3">
+            <label for="year_sem">Year and Semester</label>
+            <select class="form-select w-auto" id="year_sem">
+                <option value="All" selected>All</option>
+                <option value="1-1">1ST YEAR - 1ST SEMESTER</option>
+                <option value="1-2">1ST YEAR - 2ND SEMESTER</option>
+                <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                <option value="2-1">2ND YEAR - 1ST SEMESTER</option>
+                <option value="2-2">2ND YEAR - 2ND SEMESTER</option>
+                <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                <option value="3-1">3RD YEAR - 1ST SEMESTER</option>
+                <option value="3-2">3RD YEAR - 2ND SEMESTER</option>
+                <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                <option value="4-1">4TH YEAR - 1ST SEMESTER</option>
+                <option value="4-2">4TH YEAR - 2ND SEMESTER</option>
+            </select>
+        </div>
         <table class="table table-bordered table-striped table-sm display compact table-light shadow-sm" id="allSubjectTable">
             <thead>
                 <tr>
@@ -19,7 +36,6 @@
                     <th>Hours Per Week</th>
                     <th>Prereq</th>
                     <th>Co-req</th>
-                    
                 </tr>
             </thead>
             <tbody id="subject_tdata">

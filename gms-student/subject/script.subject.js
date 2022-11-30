@@ -10,7 +10,6 @@ $(document).ready(function () {
         success: function (response) {
             subjects = response;
             displaySubjects(response);
-            $("#allSubjectTable").DataTable();
             $("#loadingScreen").modal("hide");
         },
         error: function (response) {
@@ -22,12 +21,30 @@ $(document).ready(function () {
         }
     });
 
+    $("#year_sem").change(function (e) {
+        e.preventDefault();
+        var year_sem = $(this).val();
+        if (year_sem == "All") {
+            displaySubjects(subjects);
+        } else {
+            var year = year_sem.split('-')[0];
+            var sem = year_sem.split('-')[1];
+            var filtered = subjects.filter(function (data) {
+                return data.year_level == year && data.semester == sem;
+            });
+            displaySubjects(filtered);
+        }
+    });
 
     function displaySubjects(subjects) {
+        if ($.fn.DataTable.isDataTable("#allSubjectTable")) {
+            $('#allSubjectTable').DataTable().clear().destroy();
+        }
         var content = ``;
         $level = ['', "1st Year", "2nd Year", "3rd Year", "4th Year"];
         $sem = ['', "1st Semester", "2nd Semester"];
         $.each(subjects, function (i, subject) {
+            console.log(subject);
             content += `
             <tr>
                 <td>${subject.code}</td>
@@ -44,6 +61,7 @@ $(document).ready(function () {
             `;
         });
         $("#subject_tdata").html(content);
-
+        
+        $("#allSubjectTable").DataTable();
     }
 });  // document ready function end 

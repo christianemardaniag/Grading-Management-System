@@ -88,16 +88,19 @@ $(document).ready(function () {
         if (!grades.some((x) => { return x < 85; })) {
             if (finalGrade >= 95) {
                 $("#academicHonor").html("Summa Cum Laude");
+                $("#qoute").fadeOut();
                 $("#hasHonor").fadeIn();
             }
         } else if (!grades.some((x) => { return x <= 82; })) {
             if (finalGrade >= 92) {
                 $("#academicHonor").html("Magna Cum Laude");
+                $("#qoute").fadeOut();
                 $("#hasHonor").fadeIn();
             }
         } else if (!grades.some((x) => { return x <= 79; })) {
             if (finalGrade >= 88) {
                 $("#academicHonor").html("Cum Laude");
+                $("#qoute").fadeOut();
                 $("#hasHonor").fadeIn();
             }
         }
