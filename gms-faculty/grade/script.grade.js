@@ -119,8 +119,14 @@ $(document).ready(function () {
         displayStudents($("#filter-subject").val(), $("#filter-section").val());
     });
 
+    $("#uploadClassRecord").on("hidden.bs.modal", function () {
+        $("#fileUploadForm").trigger('reset');
+    });
+
     var tempData = {};
     $("#fileUploadForm").submit(function (e) {
+        $("#previewAlertError").addClass("d-none");
+        $("#upload").removeAttr("disabled");
         e.preventDefault();
         var data = new FormData(this);
         $.ajax({
@@ -136,7 +142,10 @@ $(document).ready(function () {
                 tempData.code = FILE_UPLOAD_RESP[4][5].trim();  // * subject code coordinates
                 tempData.description = FILE_UPLOAD_RESP[5][5];  // * subject description coordinates
                 tempData.section = FILE_UPLOAD_RESP[6][5].trim();  // * subject section coordinates
-
+                if (tempData.code != $("#filter-subject").val()) {
+                    $("#upload").attr("disabled", true);
+                    $("#previewAlertError").removeClass("d-none");
+                }
                 var content = `
                 <div class="fs-5">Subject Code: <b>${tempData.code}</b></div>
                 <div class="fs-5">Subject Description: <b>${tempData.description}</b></div>
@@ -370,6 +379,7 @@ $(document).ready(function () {
                             details.grade = sub.grade;
                             details.equiv = sub.equiv;
                             details.remarks = sub.remarks;
+                            details.isDrop = sub.isDrop;
                             json.students.push(details)
                             json.criteria = sub.criteria;
                         }
@@ -422,7 +432,7 @@ $(document).ready(function () {
 
     }
 
-    $("#top10Modal, #unofficialDropModal").on("show.bs.modal", function () {
+    $("#top10Modal, #unofficialDropModal, #officialDropModal").on("show.bs.modal", function () {
         $(".subjectModal").html($("#filter-subject").val());
         $(".sectionModal").html($("#filter-section").val());
     });
@@ -496,16 +506,23 @@ function fetchGrades(json) {
                     }
                 }
             });
+            var statusRemarksBg = "";
+            var statusRemarks = student.remarks;
+            if (student.isDrop) {
+                statusRemarksBg = "table-dark";
+                statusRemarks = "DROP";
+            } else if (student.remarks == "Failed") {
+                statusRemarksBg = "table-danger";
+            }
             tbody += `
             <tr>
                 <td>${student.studentNo}</td>
-                <td class="text-start"><button class="btn btn-link m-0 p-0 text-start viewStudent" style="font-size: 14px;" data-id='${student.studentNo}'>${student.name}</button></td>
+                <td class="text-start"><button class="btn btn-link m-0 p-0 text-start viewStudent" style="font-size: 14px;" data-drop="${student.isDrop}" data-id='${student.studentNo}'>${student.name}</button></td>
                 <td><b>${parseFloat(student.equiv).toFixed(2)}</b></td>
                 ${score_td}
                 <td>${parseFloat(student.grade).toFixed(2)}</td>
                 <td>${parseFloat(student.equiv).toFixed(2)}</td>
-                <td class="${student.remarks == 'Failed' ? "table-danger" : ""}">${student.remarks}</td>
-
+                <td class="${statusRemarksBg}">${statusRemarks}</td>
             </tr>`;
         });
         let tContent = `
@@ -547,7 +564,8 @@ function fetchGrades(json) {
         $("#gradesTable").html(tContent);
 
         displayTop10Students(json);
-        dropStudent(json);
+        unofficialDropStudent(json);
+        officialDropStudent(json);
         $("#loadingScreen").modal("hide");
 
         // LOCK ACTIVITY
@@ -666,7 +684,16 @@ function fetchGrades(json) {
         var selectedStudent = "";
         $(".viewStudent").click(function (e) {
             e.preventDefault();
+
             studentNo = $(this).data("id");
+            isDrop = (String($(this).data("drop")) === 'true');
+            if (isDrop) {
+                $("#dropBtn").hide();
+                $("#retrieveBtn").show();
+            } else {
+                $("#dropBtn").show();
+                $("#retrieveBtn").hide();
+            }
             $.ajax({
                 type: "POST",
                 url: "../student/process.student.php",
@@ -699,10 +726,51 @@ function fetchGrades(json) {
 
             $("#dropBtn").click(function (e) {
                 e.preventDefault();
-                var subject = $("#filter-subject").val();
-                
+                $("#dropStudentModal").modal("show");
+            });
+
+            $("#retrieveBtn").click(function (e) {
+                e.preventDefault();
+                $("#retrieveStudentModal").modal("show");
             });
         });
+
+        $("#dropBtnConfirm").click(function (e) {
+            e.preventDefault();
+            var subject = $("#filter-subject").val();
+            updateDropStatus(studentNo, subject, true, json);
+            $("#dropStudentModal").modal("hide");
+        });
+        
+        $("#retrieveBtnConfirm").click(function (e) {
+            e.preventDefault();
+            var subject = $("#filter-subject").val();
+            updateDropStatus(studentNo, subject, false, json);
+            $("#retrieveStudentModal").modal("hide");
+        });
+    });
+}
+
+function updateDropStatus(studentNo, subjectCode, status, json) {
+    $.ajax({
+        type: "POST",
+        url: "../grade/process.grade.php",
+        data: {
+            UPDATE_DROP_STATUS_REQ: true,
+            studentNo: studentNo,
+            subject: subjectCode,
+            status: status
+        },
+        dataType: "JSON",
+        success: function (response) {
+            $.each(json.students, function (i, student) {
+                if (student.studentNo == studentNo) {
+                    student.isDrop = status;
+                }
+            });
+            fetchGrades(json);
+            $("#viewStudentModal").modal("hide");
+        }
     });
 }
 
@@ -736,7 +804,27 @@ function displayTop10Students(json) {
     });
 }
 
-function dropStudent(json) {
+function officialDropStudent(json) {
+    $(document).ready(function () {
+        var content = ``;
+        var filtered = json.students.filter(function (data) {
+            return data.isDrop;
+        });
+        $.each(filtered, function (i, val) {
+            content += `
+            <tr">
+                <td>${val.studentNo}</td>
+                <td class='text-start'>${val.name}</td>
+                <td>${parseFloat(val.grade).toFixed(2)}</td>
+                <td class='fw-bold'>${parseFloat(val.equiv).toFixed(2)}</td>
+            </tr>`;
+        });
+
+        $("#officialDropStudent").html(content);
+    });
+}
+
+function unofficialDropStudent(json) {
     $(document).ready(function () {
         let temp_json = keepCloning(json);
         var content = ``;

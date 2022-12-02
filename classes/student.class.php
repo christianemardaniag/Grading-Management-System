@@ -50,7 +50,7 @@ class Student extends dbHandler
                 $has_student = true;
                 $criteria = new Criteria();
                 $cri = $criteria->getEquiv();
-                $content = '[{"drop":"false", "activities":[{"name":"1","total":"120","isLock":"false"},{"name":"2","total":"120","isLock":"false"},{"name":"P","total":"200","isLock":"false"}],"equiv":"' . $cri[0] . '","name":"Activities/Project"},{"activities":[{"name":"1","total":"60","isLock":"false"},{"name":"2","total":"60","isLock":"false"}],"equiv":"' . $cri[1] . '","name":"Quizes"},{"activities":[{"name":"1","total":"2","isLock":"false"},{"name":"2","total":"7","isLock":"false"},{"name":"3","total":"100","isLock":"false"}],"equiv":"' . $cri[2] . '","name":"Recitation"},{"activities":[{"name":"1","total":"10","isLock":"false"}],"equiv":"' . $cri[3] . '","name":"Promptness"},{"activities":[{"name":"ME","total":"100","isLock":"false"},{"name":"FE","total":"100","isLock":"false"}],"equiv":"' . $cri[4] . '","name":"Major Exam"}]';
+                $content = '[{"activities":[{"name":"1","total":"120","isLock":"false"},{"name":"2","total":"120","isLock":"false"},{"name":"P","total":"200","isLock":"false"}],"equiv":"' . $cri[0] . '","name":"Activities/Project"},{"activities":[{"name":"1","total":"60","isLock":"false"},{"name":"2","total":"60","isLock":"false"}],"equiv":"' . $cri[1] . '","name":"Quizes"},{"activities":[{"name":"1","total":"2","isLock":"false"},{"name":"2","total":"7","isLock":"false"},{"name":"3","total":"100","isLock":"false"}],"equiv":"' . $cri[2] . '","name":"Recitation"},{"activities":[{"name":"1","total":"10","isLock":"false"}],"equiv":"' . $cri[3] . '","name":"Promptness"},{"activities":[{"name":"ME","total":"100","isLock":"false"},{"name":"FE","total":"100","isLock":"false"}],"equiv":"' . $cri[4] . '","name":"Major Exam"}]';
                 foreach ($subs as $s) {
                     $sql .= "('" . $eachData[STUDENT_STUDENT_NO] . "', '$s->code', '$content'),";
                 }
@@ -226,6 +226,7 @@ class Student extends dbHandler
                         "grade" => $subrow['final_grade'],
                         "equiv" => $subrow['equiv'],
                         "remarks" => $subrow['remarks'],
+                        "isDrop" => filter_var($subrow['isDrop'], FILTER_VALIDATE_BOOLEAN),
                         "criteria" => json_decode($subrow['criteria']),
                         "scores" => json_decode($subrow['grade'])
                     ];

@@ -66,6 +66,7 @@ class Mail extends dbHandler
             $body .= "</tbody></table>";
             $this->sendMail($recipient, "GMS Online : Reset Password", $body);
             $this->updatePassword($id, $newPassword);
+            return (object) ['status' => true];
         } else {
             return (object) [
                 'status' => false,
