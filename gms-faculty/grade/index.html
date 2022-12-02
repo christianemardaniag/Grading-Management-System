@@ -3,7 +3,15 @@
     <header>
         <div id="header-title" class="d-flex justify-content-between">
             <h3>Grade</h3>
-            <div class="d-print-none">
+            <div class="btn-group d-print-none" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        <li><button id="export" class="btn btn-dark dropdown-item">Export to Excel</button></li>
+                    </ul>
+                </div>
                 <button type="button" class="btn btn-dark" id="uploadFileBtn">Upload Class Record</button>
             </div>
         </div>
@@ -32,17 +40,21 @@
     </div>
 
 
-    <div class="shadow-sm bg-white p-3 me-2">
-        
-        <div class="d-flex justify-content-end me-2 d-print-none">
-            <div class="mb-3">
-                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#top10Modal">Top 10 in Class</button>
+    <div class="shadow-sm bg-white p-3">
+
+        <div class="d-flex justify-content-between d-print-none sticky-top bg-white pt-2">
+            <div>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#top10Modal">Top 10 in
+                        Class</button>
+                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#unofficialDropModal">Unofficial
+                        Drop</button>
+                </div>
             </div>
-            <div class="mb-3 mx-2">
-                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#unofficialDropModal">Unofficial Drop</button>
-            </div>
             <div class="mb-3">
-                <button id="export" class="btn btn-dark">Export to Excel</button>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#saveChangesModal"
+                    class="btn btn-success px-5">Save
+                    Changes</button>
             </div>
             <!-- <button type="button" id="info-btn" class="btn btn-link-dark fs-4 p-0"><i
                     class="fas fa-info-square"></i></button> -->
@@ -55,13 +67,64 @@
             </table>
         </div>
         <div id="error" class="alert alert-danger d-none"></div>
-        <div class="d-flex justify-content-end me-2 d-print-none">
+        <!-- <div class="d-flex justify-content-end me-2 d-print-none">
             <button type="button" data-bs-toggle="modal" data-bs-target="#saveChangesModal"
                 class="btn btn-dark px-5">Save
                 Changes</button>
-        </div>
+        </div> -->
     </div>
 </main>
+
+<!-- VIEW STUDENT MODAL -->
+<div class="modal fade bg-dark" id="viewStudentModal" tabindex="-1" aria-labelledby="viewStudentLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title"><i class="fal fa-hashtag"></i> <span id="view-studentNo"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="px-4">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-3">
+                            <img id="view_profile" src="../../images/defaultUserImage.jpg"
+                                class="img-fluid rounded-circle border p-2">
+                        </div>
+                        <div class="col ">
+                            <h2 class="mb-2"><span id="view-fullName"></span></h2>
+                            <div class="mb-1"><i class="fal fa-envelope me-2"></i> <span id="view-email"></span></div>
+                            <div class="mb-1"><i class="far fa-phone-alt me-2"></i> <span id="view-contactNo"></span>
+                            </div>
+                            <div class="mb-1"><i class="fad fa-venus-mars me-2"></i> <span id="view-gender"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="offset-3 g-3">
+                    <div class="row row-cols-4 g-2 mb-3">
+                        <div class="col"><b>Specialization: </b></div>
+                        <div class="col" id="view-specialization"></div>
+                        <div class="col"><b>Program:</b></div>
+                        <div class="col" id="view-program"></div>
+                        <div class="col"><b>Level:</b></div>
+                        <div class="col" id="view-level"></div>
+                        <div class="col"><b>Class Section:</b></div>
+                        <div class="col" id="view-section"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer d-print-none">
+                <button class="btn btn-danger px-3"><i class="fal fa-ban" id="dropBtn"></i> Drop</button>
+                <button class="btn btn-dark px-4" onclick="window.print()"><i class="fal fa-print"></i>
+                    Print</button>
+                <!-- <button class="btn btn-dark px-3" data-bs-target="#editStudentModal"
+                    data-bs-toggle="modal"><i class="fal fa-edit"></i> Edit</button> -->
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- File Upload Class Record Modal -->
 <form id="fileUploadForm" enctype="multipart/form-data">
@@ -150,10 +213,11 @@
                         </tr>
                     </thead>
                     <tbody id="top10StudentBody">
-    
+
                     </tbody>
                 </table>
-                <button type="button" class="btn btn-lg btn-primary mt-5 w-100 d-print-none" onclick="window.print()">Print</button>
+                <button type="button" class="btn btn-lg btn-primary mt-5 w-100 d-print-none"
+                    onclick="window.print()">Print</button>
             </div>
         </div>
     </div>
@@ -176,10 +240,11 @@
                         </tr>
                     </thead>
                     <tbody id="dropStudent">
-    
+
                     </tbody>
                 </table>
-                <button type="button" class="btn btn-lg btn-primary mt-5 w-100 d-print-none" onclick="window.print()">Print</button>
+                <button type="button" class="btn btn-lg btn-primary mt-5 w-100 d-print-none"
+                    onclick="window.print()">Print</button>
             </div>
         </div>
     </div>

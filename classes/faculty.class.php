@@ -303,14 +303,6 @@ class Faculty extends dbHandler
         return $sub_sec;
     }
 
-    public function dropStudent($studentNo)
-    {
-        // $query = "UPDATE `student` SET `status`='drop' WHERE id='$studentNo'";
-        // if (mysqli_query($this->conn, $query)) {
-        //     return (object) ['status' => true, 'msg' => ''];
-        // }
-    }
-
     private function isEmailExist($email, $id = "")
     {
         $query = 'SELECT id FROM `faculty` WHERE email="' . $email . '" AND id!="' . $id . '"';

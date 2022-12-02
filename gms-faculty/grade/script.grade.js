@@ -4,7 +4,7 @@ $(document).ready(function () {
         $("#gradesTable").table2excel({
             // exclude: ".excludeThisClass",
             name: "Worksheet Name",
-            filename: "grades.xls", 
+            filename: "grades.xls",
             preserveColors: false
         });
     });
@@ -285,7 +285,6 @@ $(document).ready(function () {
 
                 $("#previewSpinner").fadeOut();
                 $("#fileUploadBody").html(content);
-                console.log(tempData);
             }, error: function (response) {
                 console.error(response);
                 $("#fileUploadBody").prepend(response.responseText);
@@ -359,8 +358,6 @@ $(document).ready(function () {
                     let sec = student.section == section;
                     return sec && sub;
                 });
-
-                console.log(filtered);
                 json.criteria = [];
                 json.students = [];
                 $.each(filtered, function (indexInArray, student) {
@@ -502,7 +499,7 @@ function fetchGrades(json) {
             tbody += `
             <tr>
                 <td>${student.studentNo}</td>
-                <td class='text-start'>${student.name}</td>
+                <td class="text-start"><button class="btn btn-link m-0 p-0 text-start viewStudent" style="font-size: 14px;" data-id='${student.studentNo}'>${student.name}</button></td>
                 <td><b>${parseFloat(student.equiv).toFixed(2)}</b></td>
                 ${score_td}
                 <td>${parseFloat(student.grade).toFixed(2)}</td>
@@ -545,7 +542,7 @@ function fetchGrades(json) {
         <tbody class="table-group-divider">
             ${tbody}
         </tbody>
-    `;
+        `;
 
         $("#gradesTable").html(tContent);
 
@@ -666,6 +663,46 @@ function fetchGrades(json) {
             fetchGrades(json);
         });
 
+        var selectedStudent = "";
+        $(".viewStudent").click(function (e) {
+            e.preventDefault();
+            studentNo = $(this).data("id");
+            $.ajax({
+                type: "POST",
+                url: "../student/process.student.php",
+                data: { GET_STUDENTS_REQ: true },
+                dataType: "JSON",
+                success: function (GET_STUDENTS_RESP) {
+                    selectedStudent = GET_STUDENTS_RESP.filter(function (eachStudent) {
+                        return eachStudent.studentNo == studentNo;
+                    })[0];
+                    console.log(selectedStudent);
+                    $("#view-profile").attr("src", selectedStudent.profile_picture);
+                    $("#view-studentNo").html(selectedStudent.studentNo);
+                    $("#view-fullName").html(selectedStudent.fullName);
+                    $("#view-cys").html(selectedStudent.program + " " + selectedStudent.section);
+                    $("#view-email").html(selectedStudent.email);
+                    $("#view-contactNo").html(selectedStudent.contact_no);
+                    $("#view-gender").html(selectedStudent.gender);
+                    $("#view-specialization").html(selectedStudent.specialization);
+                    $("#view-program").html(selectedStudent.program);
+                    $("#view-level").html(selectedStudent.level);
+                    $("#view-section").html(selectedStudent.section);
+
+                    $("#loadingScreen").modal("hide");
+                    $("#viewStudentModal").modal("show");
+                },
+                beforeSend: function () {
+                    $("#loadingScreen").modal("show");
+                }
+            });
+
+            $("#dropBtn").click(function (e) {
+                e.preventDefault();
+                var subject = $("#filter-subject").val();
+                
+            });
+        });
     });
 }
 
@@ -681,7 +718,6 @@ function displayTop10Students(json) {
             if (a.v < b.v) { return 1 }
             return 0;
         });
-        console.log(outstandingStudent);
         $.each(outstandingStudent, function (i, val) {
             if (i < 10) {
                 content += `
@@ -689,8 +725,8 @@ function displayTop10Students(json) {
                 <td>${i + 1}.</td>
                 <td>${json.students[val.k].studentNo}</td>
                 <td class='text-start'>${json.students[val.k].name}</td>
-                <td class='fw-bold'>${parseFloat(json.students[val.k].grade).toFixed(2)}</td>
-                <td>${parseFloat(json.students[val.k].equiv).toFixed(2)}</td>
+                <td>${parseFloat(json.students[val.k].grade).toFixed(2)}</td>
+                <td class='fw-bold'>${parseFloat(json.students[val.k].equiv).toFixed(2)}</td>
                 </tr>`;
             }
 

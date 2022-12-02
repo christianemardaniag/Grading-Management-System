@@ -93,7 +93,6 @@ $(document).ready(function () {
     function isPassed(stud) {
         var grades = [];
         $.each(stud.subjects, function (indexInArray, sub2) {
-            
             grades.push(sub2.grade);
         });
         if (parseFloat(getGrade(grades)) >= 75) {

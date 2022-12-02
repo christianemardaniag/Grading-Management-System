@@ -17,10 +17,10 @@ $(document).ready(function () {
                     case "4TH YEAR": yearLevelCount[3]++; break;
                     default: break;
                 }
+                if (isPassed(stud)) {
+                    passedCtr++;
+                }
                 $.each(stud.subjects, function (indexInArray, sub2) {
-                    if (parseFloat(sub2.grade) >= 75) {
-                        passedCtr++;
-                    }
                     getUnofficialDropStudents(sub2, stud_index);
                 });
             });
@@ -71,6 +71,21 @@ $(document).ready(function () {
             $("#error").html(response.responseText);
         }
     });
+
+    function isPassed(stud) {
+        var grades = [];
+        $.each(stud.subjects, function (indexInArray, sub2) {
+            grades.push(sub2.grade);
+        });
+        if (parseFloat(getGrade(grades)) >= 75) {
+            return true;
+        }
+        return false;
+    }
+
+    function getGrade(arr) {
+        return arr.reduce((a, b) => parseFloat(a) + parseFloat(b)) / arr.length
+    }
 
     $("#filter-subject").change(function (e) {
         e.preventDefault();

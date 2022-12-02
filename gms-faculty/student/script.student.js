@@ -117,19 +117,6 @@ $(document).ready(function () {
                     $("#view-section").html(selectedStudent.section);
 
                     $("#viewStudentModal").modal("show");
-
-                    $("#dropBtn").click(function (e) {
-                        e.preventDefault();
-                        $.ajax({
-                            type: "POST",
-                            url: "../student/process.student.php",
-                            data: { DROP_STUDENT_REQ: studentNo },
-                            dataType: "JSON",
-                            success: function (DROP_STUDENT_RESP) {
-                                console.log(DROP_STUDENT_RESP);
-                            }
-                        });
-                    });
                 });
                 $("#loadingScreen").modal("hide");
             }, error: function (response) {
