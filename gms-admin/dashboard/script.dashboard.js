@@ -177,7 +177,6 @@ $(document).ready(function () {
         }
         chart3.data.labels = subjectsPerLevel;
         chart3.data.datasets[0].data = ratePerSubject;
-        console.log(ratePerSubject);
         chart3.update();
         $("#chart3Spinner").fadeOut();
     }

@@ -40,17 +40,25 @@ $(document).ready(function () {
         );
     }
 
-    // $("#filter-specialization").change(function (e) {
-    //     e.preventDefault();
-    //     getSectionsFilter();
-    //     displayStudents($(this).val(), $("#filter-program").val(), $("#filter-level").val(), $("#filter-section").val());
-    // });
-
-    // $("#filter-program").change(function (e) {
-    //     e.preventDefault();
-    //     getSectionsFilter();
-    //     displayStudents($("#filter-level").val(), $("#filter-section").val());
-    // });
+    $("#promote").click(function (e) { 
+        e.preventDefault();
+        console.log("promote");
+        $.ajax({
+            type: "POST",
+            url: "../student/process.student.php",
+            data: { UPDATE_YEAR_LEVEL_REQ: true },
+            dataType: "JSON",
+            success: function (response) {
+                displayStudents();
+                $("#loadingScreen").modal("hide");
+            }, error: function (response) {
+                console.error(response);
+            },
+            beforeSend: function (response) {
+                $("#loadingScreen").modal("show");
+            }
+        });
+    });
 
     $("#filter-level").change(function (e) {
         e.preventDefault();
@@ -70,7 +78,6 @@ $(document).ready(function () {
             data: { GET_BLOCKED_STUDENT_REQ: true },
             dataType: "JSON",
             success: function (GET_BLOCKED_STUDENT_RESP) {
-                console.log(GET_BLOCKED_STUDENT_RESP);
                 content = ``;
                 $.each(GET_BLOCKED_STUDENT_RESP, function (indexInArray, student) {
                     content += `
