@@ -34,14 +34,7 @@ $(document).ready(function () {
             studentsPerYearLevelChart.data.datasets[0].data = yearLevelCount;
             studentsPerYearLevelChart.update();
 
-            // CHART #2: Passing Rate all student
-            let failedPercent = (studentCount - passedCtr) / studentCount * 100;
-            let passedPercent = (passedCtr / studentCount) * 100;
-            $("#prPassed").html(passedPercent.toFixed(0) + "%");
-            $("#prFailed").html(failedPercent.toFixed(0) + "%");
-            passingRateChart.data.datasets[0].data = [passedPercent.toFixed(0), failedPercent.toFixed(0)];
-            passingRateChart.update();
-
+            console.log("Asd");
             $.ajax({
                 type: "POST",
                 url: "../dashboard/process.dashboard.php",
@@ -59,6 +52,7 @@ $(document).ready(function () {
                     });
                     $("#filter-subject").html(option);
                     gradeCriteriaAverage($("#filter-subject").val());
+                    passingRatePerSubject($("#filter-subject").val())
                     $("#loadingScreen").modal("hide");
                 }
             });
@@ -90,6 +84,7 @@ $(document).ready(function () {
     $("#filter-subject").change(function (e) {
         e.preventDefault();
         gradeCriteriaAverage($(this).val());
+        passingRatePerSubject($(this).val())
     });
 
     function getUnofficialDropStudents(students, index) {
@@ -224,6 +219,31 @@ $(document).ready(function () {
         }
 
         $("#topInSubjectContent").append(content);
+    }
+
+    function passingRatePerSubject(subjectCode) {
+        console.log(myStudents);
+        var passedCtr = 0;
+        var studentCount = 0;
+        $.each(myStudents, function (indexInArray, student) {
+            $.each(student.subjects, function (indexInArray, subject) {
+                if (subject.code == subjectCode){
+                    if (subject.remarks == "Passed") {
+                        passedCtr++;
+                    }
+                    studentCount++;
+                }
+            });
+        });
+
+        // CHART #2: Passing Rate all student
+        let failedPercent = (studentCount - passedCtr) / studentCount * 100;
+        let passedPercent = (passedCtr / studentCount) * 100;
+        $("#subCode").html(subjectCode);
+        $("#prPassed").html(passedPercent.toFixed(0) + "%");
+        $("#prFailed").html(failedPercent.toFixed(0) + "%");
+        passingRateChart.data.datasets[0].data = [passedPercent.toFixed(0), failedPercent.toFixed(0)];
+        passingRateChart.update();
     }
 
     function gradeCriteriaAverage(subjectCode) {

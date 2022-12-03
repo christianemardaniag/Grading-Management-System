@@ -8,7 +8,7 @@ class Mail extends dbHandler
 {
     private $mail;
     private $userType;
-    private const SERVER_EMAIL = 'spacemonkeydev@outlook.com';
+    private const SERVER_EMAIL = 'spaceracoondev@gmail.com';
 
     function __construct($userType)
     {
@@ -18,12 +18,12 @@ class Mail extends dbHandler
 
         // $this->mail->SMTPDebug = SMTP::DEBUG_SERVER;
         $this->mail->isSMTP();
-        $this->mail->Host       = 'smtp.office365.com';
+        $this->mail->Host       = 'smtp.gmail.com';
         $this->mail->SMTPAuth   = true;
         $this->mail->Username   = self::SERVER_EMAIL;
-        $this->mail->Password   = 'nv%Iy90$3J&7';
-        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mail->Port       = 587;
+        $this->mail->Password   = 'ybwsnpkjnmkrxfej';
+        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $this->mail->Port       = 465;
     }
 
     public function sendMail($recipient, $subject, $body)
@@ -66,6 +66,7 @@ class Mail extends dbHandler
             $body .= "</tbody></table>";
             $this->sendMail($recipient, "GMS Online : Reset Password", $body);
             $this->updatePassword($id, $newPassword);
+            return (object) ['status' => true];
         } else {
             return (object) [
                 'status' => false,

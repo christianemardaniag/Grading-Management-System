@@ -170,18 +170,19 @@
                 event.preventDefault();
                 let userType = $("[name='userType']:checked").val();
                 $.ajax({
-                    url: "../process/general.process.php",
+                    url: "process/general.process.php",
                     type: "post",
                     data: {
                         email: $("#fpEmail").val(),
                         'forgot-password': userType
                     },
+                    dataType: "JSON",
                     beforeSend: function () {
                         $("#fPSpinner").show();
                         $("#forgotbtn").attr("disabled", "disabled");
                     },
                     success: function (response) {
-                        if (response) {
+                        if (response.status) {
                             $("#successAlertFP").fadeIn();
                             $("#successAlertFP").html(response.msg);
                             $("#errorAlertFP").hide();
