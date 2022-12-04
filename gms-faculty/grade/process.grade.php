@@ -20,4 +20,6 @@ if (isset($_POST['GET_FACULTY_REQ'])) {
 	}
 } elseif (isset($_POST['UPDATE_CLASS_RECORD_REQ'])) {
 	echo json_encode((array)$grade->updateClassRecord($_POST['UPDATE_CLASS_RECORD_REQ']));
+} elseif (isset($_POST['UPDATE_DROP_STATUS_REQ'])) {
+	echo json_encode((array)$grade->updateDropStatus($_POST['studentNo'], $_POST['subject'], $_POST['status']));
 }

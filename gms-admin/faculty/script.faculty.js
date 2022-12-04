@@ -45,7 +45,6 @@ $(document).ready(function () {
             data: { GET_BLOCKED_FACULTY_REQ: true },
             dataType: "JSON",
             success: function (GET_BLOCKED_FACULTY_RESP) {
-                console.log(GET_BLOCKED_FACULTY_RESP);
                 content = ``;
                 $.each(GET_BLOCKED_FACULTY_RESP, function (indexInArray, faculty) {
                     content += `

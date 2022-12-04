@@ -9,11 +9,12 @@ $(document).ready(function () {
         dataType: "JSON",
         success: function (GET_STUDENTS_RESP) {
             myStudents = GET_STUDENTS_RESP;
-            console.log(myStudents);
             let prCtr = [0, 0, 0, 0];
             let frCtr = [0, 0, 0, 0];
             let maleCtr = [0, 0, 0, 0];
+            let maleCtrTotal = [0, 0, 0, 0];
             let femaleCtr = [0, 0, 0, 0];
+            let femaleCtrTotal = [0, 0, 0, 0];
             $.each(myStudents, function (stud_index, stud) {
                 switch (stud.level.toUpperCase()) {
                     case "1ST YEAR":
@@ -21,8 +22,10 @@ $(document).ready(function () {
                         isPassed(stud) ? prCtr[0]++ : frCtr[0]++;
                         if (stud.gender == "Male") {
                             if (isPassed(stud)) maleCtr[0]++;
+                            maleCtrTotal[0]++;
                         } else {
                             if (isPassed(stud)) femaleCtr[0]++;
+                            femaleCtrTotal[0]++;
                         }
                         break;
                     case "2ND YEAR":
@@ -30,8 +33,10 @@ $(document).ready(function () {
                         isPassed(stud) ? prCtr[1]++ : frCtr[1]++;
                         if (stud.gender == "Male") {
                             if (isPassed(stud)) maleCtr[1]++;
+                            maleCtrTotal[1]++;
                         } else {
                             if (isPassed(stud)) femaleCtr[1]++;
+                            femaleCtrTotal[1]++;
                         }
                         break;
                     case "3RD YEAR":
@@ -39,8 +44,10 @@ $(document).ready(function () {
                         isPassed(stud) ? prCtr[2]++ : frCtr[2]++;
                         if (stud.gender == "Male") {
                             if (isPassed(stud)) maleCtr[2]++;
+                            maleCtrTotal[2]++;
                         } else {
                             if (isPassed(stud)) femaleCtr[2]++;
+                            femaleCtrTotal[2]++;
                         }
                         break;
                     case "4TH YEAR":
@@ -48,8 +55,10 @@ $(document).ready(function () {
                         isPassed(stud) ? prCtr[3]++ : frCtr[3]++;
                         if (stud.gender == "Male") {
                             if (isPassed(stud)) maleCtr[3]++;
+                            maleCtrTotal[3]++;
                         } else {
                             if (isPassed(stud)) femaleCtr[3]++;
+                            femaleCtrTotal[3]++;
                         }
                         break;
                     default: break;
@@ -68,16 +77,19 @@ $(document).ready(function () {
             for (let x = 0; x < yearLevelCount.length; x++) {
                 frCtr[x] = Math.ceil(frCtr[x] / yearLevelCount[x] * 100);
                 prCtr[x] = Math.ceil(prCtr[x] / yearLevelCount[x] * 100);
-                maleCtr[x] = Math.ceil(maleCtr[x] / yearLevelCount[x] * 100);
-                femaleCtr[x] = Math.ceil(femaleCtr[x] / yearLevelCount[x] * 100);
+                maleCtr[x] = Math.ceil(maleCtr[x] / maleCtrTotal[x] * 100);
+                femaleCtr[x] = Math.ceil(femaleCtr[x] / femaleCtrTotal[x] * 100);
             }
             chart2.data.datasets[0].data = prCtr;
             chart2.data.datasets[1].data = frCtr;
             chart2.update();
 
+            // CHART #4: GENDER PASSING RATE
             chart4.data.datasets[0].data = maleCtr;
             chart4.data.datasets[1].data = femaleCtr;
             chart4.update();
+
+            displayPassingRatePerSubject();
 
             $("#loadingScreen").modal("hide");
             $(".table").DataTable();
@@ -92,8 +104,10 @@ $(document).ready(function () {
 
     function isPassed(stud) {
         var grades = [];
+        // console.log(stud);
         $.each(stud.subjects, function (indexInArray, sub2) {
-            grades.push(sub2.grade);
+            if (stud.level.charAt(0) == sub2.level)
+                grades.push(sub2.grade);
         });
         if (parseFloat(getGrade(grades)) >= 75) {
             return true;
@@ -105,23 +119,25 @@ $(document).ready(function () {
         return arr.reduce((a, b) => parseFloat(a) + parseFloat(b)) / arr.length
     }
 
-    $.ajax({
-        type: "POST",
-        url: "../dashboard/process.dashboard.php",
-        data: { GET_ALL_SUBJECTS_REQ: true },
-        dataType: "JSON",
-        success: function (response) {
-            allSubjects = response;
-            getGradePerYearSem($("#year_sem").val());
-        },
-        error: function (response) {
-            console.error(response);
-            $("#errorLog").html(response.responseText);
-        },
-        beforeSend: function (response) {
-            $("#chart3Spinner").fadeIn();
-        }
-    });
+    function displayPassingRatePerSubject() {
+        $.ajax({
+            type: "POST",
+            url: "../dashboard/process.dashboard.php",
+            data: { GET_ALL_SUBJECTS_REQ: true },
+            dataType: "JSON",
+            success: function (response) {
+                allSubjects = response;
+                getGradePerYearSem($("#year_sem").val());
+            },
+            error: function (response) {
+                console.error(response);
+                $("#errorLog").html(response.responseText);
+            },
+            beforeSend: function (response) {
+                $("#chart3Spinner").fadeIn();
+            }
+        });
+    }
 
     $("#year_sem").change(function (e) {
         e.preventDefault();
@@ -143,8 +159,7 @@ $(document).ready(function () {
             ratePerSubject.push(0);
         }
         $.each(myStudents, function (indexInArray, student) {
-            let level = ["1ST YEAR", "2ND YEAR", "3RD YEAR", "4TH YEAR"];
-            if (level[year - 1] == student.level.toUpperCase()) {
+            if (year == student.level.charAt(0)) {
                 $.each(subjectsPerLevel, function (ind, subject) {
                     $.each(student.subjects, function (indexInArray, sub) {
                         if (sub.code == subject) {
@@ -223,7 +238,7 @@ $(document).ready(function () {
 
 });
 
-// CHART #4: PASSING RATE PER YEAR LEVEL
+// CHART #4: GENDER RATE PER YEAR LEVEL
 var ctxChart4 = document.getElementById('chart4').getContext('2d');
 var chart4 = new Chart(ctxChart4, {
     type: 'bar',

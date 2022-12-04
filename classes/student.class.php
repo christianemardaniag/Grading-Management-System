@@ -50,7 +50,7 @@ class Student extends dbHandler
                 $has_student = true;
                 $criteria = new Criteria();
                 $cri = $criteria->getEquiv();
-                $content = '[{"drop":"false", "activities":[{"name":"1","total":"120","isLock":"false"},{"name":"2","total":"120","isLock":"false"},{"name":"P","total":"200","isLock":"false"}],"equiv":"' . $cri[0] . '","name":"Activities/Project"},{"activities":[{"name":"1","total":"60","isLock":"false"},{"name":"2","total":"60","isLock":"false"}],"equiv":"' . $cri[1] . '","name":"Quizes"},{"activities":[{"name":"1","total":"2","isLock":"false"},{"name":"2","total":"7","isLock":"false"},{"name":"3","total":"100","isLock":"false"}],"equiv":"' . $cri[2] . '","name":"Recitation"},{"activities":[{"name":"1","total":"10","isLock":"false"}],"equiv":"' . $cri[3] . '","name":"Promptness"},{"activities":[{"name":"ME","total":"100","isLock":"false"},{"name":"FE","total":"100","isLock":"false"}],"equiv":"' . $cri[4] . '","name":"Major Exam"}]';
+                $content = '[{"activities":[{"name":"1","total":"120","isLock":"false"},{"name":"2","total":"120","isLock":"false"},{"name":"P","total":"200","isLock":"false"}],"equiv":"' . $cri[0] . '","name":"Activities/Project"},{"activities":[{"name":"1","total":"60","isLock":"false"},{"name":"2","total":"60","isLock":"false"}],"equiv":"' . $cri[1] . '","name":"Quizes"},{"activities":[{"name":"1","total":"2","isLock":"false"},{"name":"2","total":"7","isLock":"false"},{"name":"3","total":"100","isLock":"false"}],"equiv":"' . $cri[2] . '","name":"Recitation"},{"activities":[{"name":"1","total":"10","isLock":"false"}],"equiv":"' . $cri[3] . '","name":"Promptness"},{"activities":[{"name":"ME","total":"100","isLock":"false"},{"name":"FE","total":"100","isLock":"false"}],"equiv":"' . $cri[4] . '","name":"Major Exam"}]';
                 foreach ($subs as $s) {
                     $sql .= "('" . $eachData[STUDENT_STUDENT_NO] . "', '$s->code', '$content'),";
                 }
@@ -226,6 +226,7 @@ class Student extends dbHandler
                         "grade" => $subrow['final_grade'],
                         "equiv" => $subrow['equiv'],
                         "remarks" => $subrow['remarks'],
+                        "isDrop" => filter_var($subrow['isDrop'], FILTER_VALIDATE_BOOLEAN),
                         "criteria" => json_decode($subrow['criteria']),
                         "scores" => json_decode($subrow['grade'])
                     ];
@@ -294,5 +295,38 @@ class Student extends dbHandler
         } else {
             return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
         }
+    }
+
+    public function updateYearLevel()
+    {
+        foreach ($this->studentInfo as $key => $student) {
+            $newLevel = "";
+            $secNum = (int)mb_substr($student->section, 0, 1);
+            $secLet = mb_substr($student->section, 1, 1);
+            $section = $student->section;
+            if (strtoupper($student->level) != "4TH YEAR") {
+                $section = ($secNum+1) . $secLet;
+            }
+            switch (strtoupper($student->level)) {
+                case "1ST YEAR":
+                    $newLevel = "2nd year";
+                    break;
+                case "2ND YEAR":
+                    $newLevel = "3rd year";
+                    break;
+                case "3RD YEAR":
+                    $newLevel = "4th year";
+                    break;
+                case "4TH YEAR":
+                    $newLevel = "Alumni";
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            $query = "UPDATE `student` SET `level`='$newLevel', section='$section' WHERE id='$student->studentNo'";
+            mysqli_query($this->conn, $query);
+        }
+        return (object) ['status' => true];
     }
 }

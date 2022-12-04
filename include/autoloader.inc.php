@@ -7,7 +7,7 @@ spl_autoload_register(function($className) {
     $ext = ".class.php";
     $fullPath = $path . $className . $ext;
     $limit = 5;
-    if ($className == 'Mail') include("../../include/vendor/autoload.php");
+    if ($className == 'Mail') include("../include/vendor/autoload.php");
     while(!file_exists($fullPath) && $limit > 0) {
         $fullPath = '../' . $fullPath;
         $limit--;

@@ -89,7 +89,10 @@ $(document).ready(function () {
                     }
                 }
             });
-
+            var statusRemarks = subject.remarks;
+            if (subject.isDrop) {
+                statusRemarks = "DROP";
+            }
             accordionContent += `
             <div class="accordion-item">
                 <h2 class="accordion-header" id="subjectAccordion-${subjectIndex}">
@@ -103,7 +106,7 @@ $(document).ready(function () {
                                  Equiv: <span id="subjectEquiv-${subjectIndex}" class="fw-bold">${parseFloat(subject.equiv).toFixed(2)}</span>
                             </span>
                             <span class="mx-2">
-                               Remarks: <span id="subjectRemarks-${subjectIndex}" class="fw-bold">${subject.remarks}</span>
+                               Remarks: <span id="subjectRemarks-${subjectIndex}" class="fw-bold">${statusRemarks}</span>
                             </span>
                         </div>
                 </button>
