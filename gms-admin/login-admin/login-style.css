@@ -4,7 +4,12 @@ body {
 }
 
 body {
-    background-color: #131313;
+    color: white;
+    margin-bottom: 10px;
+    background-color: #080808;
+    background-image: url("../../images/bulsu.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .form-signin {
@@ -26,4 +31,10 @@ body {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+.glass-effect {
+    background: linear-gradient(32deg, rgb(175 79 0), rgba(255, 255, 255, 0));
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
 }

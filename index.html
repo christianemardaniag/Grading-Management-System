@@ -140,7 +140,6 @@
             $("#loginForm").submit(function (event) {
                 event.preventDefault();
                 let userType = $("[name='userType']:checked").val();
-                console.log(userType);
                 var data = $(this).serializeArray();  // Form Data
                 data.push({ name: 'login', value: userType });
                 $.ajax({
