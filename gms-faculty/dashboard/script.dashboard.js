@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var myStudents = [];
+    var myStudents = {};
     $.ajax({
         type: "POST",
         url: "../dashboard/process.dashboard.php",
@@ -7,6 +7,7 @@ $(document).ready(function () {
         dataType: "JSON",
         success: function (GET_STUDENTS_RESP) {
             myStudents = GET_STUDENTS_RESP;
+            console.log(myStudents);
             let passedCtr = 0;
             let yearLevelCount = [0, 0, 0, 0];
             $.each(myStudents, function (stud_index, stud) {
@@ -34,7 +35,6 @@ $(document).ready(function () {
             studentsPerYearLevelChart.data.datasets[0].data = yearLevelCount;
             studentsPerYearLevelChart.update();
 
-            console.log("Asd");
             $.ajax({
                 type: "POST",
                 url: "../dashboard/process.dashboard.php",
@@ -89,6 +89,7 @@ $(document).ready(function () {
 
     function getUnofficialDropStudents(students, index) {
         let temp_json = keepCloning(students);
+        console.log(temp_json);
         $.each(temp_json.criteria, function (key_criteria, criteria) {
             $.each(criteria.activities, function (key_act, activity) {
                 activity.isLock = (String(activity.isLock) === 'true');
@@ -166,9 +167,9 @@ $(document).ready(function () {
                 return 0;
             });
         });
-
-        for (let i = 0; i < 10; i++) {
-            topStudents += `
+        if ($.isEmptyObject(outstandingStudent)) {
+            for (let i = 0; i < 10; i++) {
+                topStudents += `
             <tr class="${((i < 3) ? "table-warning" : "")}">
                 <td>${i + 1}.</td>
                 <td>${myStudents[outstandingStudent[i].k].studentNo}</td>
@@ -178,6 +179,7 @@ $(document).ready(function () {
                 <td class='fw-bold'>${getEquiv(outstandingStudent[i].v).toFixed(2)}</td>
             </tr>
             `;
+            }
         }
 
         temp += `
@@ -222,12 +224,11 @@ $(document).ready(function () {
     }
 
     function passingRatePerSubject(subjectCode) {
-        console.log(myStudents);
         var passedCtr = 0;
         var studentCount = 0;
         $.each(myStudents, function (indexInArray, student) {
             $.each(student.subjects, function (indexInArray, subject) {
-                if (subject.code == subjectCode){
+                if (subject.code == subjectCode) {
                     if (subject.remarks == "Passed") {
                         passedCtr++;
                     }
