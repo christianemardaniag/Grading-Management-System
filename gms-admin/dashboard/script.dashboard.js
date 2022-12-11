@@ -64,6 +64,9 @@ $(document).ready(function () {
                     default: break;
                 }
                 candidateForAcademicHonor(stud);
+                $.each(stud.subjects, function (indexInArray, sub2) {
+                    getUnofficialDropStudents(sub2, stud_index);
+                });
             });
 
             let studentCount = myStudents.length;
@@ -101,6 +104,68 @@ $(document).ready(function () {
             $("#error").html(response.responseText);
         }
     });
+
+    function getUnofficialDropStudents(students, index) {
+        let temp_json = keepCloning(students);
+        console.log(temp_json);
+        $.each(temp_json.criteria, function (key_criteria, criteria) {
+            $.each(criteria.activities, function (key_act, activity) {
+                activity.isLock = (String(activity.isLock) === 'true');
+                if (!activity.isLock) {
+                    temp_json.scores[key_criteria].score[key_act] = activity.total;
+                }
+                let total_over = 0;
+                $.each(criteria.activities, function (indexInArray, act) {
+                    total_over += parseInt(act.total);
+                });
+                let total_score = 0;
+                $.each(temp_json.scores[key_criteria].score, function (indexInArray, score) {
+                    total_score += parseInt(score);
+                });
+                let ave = (total_score / total_over) * 50 + 50;
+                temp_json.scores[key_criteria].average = ave;
+
+                // set grade
+                let grade = 0;
+                $.each(temp_json.criteria, function (ind, cri) {
+                    let ave = parseFloat(temp_json.scores[ind].average);
+                    grade += (ave * (cri.equiv / 100));
+                });
+                temp_json.grade = grade;
+
+                // set equiv
+                let equiv = getEquiv(grade);
+                temp_json.equiv = equiv;
+
+                // set remarks
+                temp_json.remarks = (equiv == 5.00) ? "Failed" : "Passed";
+            });
+        });
+        if (temp_json.remarks == "Failed") {
+            let content = `
+            <tr>
+                <td>${myStudents[index].studentNo}</td>
+                <td class='text-start'>${myStudents[index].fullName}</td>
+                <td>${temp_json.code}</td>
+                <td>${temp_json.description}</td>
+                <td>${myStudents[index].section}</td>
+                <td>${parseFloat(temp_json.grade).toFixed(2)}</td>
+                <td class='fw-bold'>${parseFloat(temp_json.equiv).toFixed(2)}</td>
+            </tr>`;
+            $("#dropStudentContent").append(content);
+        }
+    }
+
+    function keepCloning(objectpassed) {
+        if (objectpassed === null || typeof objectpassed !== 'object') {
+            return objectpassed;
+        }
+        var temporary_storage = objectpassed.constructor();
+        for (var key in objectpassed) {
+            temporary_storage[key] = keepCloning(objectpassed[key]);
+        }
+        return temporary_storage;
+    }
 
     function isPassed(stud) {
         var grades = [];
