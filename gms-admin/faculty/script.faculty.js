@@ -377,7 +377,7 @@ $(document).ready(function () {
                 $("#fileUploadForm").trigger('reset');
                 var content = `
                 <div class="alert alert-danger alert-dismissible fade show mb-2" role="alert">
-                We encounter problem. Some faculty may not be receive email from the system or did'nt register to the system.
+                We encounter problem. Some faculty may not be receive email from the system or didn't register to the system.
                 <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>`;
                 $("#fileUploadBody").prepend(content);

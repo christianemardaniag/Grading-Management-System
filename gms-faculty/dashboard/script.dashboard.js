@@ -157,7 +157,7 @@ $(document).ready(function () {
         var outstandingStudent = [];
         $.each(myStudents, function (key, student) {
             $.each(student.subjects, function (indexInArray, subject) {
-                if (subjectCode == subject.code) {
+                if ($.trim(subjectCode) == subject.code) {
                     outstandingStudent.push({ v: subject.grade, k: key });
                 }
             });
@@ -167,7 +167,7 @@ $(document).ready(function () {
                 return 0;
             });
         });
-        if ($.isEmptyObject(outstandingStudent)) {
+        if (!$.isEmptyObject(outstandingStudent)) {
             for (let i = 0; i < 10; i++) {
                 topStudents += `
             <tr class="${((i < 3) ? "table-warning" : "")}">

@@ -297,7 +297,7 @@ class Faculty extends dbHandler
                 if (mysqli_num_rows($res)) {
                     $subrow = mysqli_fetch_assoc($res);
                     $sub_sec[] = (object) [
-                        "code" => $code,
+                        "code" => trim($code),
                         "description" => $subrow['description'],
                         "sections" => $row2['sections'],
                     ];

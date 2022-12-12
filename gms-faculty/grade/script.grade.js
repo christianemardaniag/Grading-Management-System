@@ -362,7 +362,7 @@ $(document).ready(function () {
                         if (sub) {
                             return false;
                         }
-                        sub = (eachSub.code == subject);
+                        sub = ($.trim(eachSub.code) == subject);
                     });
                     let sec = student.section == section;
                     return sec && sub;
