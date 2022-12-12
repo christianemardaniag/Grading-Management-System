@@ -107,7 +107,6 @@ $(document).ready(function () {
 
     function getUnofficialDropStudents(students, index) {
         let temp_json = keepCloning(students);
-        console.log(temp_json);
         $.each(temp_json.criteria, function (key_criteria, criteria) {
             $.each(criteria.activities, function (key_act, activity) {
                 activity.isLock = (String(activity.isLock) === 'true');

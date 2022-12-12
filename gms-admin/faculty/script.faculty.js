@@ -71,7 +71,7 @@ $(document).ready(function () {
                         data: { UNBLOCK_FACULTY_REQ: id },
                         dataType: "JSON",
                         success: function (UNBLOCK_FACULTY_RESP) {
-                            if(UNBLOCK_FACULTY_RESP.status) {
+                            if (UNBLOCK_FACULTY_RESP.status) {
                                 $(".toast-body").html(id + " has been successfully unblocked")
                                 $("#liveToast").toast("show");
                                 displayBlockedFaculty();
@@ -187,6 +187,30 @@ $(document).ready(function () {
                     });
                     $("#edit-subCtr").val(selectedFaculty.sub_sec.length);
                     $("#edit-facultySubjects").html(sub_sec);
+
+                    let subCtr = 1;
+                    $("#edit-subject").click(function (e) {
+                        e.preventDefault();
+                        subCtr++;
+                        let sub = `
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <div class="mb-3">
+                                        <label for="edit-subject-${subCtr}" class="form-label">Subject Code</label>
+                                        <input type="text" class="form-control" name="subject[${subCtr}]" id="edit-subject-${subCtr}">
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <div class="mb-3">
+                                        <label for="edit-sections-${subCtr}" class="form-label">Class Sections</label>
+                                        <input type="text" class="form-control" name="sections[${subCtr}]" id="edit-sections-${subCtr}">
+                                        <div class="form-text">Class Sections (Separeted with comma)</div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        $("#edit-facultySubjects").append(sub);
+                        $("#subCtr").val(subCtr);
+                    });
                 });
                 $("#loadingScreen").modal("hide");
             }, error: function (response) {
@@ -396,12 +420,13 @@ $(document).ready(function () {
                     $("#editFacultyModal").modal("hide");
                 } else {
                     $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
+                    $("#editNewFacultyError").append(EDIT_FACULTY_RESP.sql);
                     $("#editNewFacultyError").fadeIn();
                 }
                 displayFaculties();
             },
             error: function (response) {
-                console.error(response.responseText);
+                console.error(response);
                 $("#editNewFacultyError").html(response.responseText);
                 $("#editNewFacultyError").fadeIn();
             }
