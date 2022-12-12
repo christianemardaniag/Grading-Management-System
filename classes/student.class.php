@@ -297,32 +297,52 @@ class Student extends dbHandler
         }
     }
 
-    public function updateYearLevel()
+    public function updateYearLevel($flag = true)
     {
         foreach ($this->studentInfo as $key => $student) {
-            $newLevel = "";
+            $newLevel = $student->level;
             $secNum = (int)mb_substr($student->section, 0, 1);
             $secLet = mb_substr($student->section, 1, 1);
             $section = $student->section;
-            if (strtoupper($student->level) != "4TH YEAR") {
-                $section = ($secNum+1) . $secLet;
-            }
-            switch (strtoupper($student->level)) {
-                case "1ST YEAR":
-                    $newLevel = "2nd year";
-                    break;
-                case "2ND YEAR":
-                    $newLevel = "3rd year";
-                    break;
-                case "3RD YEAR":
-                    $newLevel = "4th year";
-                    break;
-                case "4TH YEAR":
-                    $newLevel = "Alumni";
-                    break;
-                default:
-                    # code...
-                    break;
+            if ($flag) {
+                if (strtoupper($student->level) != "4TH YEAR") {
+                    $section = ($secNum + 1) . $secLet;
+                }
+                switch (strtoupper($student->level)) {
+                    case "1ST YEAR":
+                        $newLevel = "2nd year";
+                        break;
+                    case "2ND YEAR":
+                        $newLevel = "3rd year";
+                        break;
+                    case "3RD YEAR":
+                        $newLevel = "4th year";
+                        break;
+                    case "4TH YEAR":
+                        $newLevel = "Alumni";
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            } else {
+                if (strtoupper($student->level) != "1ST YEAR") {
+                    $section = ($secNum - 1) . $secLet;
+                }
+                switch (strtoupper($student->level)) {
+                    case "2ND YEAR":
+                        $newLevel = "1st year";
+                        break;
+                    case "3RD YEAR":
+                        $newLevel = "2nd year";
+                        break;
+                    case "4TH YEAR":
+                        $newLevel = "3rd year";
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
             }
             $query = "UPDATE `student` SET `level`='$newLevel', section='$section' WHERE id='$student->studentNo'";
             mysqli_query($this->conn, $query);

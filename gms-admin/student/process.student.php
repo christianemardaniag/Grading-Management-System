@@ -53,6 +53,8 @@ if (isset($_POST['GET_STUDENTS_REQ'])) {
 	echo json_encode((array)$student->getBlockedStudent());
 } elseif (isset($_POST['UNBLOCK_STUDENT_REQ'])) {
 	echo json_encode((array)$student->unblockStudent($_POST['UNBLOCK_STUDENT_REQ']));
-} elseif (isset($_POST['UPDATE_YEAR_LEVEL_REQ'])) {
-	echo json_encode((array)$student->updateYearLevel());
+} elseif (isset($_POST['PROMOTE_YEAR_LEVEL_REQ'])) {
+	echo json_encode((array)$student->updateYearLevel(true));
+}elseif (isset($_POST['DEMOTE_YEAR_LEVEL_REQ'])) {
+	echo json_encode((array)$student->updateYearLevel(false));
 }

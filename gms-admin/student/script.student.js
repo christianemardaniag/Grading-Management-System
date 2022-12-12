@@ -46,7 +46,27 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: "../student/process.student.php",
-            data: { UPDATE_YEAR_LEVEL_REQ: true },
+            data: { PROMOTE_YEAR_LEVEL_REQ: true },
+            dataType: "JSON",
+            success: function (response) {
+                displayStudents();
+                $("#loadingScreen").modal("hide");
+            }, error: function (response) {
+                console.error(response);
+            },
+            beforeSend: function (response) {
+                $("#loadingScreen").modal("show");
+            }
+        });
+    });
+
+    $("#demote").click(function (e) { 
+        e.preventDefault();
+        console.log("promote");
+        $.ajax({
+            type: "POST",
+            url: "../student/process.student.php",
+            data: { DEMOTE_YEAR_LEVEL_REQ: true },
             dataType: "JSON",
             success: function (response) {
                 displayStudents();
