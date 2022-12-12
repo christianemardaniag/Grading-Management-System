@@ -21,10 +21,10 @@ $(document).ready(function () {
                         yearLevelCount[0]++;
                         isPassed(stud) ? prCtr[0]++ : frCtr[0]++;
                         if (stud.gender == "Male") {
-                            if (isPassed(stud)) maleCtr[0]++;
+                            // if (isPassed(stud)) maleCtr[0]++;
                             maleCtrTotal[0]++;
                         } else {
-                            if (isPassed(stud)) femaleCtr[0]++;
+                            // if (isPassed(stud)) femaleCtr[0]++;
                             femaleCtrTotal[0]++;
                         }
                         break;
@@ -32,10 +32,10 @@ $(document).ready(function () {
                         yearLevelCount[1]++;
                         isPassed(stud) ? prCtr[1]++ : frCtr[1]++;
                         if (stud.gender == "Male") {
-                            if (isPassed(stud)) maleCtr[1]++;
+                            // if (isPassed(stud)) maleCtr[1]++;
                             maleCtrTotal[1]++;
                         } else {
-                            if (isPassed(stud)) femaleCtr[1]++;
+                            // if (isPassed(stud)) femaleCtr[1]++;
                             femaleCtrTotal[1]++;
                         }
                         break;
@@ -43,10 +43,10 @@ $(document).ready(function () {
                         yearLevelCount[2]++;
                         isPassed(stud) ? prCtr[2]++ : frCtr[2]++;
                         if (stud.gender == "Male") {
-                            if (isPassed(stud)) maleCtr[2]++;
+                            // if (isPassed(stud)) maleCtr[2]++;
                             maleCtrTotal[2]++;
                         } else {
-                            if (isPassed(stud)) femaleCtr[2]++;
+                            // if (isPassed(stud)) femaleCtr[2]++;
                             femaleCtrTotal[2]++;
                         }
                         break;
@@ -54,10 +54,10 @@ $(document).ready(function () {
                         yearLevelCount[3]++;
                         isPassed(stud) ? prCtr[3]++ : frCtr[3]++;
                         if (stud.gender == "Male") {
-                            if (isPassed(stud)) maleCtr[3]++;
+                            // if (isPassed(stud)) maleCtr[3]++;
                             maleCtrTotal[3]++;
                         } else {
-                            if (isPassed(stud)) femaleCtr[3]++;
+                            // if (isPassed(stud)) femaleCtr[3]++;
                             femaleCtrTotal[3]++;
                         }
                         break;
@@ -80,16 +80,16 @@ $(document).ready(function () {
             for (let x = 0; x < yearLevelCount.length; x++) {
                 frCtr[x] = Math.ceil(frCtr[x] / yearLevelCount[x] * 100);
                 prCtr[x] = Math.ceil(prCtr[x] / yearLevelCount[x] * 100);
-                maleCtr[x] = Math.ceil(maleCtr[x] / maleCtrTotal[x] * 100);
-                femaleCtr[x] = Math.ceil(femaleCtr[x] / femaleCtrTotal[x] * 100);
+                // maleCtr[x] = Math.ceil(maleCtr[x] / maleCtrTotal[x] * 100);
+                // femaleCtr[x] = Math.ceil(femaleCtr[x] / femaleCtrTotal[x] * 100);
             }
             chart2.data.datasets[0].data = prCtr;
             chart2.data.datasets[1].data = frCtr;
             chart2.update();
 
             // CHART #4: GENDER PASSING RATE
-            chart4.data.datasets[0].data = maleCtr;
-            chart4.data.datasets[1].data = femaleCtr;
+            chart4.data.datasets[0].data = maleCtrTotal;
+            chart4.data.datasets[1].data = femaleCtrTotal;
             chart4.update();
 
             displayPassingRatePerSubject();
@@ -260,17 +260,18 @@ $(document).ready(function () {
             <td class="fw-bold">${getEquiv(grade).toFixed(2)}</td>
         </tr>
         `;
-        if (!grades.some((x) => { return x < 90; })) {
-            if (grade >= 97) {
+
+        if (!grades.some((x) => { return x < 85; })) {
+            if (grade >= 95) {
                 $("#summaCumLaudeTableContent").append(content);
             }
-        } else if (!grades.some((x) => { return x <= 84; })) {
-            if (grade >= 94) {
-                $("#summaCumLaudeTableContent").append(content);
+        } else if (!grades.some((x) => { return x <= 82; })) {
+            if (grade >= 92) {
+                $("#magnaCumLaudeTableContent").append(content);
             }
-        } else if (!grades.some((x) => { return x <= 81; })) {
-            if (grade >= 79) {
-                $("#summaCumLaudeTableContent").append(content);
+        } else if (!grades.some((x) => { return x <= 79; })) {
+            if (grade >= 88) {
+                $("#cumLaudeTableContent").append(content);
             }
         }
     }
@@ -329,7 +330,7 @@ var chart4 = new Chart(ctxChart4, {
                 color: 'white'
             }
         }, scales: {
-            y: { min: 0, max: 100 }
+            // y: { min: 0, max: 100 }
         }
     },
 });

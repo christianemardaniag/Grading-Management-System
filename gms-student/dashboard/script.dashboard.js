@@ -31,9 +31,9 @@ $(document).ready(function () {
         $.each(groupByYear, function (indexInArray, year) {
             var tempGrade = [];
             $.each(year, function (indexInArray, val) {
-                tempGrade.push(getEquiv(val.grade).toFixed(2));
+                tempGrade.push(val.grade);
             });
-            gradesPerLevel.push(getGrade(tempGrade).toFixed(2));
+            gradesPerLevel.push(getEquiv(getGrade(tempGrade)).toFixed(2));
         });
 
         // CHART #1
@@ -152,9 +152,12 @@ var chart1 = new Chart(ctxChart1, {
     data: {
         labels: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
         datasets: [{
-            label: ["Passed"],
-            data: [87, 97, 76, 84],
-            backgroundColor: ['#eeb902', '#f79c06', '#bb7e00', '#76320d'],
+            label: ["Grade"],
+            data: [2.0, 1.25, 1.75, 1.50],
+            backgroundColor: ['#eeb90215'],
+            borderColor: '#eeb902',
+            fill: true,
+            tension: 0.4
         }]
     }, options: {
         maintainAspectRatio: false,
@@ -168,7 +171,7 @@ var chart1 = new Chart(ctxChart1, {
             }
         }, scales: {
             y: { min: 1, max: 5, reverse: true },
-        }, 
+        },
         pointBackgroundColor: "#eeb902",
         radius: 7,
     },
@@ -203,7 +206,7 @@ var chart2 = new Chart(ctxChart2, {
             y: {
                 min: 1,
                 max: 5,
-                reverse: true 
+                reverse: true
             },
         },
         pointBackgroundColor: "#eeb902",
