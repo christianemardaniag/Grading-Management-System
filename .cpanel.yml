@@ -3,10 +3,10 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/mpqtbhzb/public_html/
     - /bin/cp index.html $DEPLOYPATH
-    - /bin/cp classes $DEPLOYPATH
-    - /bin/cp gms-admin $DEPLOYPATH
-    - /bin/cp gms-faculty $DEPLOYPATH
-    - /bin/cp gms-student $DEPLOYPATH
-    - /bin/cp include $DEPLOYPATH
-    - /bin/cp process $DEPLOYPATH
+    - /bin/cp -R classes $DEPLOYPATH
+    - /bin/cp -R gms-admin $DEPLOYPATH
+    - /bin/cp -R gms-faculty $DEPLOYPATH
+    - /bin/cp -R gms-student $DEPLOYPATH
+    - /bin/cp -R include $DEPLOYPATH
+    - /bin/cp -R process $DEPLOYPATH
     - /bin/cp -R images $DEPLOYPATH
