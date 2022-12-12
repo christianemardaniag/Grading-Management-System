@@ -28,7 +28,6 @@ $(document).ready(function () {
                     <div class="mb-3">
                         <label for="add-sections-${subCtr}" class="form-label">Class Sections</label>
                         <input type="text" class="form-control" name="sections[${subCtr}]" id="add-sections-${subCtr}">
-                        <div class="form-text">Class Sections (Separeted with comma)</div>
                     </div>
                 </div>
             </div>`;
@@ -167,49 +166,76 @@ $(document).ready(function () {
                     $("#edit-contactNo").val(selectedFaculty.contact_no);
 
                     let sub_sec = ``;
+                    let subCtr = 0;
                     $.each(selectedFaculty.sub_sec, function (i, subject) {
+                        subCtr++;
                         sub_sec += `
-                        <div class="row g-2">
+                        <div class="row g-2" id="sub${subCtr}">
                             <div class="col-4">
                                 <div class="mb-3">
                                     <label for="edit-subject-${i + 1}" class="form-label">Subject</label>
                                     <input type="text" class="form-control" name="edit-subject[${i + 1}]" id="edit-subject-${i + 1}" value="${subject.code}">
                                 </div>
                             </div>
-                            <div class="col-8">
+                            <div class="col-7">
                                 <div class="mb-3">
                                     <label for="edit-sections-${i + 1}" class="form-label">Class Sections</label>
                                     <input type="text" class="form-control" name="edit-sections[${i + 1}]" id="edit-sections-${i + 1}" value="${subject.sections}">
-                                    <div class="form-text">Class Sections (Separeted with comma)</div>
                                 </div>
                             </div>
+                            <div class="col-1">
+                                    <div class="mb-3">
+                                        <button type="button" class="btn btn-sm removeSubject" data-index="${subCtr}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
                         </div>`;
                     });
                     $("#edit-subCtr").val(selectedFaculty.sub_sec.length);
                     $("#edit-facultySubjects").html(sub_sec);
-
-                    let subCtr = 1;
+                    $(".removeSubject").click(function (e) {
+                        e.preventDefault();
+                        var id = $(this).data("index");
+                        subCtr--;
+                        $("#sub" + id).remove();
+                        $("#edit-subCtr").val(subCtr);
+                    });
+                    
                     $("#edit-subject").click(function (e) {
                         e.preventDefault();
                         subCtr++;
                         let sub = `
-                            <div class="row g-2">
+                            <div class="row g-2" id="sub${subCtr}">
                                 <div class="col-4">
                                     <div class="mb-3">
-                                        <label for="edit-subject-${subCtr}" class="form-label">Subject Code</label>
-                                        <input type="text" class="form-control" name="subject[${subCtr}]" id="edit-subject-${subCtr}">
+                                    <label for="edit-subject-${subCtr}" class="form-label">Subject Code</label>
+                                    <input type="text" class="form-control" name="edit-subject[${subCtr}]" id="edit-subject-${subCtr}">
                                     </div>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="mb-3">
                                         <label for="edit-sections-${subCtr}" class="form-label">Class Sections</label>
-                                        <input type="text" class="form-control" name="sections[${subCtr}]" id="edit-sections-${subCtr}">
-                                        <div class="form-text">Class Sections (Separeted with comma)</div>
+                                        <input type="text" class="form-control" name="edit-sections[${subCtr}]" id="edit-sections-${subCtr}">
+                                    </div>
+                                </div>
+                                <div class="col-1">
+                                    <div class="mb-3">
+                                        <button type="button" class="btn btn-sm removeSubject" data-index="${subCtr}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>`;
                         $("#edit-facultySubjects").append(sub);
-                        $("#subCtr").val(subCtr);
+                        $("#edit-subCtr").val(subCtr);
+                        $(".removeSubject").click(function (e) {
+                            e.preventDefault();
+                            var id = $(this).data("index");
+                            subCtr--;
+                            $("#sub" + id).remove();
+                            $("#edit-subCtr").val(subCtr);
+                        });
                     });
                 });
                 $("#loadingScreen").modal("hide");
@@ -414,15 +440,16 @@ $(document).ready(function () {
             data: data,
             dataType: "json",
             success: function (EDIT_FACULTY_RESP) {
-                if (EDIT_FACULTY_RESP.status) {
-                    $("#editNewFacultyError").fadeOut();
-                    $("#editFacultyForm").trigger('reset');
-                    $("#editFacultyModal").modal("hide");
-                } else {
-                    $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
-                    $("#editNewFacultyError").append(EDIT_FACULTY_RESP.sql);
-                    $("#editNewFacultyError").fadeIn();
-                }
+                // if (EDIT_FACULTY_RESP.status) {
+                //     $("#editNewFacultyError").fadeOut();
+                //     $("#editFacultyModal").modal("hide");
+                // } else {
+                    // $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
+                    // $("#editNewFacultyError").append(EDIT_FACULTY_RESP.sql);
+                    // $("#editNewFacultyError").fadeIn();
+                // }
+                $("#editFacultyForm").trigger('reset');
+                $("#editFacultyModal").modal("hide");
                 displayFaculties();
             },
             error: function (response) {
