@@ -241,7 +241,7 @@
                     <h5 class="modal-title">Forgot Password</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="forgotPasswordForm text-dark">
+                <form id="forgotPasswordForm" class="text-dark">
                     <div class="modal-body">
                         <p>Enter your <span class="fw-bold text-uppercase">REGISTERED <span id="modalUserType"></span>
                                 EMAIL</span></p>
@@ -344,6 +344,8 @@
                         }
                         $("#fPSpinner").hide();
                         $("#forgotbtn").removeAttr("disabled");
+                    }, error: function (response) {
+                        console.error(response);
                     }
                 });
             });
