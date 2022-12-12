@@ -1,5 +1,5 @@
 <?php
-const ENABLE_MAIL = false; // set 'true' to enable sending email
+const ENABLE_MAIL = true; // set 'true' to enable sending email
 
 const ADMIN = "admin";
 const FACULTY = "faculty";
