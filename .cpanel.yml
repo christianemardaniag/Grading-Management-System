@@ -3,4 +3,4 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/mpqtbhzb/public_html/
     - /bin/cp index.html $DEPLOYPATH
-    - /bin/cp -R classes $DEPLOYPATH
+  
