@@ -24,6 +24,7 @@ class Faculty extends dbHandler
         $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
         $status = array();
         $tempID = "";
+        $emailSendCtr = 5;
         foreach ($data->body as $eachData) {
             if ($tempID != $eachData[FACULTY_ID]) {
                 $tempID = $eachData[FACULTY_ID];
@@ -34,8 +35,11 @@ class Faculty extends dbHandler
                     $username = explode("@", $email)[0];
                     $password = $this->generateRandomPassword();
                     if (ENABLE_MAIL) {
-                        $mail = new Mail(ADMIN);
-                        $mail->sendCredentials($email, $username, $password);
+                        if ($emailSendCtr > 0) {
+                            $emailSendCtr--;
+                            $mail = new Mail(ADMIN);
+                            $mail->sendCredentials($email, $username, $password);
+                        }
                     }
                     $faculty_query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) 
                     VALUES ('" . $eachData[FACULTY_ID] . "','" . $eachData[FACULTY_FULLNAME] . "', 

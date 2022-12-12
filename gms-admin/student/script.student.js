@@ -330,6 +330,7 @@ $(document).ready(function () {
                         flag = false;
                         $("#uploadSpinner").hide();
                         $("#fileUploadForm").trigger('reset');
+                        $("#updloadLabel").html("Upload");
                         var content = `
                         <div class="alert alert-danger alert-dismissible fade show mb-2" role="alert">`+ valueOfElement.msg + `
                         <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>

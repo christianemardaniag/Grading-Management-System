@@ -26,6 +26,7 @@ class Student extends dbHandler
         $subs = $subjects->getAllSubject();
         $status = array();
         $has_student = false;
+        $emailSendCtr = 5;
         foreach ($data->body as $eachData) {
             $email = strtolower($eachData[STUDENT_EMAIL]);
             if ($this->isEmailExist($email)) {
@@ -34,8 +35,11 @@ class Student extends dbHandler
                 $username = explode("@", $email)[0];
                 $password = $this->generateRandomPassword();
                 if (ENABLE_MAIL) {
-                    $mail = new Mail(ADMIN);
-                    $mail->sendCredentials($email, $username, $password);
+                    if ($emailSendCtr > 0) {
+                        $emailSendCtr--;
+                        $mail = new Mail(ADMIN);
+                        $mail->sendCredentials($email, $username, $password);
+                    }
                 }
                 $query .= "(
                     '" . $eachData[STUDENT_STUDENT_NO]      . "',
