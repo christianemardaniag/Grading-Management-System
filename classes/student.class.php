@@ -187,7 +187,7 @@ class Student extends dbHandler
 
     private function getAllStudent()
     {
-        $query = "SELECT * FROM student WHERE status='" . ACTIVE . "'";
+        $query = "SELECT * FROM student WHERE status='" . ACTIVE . "' AND level != 'Alumni'";
         $result = mysqli_query($this->conn, $query);
         if (mysqli_num_rows($result)) {
             return $this->setStudentInfo($result);
@@ -299,6 +299,27 @@ class Student extends dbHandler
         } else {
             return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];
         }
+    }
+    public function alumniStudent()
+    {
+        $query = "SELECT * FROM student WHERE level='Alumni'";
+        $result = mysqli_query($this->conn, $query);
+        $data = array();
+        if (mysqli_num_rows($result)) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = (object) [
+                    "studentNo" => $row['id'],
+                    "fullName" => $row['fullName'],
+                    "email" => $row['email'],
+                    "contact_no" => $row['contact_no'],
+                    'specialization' => $row['specialization'],
+                    'program' => $row['program'],
+                    'level' => $row['level'],
+                    'section' => $row['section'],
+                ];
+            }
+        }
+        return $data;
     }
 
     public function updateYearLevel($flag = true)

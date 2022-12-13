@@ -91,6 +91,30 @@ $(document).ready(function () {
         displayStudents($("#filter-level").val(), $("#filter-section").val());
     });
 
+    $.ajax({
+        type: "POST",
+        url: "../student/process.student.php",
+        data: { GET_ALUMNI_STUDENT_REQ: true },
+        dataType: "JSON",
+        success: function (GET_ALUMNI_STUDENT_RESP) {
+            content = ``;
+            $.each(GET_ALUMNI_STUDENT_RESP, function (indexInArray, student) {
+                content += `
+                    <tr>
+                        <td>${student.studentNo}</td>
+                        <td>${student.fullName}</td>
+                        <td>${student.program} ${student.section}</td>
+                        <td>${student.specialization}</td>
+                        <td>${student.email}</td>
+                        <td>${student.contact_no}</td>
+                    </tr>
+                 `;
+            });
+            $("#alumniStudentRecords").html(content);
+            $("#alumniStudentsTable").DataTable();
+        }
+    });
+
     function displayBlockedStudent() {
         $.ajax({
             type: "POST",
