@@ -63,10 +63,11 @@ $(document).ready(function () {
                         break;
                     default: break;
                 }
-                candidateForAcademicHonor(stud);
-                $.each(stud.subjects, function (indexInArray, sub2) {
-                    getUnofficialDropStudents(sub2, stud_index);
-                });
+                // candidateForAcademicHonor(stud);
+                candidateForAcademicExcellenceAward(stud);
+                // $.each(stud.subjects, function (indexInArray, sub2) {
+                //     getUnofficialDropStudents(sub2, stud_index);
+                // });
             });
 
             let studentCount = myStudents.length;
@@ -95,7 +96,20 @@ $(document).ready(function () {
             displayPassingRatePerSubject();
 
             $("#loadingScreen").modal("hide");
-            $(".table").DataTable();
+            $(".honorTable").DataTable({
+                order: [[3, 'desc']],
+                "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
+                "pageLength": 5
+            });
+            $(".academicTable").DataTable({
+                order: [[4, 'desc']],
+                "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
+                "pageLength": 5
+            });
+            $("#dropStudentTable").DataTable({
+                "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
+                "pageLength": 5
+            });
         },
         beforeSend: function (response) {
             $("#loadingScreen").modal("show");
@@ -104,6 +118,39 @@ $(document).ready(function () {
             $("#error").html(response.responseText);
         }
     });
+
+    function candidateForAcademicExcellenceAward(stud) {
+
+        var grades = [];
+        var level = stud.level.charAt(0);
+        var levelSubject = stud.subjects.filter(function (data) {
+            return data.level == level;
+        });
+        $.each(levelSubject, function (indexInArray, sub2) {
+            // console.log(sub2);
+            grades.push(parseFloat(sub2.grade));
+        });
+
+        var grade = parseFloat(getGrade(grades));
+        let content = `
+        <tr>
+            <td>${stud.studentNo}</td>
+            <td>${stud.fullName}</td>
+            <td>${stud.level}</td>
+            <td>${stud.section}</td>
+            <td>${parseFloat(grade).toFixed(2)}</td>
+            <td class="fw-bold">${getEquiv(grade).toFixed(2)}</td>
+        </tr>
+        `;
+
+        if (!grades.some((x) => { return x < 85; })) {
+            if (grade >= 95) {
+                $("#presidentListTableContent").append(content);
+            } else if (grade >= 88) {
+                $("#deansListTableContent").append(content);
+            }
+        }
+    }
 
     function getUnofficialDropStudents(students, index) {
         let temp_json = keepCloning(students);

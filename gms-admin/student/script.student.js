@@ -111,6 +111,7 @@ $(document).ready(function () {
                  `;
             });
             $("#alumniStudentRecords").html(content);
+            $("#alumniSpinner").hide();
             $("#alumniStudentsTable").DataTable();
         }
     });
