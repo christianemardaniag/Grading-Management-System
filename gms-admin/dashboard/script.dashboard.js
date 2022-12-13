@@ -144,7 +144,7 @@ $(document).ready(function () {
         `;
 
         if (!grades.some((x) => { return x < 85; })) {
-            if (grade >= 95) {
+            if (grade >= 95.00) {
                 $("#presidentListTableContent").append(content);
             } else if (grade >= 88) {
                 $("#deansListTableContent").append(content);
