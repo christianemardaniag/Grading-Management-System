@@ -63,11 +63,11 @@ $(document).ready(function () {
                         break;
                     default: break;
                 }
-                // candidateForAcademicHonor(stud);
+                candidateForAcademicHonor(stud);
                 candidateForAcademicExcellenceAward(stud);
-                // $.each(stud.subjects, function (indexInArray, sub2) {
-                //     getUnofficialDropStudents(sub2, stud_index);
-                // });
+                $.each(stud.subjects, function (indexInArray, sub2) {
+                    getUnofficialDropStudents(sub2, stud_index);
+                });
             });
 
             let studentCount = myStudents.length;
