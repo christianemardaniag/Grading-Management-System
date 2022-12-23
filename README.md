@@ -10,20 +10,20 @@
 
 ## ADMIN
 
-#### ~~1. Login~~
+#### 1. Login
 
-- ~~Admin have different page for login and can be access via URL <http://localhost/Grading-Management-System/gms-admin>~~
-- ~~Admin can sign in using their username or email address~~
-- ~~Admin can use forgot password and enter the registered email to send a new random password to the email~~
-- ~~Admin cannot be block by the system~~
+- Admin have different page for login and can be access via URL <http://localhost/Grading-Management-System/gms-admin>
+- Admin can sign in using their username or email address
+- Admin can use forgot password and enter the registered email to send a new random password to the email
+- Admin cannot be block by the system
 
 #### 2. Dashboard
 
-- Display total count of __Faculty__
-- Display total count of __Students__
-  - Per speciazation
-- Student Passing Rate
-- and more.. (to follow)
+- Numer of Students
+- Passing rate per subject
+- Passing rate per year level
+- Candidate for Academic Honor
+- Candidate for 
 
 #### 3. Report (ADDITIONAL MENU)
 
@@ -33,31 +33,31 @@
 
 #### 4. Faculty
 
-- ~~List of all faculty~~
-- ~~Search Bar: Faculty name, Employee No, email address~~
+- List of all faculty
+- Search Bar: Faculty name, Employee No, email address
 - List of handled students per faculty
 - List of handled subject
-- ~~Can print individual faculty with handled students~~
-- Can ~~add~~/edit/archive new faculty
-- ~~Admin will provide email and username to faculty for login~~
-  - ~~NO DUPLICATION OF USERNAME~~
-- ~~The system will automatically send password to faculties email address after account creation~~
-- ~~can upload excel file with __specific format__~~
+- Can print individual faculty with handled students
+- Can add/edit/archive new faculty
+- Admin will provide email and username to faculty for login
+  - NO DUPLICATION OF USERNAME
+- The system will automatically send password to faculties email address after account creation
+- can upload excel file with __specific format__
 
 #### 5. Student
 
-- ~~List of all student~~
-- ~~Search Bar: Student name, Student No, email address~~
-- ~~Upload~~ and download list of students (excel file)
+- List of all student
+- Search Bar: Student name, Student No, email address
+- Upload and download list of students (excel file)
 - Add/Edit/Archive students
 
-#### ~~6. Subject~~
+#### 6. Subject
 
-- ~~List of all subject per year, semester, and specialization~~
-- ~~Admin can add/edit/delete subject~~
-- ~~Search bar: Subject Title, Subject Code~~
-- ~~List of faculty teaching specific subject~~
-- ~~Assign faculty to specific subject~~
+- List of all subject per year, semester, and specialization
+- Admin can add/edit/delete subject
+- Search bar: Subject Title, Subject Code
+- List of faculty teaching specific subject
+- Assign faculty to specific subject
 
 #### 7. Settings (Replacement to Criteria)
 
@@ -71,19 +71,19 @@
   - Grading criteria percentage total should not be exceed to 100%
 - Blocked User
 
-#### ~~8. Profile~~
+#### 8. Profile
 
-- ~~Admin can edit their information (Username, Email, Password)~~
+- Admin can edit their information (Username, Email, Password)
 
 ## FACULTY
 
 #### 1. Login
 
-- ~~Faculty login page will be visible on the home page of the system as well as student login page~~
-- ~~Faculty can login using __username__ or __email address__~~
+- Faculty login page will be visible on the home page of the system as well as student login page
+- Faculty can login using __username__ or __email address__
 - Faculty can be block by the system after maximum of 3 login attempts
 - Faculty can be unblock by the admin
-- ~~Faculty can use forgot password and enter their registered email to receive a new random password via email~~
+- Faculty can use forgot password and enter their registered email to receive a new random password via email
 
 #### 2. Dashboard
 
@@ -96,59 +96,59 @@
     
 #### 3. Student
 
-- ~~List of all students per year and semester~~
+- List of all students per year and semester
 - Faculty can change student status to drop
-- ~~Print specific student~~
+- Print specific student
 
 #### 4. Grade
 
-- ~~List of all handled students per subject~~
-- ~~Upload~~ and download student grade __per subject__
-- ~~Can add/edit/delete quiz, activities, and exam~~
-- ~~Top 10 Students Table~~
-- ~~Failed Students Table~~ 
+- List of all handled students per subject
+- Upload and download student grade __per subject__
+- Can add/edit/delete quiz, activities, and exam
+- Top 10 Students Table
+- Failed Students Table 
 
-#### ~~5. Chat~~ (NOT TO DO)
+#### 5. Chat (NOT TO DO)
 
-- ~~Can chat co-faculty and students~~
-- ~~Can upload and download file (max limit 3mb file size)~~
-- ~~Refresh chat box every 1 second~~
-- ~~View Contacts~~
+- Can chat co-faculty and students
+- Can upload and download file (max limit 3mb file size)
+- Refresh chat box every 1 second
+- View Contacts
 
 #### 6. Profile
 
-- ~~Faculty can edit their information (Username, Email, Password)~~
+- Faculty can edit their information (Username, Email, Password)
 
 ## Student
 
 #### 1. Login
 
-- ~~Student login page will be visible on the home page of the system as well as faculty login page~~
-- ~~Student can login using __username__ or __email address__~~
-- ~~Student can be block by the system after maximum of 3 login attempts~~
+- Student login page will be visible on the home page of the system as well as faculty login page
+- Student can login using __username__ or __email address__
+- Student can be block by the system after maximum of 3 login attempts
 - Student can be unblock by the admin
-- ~~Student can use forgot password and enter their registered email to receive a new random password via email~~
+- Student can use forgot password and enter their registered email to receive a new random password via email
 
 #### 2. Dashboard
 
-- ~~Display personal information~~
-- ~~can edit their information~~
-- ~~Display current subjects~~
+- Display personal information
+- can edit their information
+- Display current subjects
 - and more (to follow)
 
 #### 3. Grade (Replacement to Subject)
 
-- ~~List of all subject enrolled~~
-- ~~Input grade and preview possible final grade~~
+- List of all subject enrolled
+- Input grade and preview possible final grade
 - Download grade
 -
 
-#### ~~4. Chat~~ (NOT TO DO)
+#### 4. Chat (NOT TO DO)
 
-- ~~Can chat co-students and faculty~~
-- ~~Can upload and download file (max limit 3mb file size)~~
-- ~~Refresh chat box every 1 second~~
-- ~~View Contacts~~
+- Can chat co-students and faculty
+- Can upload and download file (max limit 3mb file size)
+- Refresh chat box every 1 second
+- View Contacts
 
 ---
 
