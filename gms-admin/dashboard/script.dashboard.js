@@ -15,6 +15,8 @@ $(document).ready(function () {
             let maleCtrTotal = [0, 0, 0, 0];
             let femaleCtr = [0, 0, 0, 0];
             let femaleCtrTotal = [0, 0, 0, 0];
+            var honorCtr = [0, 0, 0];
+            var excellenceAwardCtr = [0, 0];
             $.each(myStudents, function (stud_index, stud) {
                 switch (stud.level.toUpperCase()) {
                     case "1ST YEAR":
@@ -63,8 +65,8 @@ $(document).ready(function () {
                         break;
                     default: break;
                 }
-                candidateForAcademicHonor(stud);
-                candidateForAcademicExcellenceAward(stud);
+                honorCtr = candidateForAcademicHonor(stud, honorCtr);
+                excellenceAwardCtr = candidateForAcademicExcellenceAward(stud, excellenceAwardCtr);
                 $.each(stud.subjects, function (indexInArray, sub2) {
                     getUnofficialDropStudents(sub2, stud_index);
                 });
@@ -93,6 +95,19 @@ $(document).ready(function () {
             chart4.data.datasets[1].data = femaleCtr;
             chart4.update();
 
+            // CHART #5
+            $("#summaCumLaudeCtr").html(honorCtr[0]);
+            $("#magnaCumLaudeCtr").html(honorCtr[1]);
+            $("#cumLaudeCtr").html(honorCtr[2]);
+            chart5.data.datasets[0].data = honorCtr;
+            chart5.update();
+
+            // CHART #6
+            $("#presidentListCtr").html(honorCtr[0]);
+            $("#deansListCtr").html(honorCtr[1]);
+            chart6.data.datasets[0].data = excellenceAwardCtr;
+            chart6.update();
+
             displayPassingRatePerSubject();
 
             $("#loadingScreen").modal("hide");
@@ -119,37 +134,25 @@ $(document).ready(function () {
         }
     });
 
-    function candidateForAcademicExcellenceAward(stud) {
-
+    function candidateForAcademicExcellenceAward(stud, excellenceAwardCtr) {
         var grades = [];
         var level = stud.level.charAt(0);
         var levelSubject = stud.subjects.filter(function (data) {
             return data.level == level;
         });
         $.each(levelSubject, function (indexInArray, sub2) {
-            // console.log(sub2);
             grades.push(parseFloat(sub2.grade));
         });
 
         var grade = parseFloat(getGrade(grades));
-        let content = `
-        <tr>
-            <td>${stud.studentNo}</td>
-            <td>${stud.fullName}</td>
-            <td>${stud.level}</td>
-            <td>${stud.section}</td>
-            <td>${parseFloat(grade).toFixed(2)}</td>
-            <td class="fw-bold">${getEquiv(grade).toFixed(2)}</td>
-        </tr>
-        `;
-
         if (!grades.some((x) => { return x < 85; })) {
             if (grade >= 95.00) {
-                $("#presidentListTableContent").append(content);
+                excellenceAwardCtr[0]++;
             } else if (grade >= 88) {
-                $("#deansListTableContent").append(content);
+                excellenceAwardCtr[1]++;
             }
         }
+        return excellenceAwardCtr;
     }
 
     function getUnofficialDropStudents(students, index) {
@@ -292,35 +295,28 @@ $(document).ready(function () {
         $("#chart3Spinner").fadeOut();
     }
 
-    function candidateForAcademicHonor(stud) {
+    function candidateForAcademicHonor(stud, honorCtr) {
         var grades = [];
+
         $.each(stud.subjects, function (indexInArray, sub2) {
             grades.push(parseFloat(sub2.grade));
         });
         var grade = parseFloat(getGrade(grades));
-        let content = `
-        <tr>
-            <td>${stud.studentNo}</td>
-            <td>${stud.fullName}</td>
-            <td>${stud.section}</td>
-            <td>${parseFloat(grade).toFixed(2)}</td>
-            <td class="fw-bold">${getEquiv(grade).toFixed(2)}</td>
-        </tr>
-        `;
 
         if (!grades.some((x) => { return x < 85; })) {
             if (grade >= 95) {
-                $("#summaCumLaudeTableContent").append(content);
+                honorCtr[0]++;
             }
         } else if (!grades.some((x) => { return x <= 82; })) {
             if (grade >= 92) {
-                $("#magnaCumLaudeTableContent").append(content);
+                honorCtr[1]++;
             }
         } else if (!grades.some((x) => { return x <= 79; })) {
             if (grade >= 88) {
-                $("#cumLaudeTableContent").append(content);
+                honorCtr[2]++;
             }
         }
+        return honorCtr;
     }
 
     function getEquiv(grade) {
@@ -348,6 +344,42 @@ $(document).ready(function () {
         }
     }
 
+});
+
+// CHART #6: NUMBER OF ACADEMIC EXCELLENCE AWARD
+var ctxChart6 = document.getElementById('chart6').getContext('2d');
+var chart6 = new Chart(ctxChart6, {
+    type: 'doughnut',
+    data: {
+        labels: ["President's List", "Dean's List"],
+        datasets: [{
+            data: [],
+            backgroundColor: ['#eeb902', '#76320d'],
+        }]
+    }, options: {
+        plugins: {
+            legend: { display: false },
+            title: { display: false }
+        }
+    },
+});
+
+// CHART #5: NUMBER OF ACADEMIC HONORS
+var ctxChart5 = document.getElementById('chart5').getContext('2d');
+var chart5 = new Chart(ctxChart5, {
+    type: 'doughnut',
+    data: {
+        labels: ["Summa Cum Laude", "Magna Cum Laude", "Cum Laude"],
+        datasets: [{
+            data: [],
+            backgroundColor: ['#eeb902', '#f79c06', '#bb7e00', '#76320d'],
+        }]
+    }, options: {
+        plugins: {
+            legend: { display: false },
+            title: { display: false }
+        }
+    },
 });
 
 // CHART #4: GENDER RATE PER YEAR LEVEL
