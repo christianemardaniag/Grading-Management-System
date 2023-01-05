@@ -663,7 +663,7 @@ function fetchGrades(json) {
                 $.each(json.students[i_student].scores[i_criteria].score, function (indexInArray, score) {
                     total_score += parseInt(score);
                 });
-                let ave = (total_score / total_over) * 50 + 50;
+                let ave = (total_score / total_over) * 100;
                 json.students[i_student].scores[i_criteria].average = ave;
                 // set grade
                 let grade = 0;

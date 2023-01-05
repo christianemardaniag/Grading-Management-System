@@ -57,16 +57,28 @@ class Criteria extends dbHandler
         }
     }
 
-    public function getEquiv()
+    public function getSetupDefaultCriteria()
     {
-        $data = array();
+        $content = '[';
         $query = "SELECT * FROM criteria";
         $result = mysqli_query($this->conn, $query);
         if (mysqli_num_rows($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
-                array_push($data, $row['equiv']);
+                $name = $row['name'];
+                $equiv = $row['equiv'];
+                $content .= '{
+                    "activities":
+                    [
+                        {"name":"1","total":"120","isLock":"false"},
+                        {"name":"2","total":"120","isLock":"false"}
+                    ],
+                    "equiv":"' . $equiv . '",
+                    "name":"' . $name . '"
+                },';
             }
+            $content = rtrim($content, ",");
+            $content .= ']';
         }
-        return $data;
+        return $content;
     }
 }
