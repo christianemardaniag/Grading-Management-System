@@ -68,7 +68,7 @@ $(document).ready(function () {
             award: ""
         };
         if (!grades.some((x) => { return x < 85; })) {
-            if (grade >= 95.00) {
+            if (grade >= 95) {
                 candidate.award = "President's List";
                 excellence.push(candidate);
             } else if (grade >= 88) {

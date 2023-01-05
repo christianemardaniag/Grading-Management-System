@@ -146,7 +146,7 @@ $(document).ready(function () {
 
         var grade = parseFloat(getGrade(grades));
         if (!grades.some((x) => { return x < 85; })) {
-            if (grade >= 95.00) {
+            if (grade >= 95) {
                 excellenceAwardCtr[0]++;
             } else if (grade >= 88) {
                 excellenceAwardCtr[1]++;
