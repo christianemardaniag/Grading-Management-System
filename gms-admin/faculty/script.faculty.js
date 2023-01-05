@@ -56,7 +56,7 @@ $(document).ready(function () {
                         </tr>
                      `;
                 });
-                $("#blockedFacultyRecords").html(content);
+                $("#blockedFacultyRecor`ds").html(content);
                 if ($.fn.DataTable.isDataTable("#blockedFacultiesTable")) {
                     $('#blockedFacultiesTable').DataTable().clear().destroy();
                 }

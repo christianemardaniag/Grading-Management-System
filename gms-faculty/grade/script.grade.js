@@ -652,33 +652,37 @@ function fetchGrades(json) {
             let i_student = $(this).data("student");
             let i_criteria = $(this).data("criteria");
             let newVal = parseInt($(this).html());
-            let total_over = 0;
-            $.each(json.criteria[i_criteria].activities, function (indexInArray, activity) {
-                total_over += parseInt(activity.total);
-            });
-            json.students[i_student].scores[i_criteria].score[i_score] = newVal;
-            let total_score = 0;
-            $.each(json.students[i_student].scores[i_criteria].score, function (indexInArray, score) {
-                total_score += parseInt(score);
-            });
-            let ave = (total_score / total_over) * 50 + 50;
-            json.students[i_student].scores[i_criteria].average = ave;
+            let criteria_total = json.criteria[i_criteria].activities[i_score].total;
+            if (newVal >= 0 && newVal <= criteria_total) {
+                let total_over = 0;
+                $.each(json.criteria[i_criteria].activities, function (indexInArray, activity) {
+                    total_over += parseInt(activity.total);
+                });
+                json.students[i_student].scores[i_criteria].score[i_score] = newVal;
+                let total_score = 0;
+                $.each(json.students[i_student].scores[i_criteria].score, function (indexInArray, score) {
+                    total_score += parseInt(score);
+                });
+                let ave = (total_score / total_over) * 100;
+                json.students[i_student].scores[i_criteria].average = ave;
+                // set grade
+                let grade = 0;
+                $.each(json.criteria, function (i, criteria) {
+                    let ave = json.students[i_student].scores[i].average;
+                    grade += (ave * (criteria.equiv / 100));
+                });
+                json.students[i_student].grade = grade;
 
-            // set grade
-            let grade = 0;
-            $.each(json.criteria, function (i, criteria) {
-                let ave = json.students[i_student].scores[i].average;
-                grade += (ave * (criteria.equiv / 100));
-            });
-            json.students[i_student].grade = grade;
+                // set equiv
+                let equiv = getEquiv(grade);
+                json.students[i_student].equiv = equiv;
 
-            // set equiv
-            let equiv = getEquiv(grade);
-            json.students[i_student].equiv = equiv;
-
-            // set remarks
-            json.students[i_student].remarks = (equiv == 5.00) ? "Failed" : "Passed";
-            fetchGrades(json);
+                // set remarks
+                json.students[i_student].remarks = (equiv == 5.00) ? "Failed" : "Passed";
+                fetchGrades(json);
+            } else {
+                alert("Invalid Input! Please input grade from 0-" + criteria_total);
+            }
         });
 
         var selectedStudent = "";
@@ -741,7 +745,7 @@ function fetchGrades(json) {
             updateDropStatus(studentNo, subject, true, json);
             $("#dropStudentModal").modal("hide");
         });
-        
+
         $("#retrieveBtnConfirm").click(function (e) {
             e.preventDefault();
             var subject = $("#filter-subject").val();

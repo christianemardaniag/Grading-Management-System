@@ -45,7 +45,7 @@ if (isset($_POST['GET_FACULTIES_REQ'])) {
 } elseif (isset($_POST['REMOVE_FACULTY_REQ'])) {
 	echo json_encode((array)$faculty->removeFaculty($_POST["REMOVE_FACULTY_REQ"]));
 } elseif (isset($_POST['GET_BLOCKED_FACULTY_REQ'])) {
-	echo json_encode((array)$faculty->getBlockedFaculty());
+	
 } elseif (isset($_POST['UNBLOCK_FACULTY_REQ'])) {
 	echo json_encode((array)$faculty->unblockFaculty($_POST['UNBLOCK_FACULTY_REQ']));
 }

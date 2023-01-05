@@ -1,59 +1,91 @@
 $(document).ready(function () {
     $("#alertSuccess").hide();
     $("#alertError").hide();
+
+    var criteria = [];
     $.ajax({
         type: "POST",
         url: "../criteria/process.criteria.php",
         data: { GET_CRITERIA_REQ: true },
         dataType: "JSON",
         success: function (GET_CRITERIA_RESP) {
-            var content = ``;
             $.each(GET_CRITERIA_RESP, function (i, data) {
-                content += `
-                <div class="col-8">
-                    <label for="c${i + 1}">${data.name}</label>
-                </div>
-                <div class="col-4">
-                    <div class="input-group">
-                        <input type="number" class="form-control criteria" min="0" name="c${i + 1}" id="c${i + 1}" value="${data.equiv}">
-                        <span class="input-group-text" id="basic-addon1">%</span>
-                    </div>
-                </div>
-                `;
+                criteria.push({ label: data.name, percentage: data.equiv });
             });
-            $("#listOfCriteria").html(content);
-            $(".criteria").change(function (e) {
-                e.preventDefault();
-                var c1 = parseInt($("#c1").val());
-                var c2 = parseInt($("#c2").val());
-                var c3 = parseInt($("#c3").val());
-                var c4 = parseInt($("#c4").val());
-                var c5 = parseInt($("#c5").val());
-                var total = c1 + c2 + c3 + c4 + c5;
-                if (total != 100) {
-                    $("#alertError").show();
-                    $("#saveBtn").attr("disabled", true);
-                } else {
-                    $("#alertError").hide();
-                    $("#saveBtn").removeAttr("disabled");
-                }
-            });
+
+            displayCriteria();
+            $("#loadingScreen").modal("hide");
+        }, beforeSend: function () {
+            $("#loadingScreen").modal("show");
+        }, error: function (response) {
+            console.error(response);
         }
     });
 
-    
+    function displayCriteria() {
+        content = ``;
+        $.each(criteria, function (i, data) {
+            content += `
+            <div class="col-7">
+                <input type="text" class="form-control criteriaLabel" name="cname${i}" data-index="${i}" value="${data.label}">
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <input type="number" class="form-control criteriaVal" min="0" name="cval${i}" data-index="${i}" value="${data.percentage}">
+                    <span class="input-group-text" id="basic-addon1">%</span>
+                </div>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn removeBtn" data-index="${i}" data-name="${data.label}"><i class="fas fa-trash"></i></button>
+            </div>
+            `;
+        });
+        $("#listOfCriteria").html(content);
 
-    $("#criteriaForm").submit(function (e) {
+        $(".removeBtn").click(function (e) {
+            e.preventDefault();
+            var id = $(this).data("index");
+            var name = $(this).data("name");
+            $(".removeName").html(name);
+            $("#remove-yes-btn").data("index", id);
+            $("#confirmationModal").modal("show");
+        });
+        $(".criteriaLabel").change(function (e) {
+            e.preventDefault();
+            var index = $(this).data("index");
+            criteria[index].label = $(this).val();
+        });
+        $(".criteriaVal").change(function (e) {
+            e.preventDefault();
+            var index = $(this).data("index");
+            criteria[index].percentage = $(this).val();
+        });
+    }
+
+    $("#addCriteria").click(function (e) {
         e.preventDefault();
-        var data = $(this).serializeArray();
-        data.push({ name: 'UPDATE_CRITERIA_REQ', value: true });
+        criteria.push({ label: "", percentage: 0 });
+        displayCriteria();
+    });
+
+    $("#remove-yes-btn").click(function (e) {
+        e.preventDefault();
+        var index = $(this).data("index");
+        criteria.splice(index);
+        displayCriteria();
+        $("#confirmationModal").modal("hide");
+    });
+
+
+    $("#saveBtn").click(function (e) {
+        e.preventDefault();
         $.ajax({
-            type: "POSt",
+            type: "POST",
             url: "../criteria/process.criteria.php",
-            data: data,
-            // dataType: "JSON",
+            data: { UPDATE_CRITERIA_REQ: true, criteria: criteria },
+            dataType: "JSON",
             success: function (UPDATE_CRITERIA_RESP) {
-                console.log(UPDATE_CRITERIA_RESP);
+                displayCriteria();
                 $("#alertSuccess").show();
                 setTimeout(() => { $("#alertSuccess").hide() }, 3000)
             }, error: function (response) {
