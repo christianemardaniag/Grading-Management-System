@@ -103,8 +103,8 @@ $(document).ready(function () {
             chart5.update();
 
             // CHART #6
-            $("#presidentListCtr").html(honorCtr[0]);
-            $("#deansListCtr").html(honorCtr[1]);
+            $("#presidentListCtr").html(excellenceAwardCtr[0]);
+            $("#deansListCtr").html(excellenceAwardCtr[1]);
             chart6.data.datasets[0].data = excellenceAwardCtr;
             chart6.update();
 
@@ -152,6 +152,7 @@ $(document).ready(function () {
                 excellenceAwardCtr[1]++;
             }
         }
+        console.log(excellenceAwardCtr);
         return excellenceAwardCtr;
     }
 
