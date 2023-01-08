@@ -22,55 +22,46 @@
 - Numer of Students
 - Passing rate per subject
 - Passing rate per year level
-- Candidate for Academic Honor
-- Candidate for 
+- Number of candidate for Academic Honor
+- Number of candidate for Excellence Award
+- Unofficial Drop Student
 
-#### 3. Report (ADDITIONAL MENU)
+#### 3. Faculty
 
-- Display list of Faculty information (table)
-- Display list of Student information (table)
-- Admin can print all students or faculty reports or individual sections
-
-#### 4. Faculty
-
+- List of Blocked Faculty
 - List of all faculty
-- Search Bar: Faculty name, Employee No, email address
-- List of handled students per faculty
-- List of handled subject
+- List of handled subject per faculty
 - Can print individual faculty with handled students
 - Can add/edit/archive new faculty
-- Admin will provide email and username to faculty for login
-  - NO DUPLICATION OF USERNAME
-- The system will automatically send password to faculties email address after account creation
+- Admin will provide username to faculty for login
+  - Username, ID number and email are subject for duplication
+- The system will automatically send password to faculty email address after account creation
 - can upload excel file with __specific format__
 
-#### 5. Student
+#### 4. Student
 
-- List of all student
-- Search Bar: Student name, Student No, email address
+- List of Blocked Student
+- List of Alumni
+- List of Regular Student
+- Filter: Year Level, Section
 - Upload and download list of students (excel file)
 - Add/Edit/Archive students
 
+#### 5. Honors
+
+- List of candidate for academic honors
+- List of candidate for excellence award
+
 #### 6. Subject
 
-- List of all subject per year, semester, and specialization
+- List of all subject
 - Admin can add/edit/delete subject
-- Search bar: Subject Title, Subject Code
-- List of faculty teaching specific subject
-- Assign faculty to specific subject
+- Filter: year level
 
-#### 7. Settings (Replacement to Criteria)
+#### 7.  Criteria
 
-- __ANNOUNCEMENT__ (ADDITIONAL)
-  - Add/Edit/Delete announcement to the page
-  - Two different type of announcement
-    - Announcement for faculties
-    - Announcement for students
-- __CRITERIA__
-  - Add/Edit/Delete grading criteria
-  - Grading criteria percentage total should not be exceed to 100%
-- Blocked User
-
+- Add/Edit/Delete grading criteria
+ 
 #### 8. Profile
 
 - Admin can edit their information (Username, Email, Password)
@@ -87,35 +78,27 @@
 
 #### 2. Dashboard
 
-- Display __current__ total number of handled students per sem including all section
-- Display __current__ bar graph chart for total number of students __per section__
+- Display __current__ total number of handled students
+- Criteria Grade Average per subject
 - Display top 10 students over all section per subject
-- Display average per criteria
-- Bagsak
-- Highest Average per section and subject
+- Unofficial Drop
     
 #### 3. Student
 
-- List of all students per year and semester
-- Faculty can change student status to drop
+- List of all students
+- Filter: Subject, Section
 - Print specific student
 
 #### 4. Grade
 
 - List of all handled students per subject
 - Upload and download student grade __per subject__
-- Can add/edit/delete quiz, activities, and exam
+- Can add/edit/delete grade
+- Faculty can change student status to drop
 - Top 10 Students Table
 - Failed Students Table 
 
-#### 5. Chat (NOT TO DO)
-
-- Can chat co-faculty and students
-- Can upload and download file (max limit 3mb file size)
-- Refresh chat box every 1 second
-- View Contacts
-
-#### 6. Profile
+#### 5. Profile
 
 - Faculty can edit their information (Username, Email, Password)
 
@@ -131,37 +114,22 @@
 
 #### 2. Dashboard
 
-- Display personal information
-- can edit their information
-- Display current subjects
-- and more (to follow)
+- Display GWA
+- GWA per year level
+- grade per year level per subject 
+- Display Award
 
 #### 3. Grade (Replacement to Subject)
 
 - List of all subject enrolled
+- Filter: Year level semester
 - Input grade and preview possible final grade
-- Download grade
--
 
-#### 4. Chat (NOT TO DO)
+#### 4. Subject
 
-- Can chat co-students and faculty
-- Can upload and download file (max limit 3mb file size)
-- Refresh chat box every 1 second
-- View Contacts
+- Display all subject
 
----
+#### 5. Profile
 
-## Possible Questions
-
-### FACULTY
-
-#### GRADE
-
-> Sa faculty pwede pa ba ko mag re-upload grades?
-
-    Answer: Yes pwede, ma ooverwrite lang ung mga unang grades ni student
-
-> Pwede ba i-export ung ulit ung mga grades?
-
-    Answer: As of now hindi pa available ung export na feature. Pero plan sya in the future
+- Display personal information
+- can edit their information
