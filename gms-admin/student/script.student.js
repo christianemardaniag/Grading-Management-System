@@ -432,9 +432,18 @@ $(document).ready(function () {
                 $("#addStudentBtn").attr("disabled", "disabled");
             },
             error: function (response) {
-                console.error(response.responseText);
-                $("#addNewStudentError").html(response.responseText);
-                $("#addNewStudentError").fadeIn();
+                $("#addLabel").html("Add New Student");
+                $("#addStudentBtn").removeAttr("disabled");
+                $("#addStudentSpinner").hide();
+                var errorMsg = response.responseText;
+                console.error(errorMsg);
+                if (errorMsg.toLowerCase().includes("duplicate entry")) {
+                    $("#addNewStudentError").html("Student Number is already exist");
+                    $("#addNewStudentError").fadeIn();
+                } else {
+                    $("#addNewStudentError").html(response.responseText);
+                    $("#addNewStudentError").fadeIn();
+                }
             }
         });
     });

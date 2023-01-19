@@ -427,9 +427,18 @@ $(document).ready(function () {
                 $("#addFacultyBtn").attr("disabled", "disabled");
             },
             error: function (response) {
-                console.error(response.responseText);
-                $("#addNewFacultyError").html(response.responseText);
-                $("#addNewFacultyError").fadeIn();
+                var errorMsg = response.responseText;
+                console.error(errorMsg);
+                $("#addLabel").html("Add New Faculty");
+                $("#addFacultyBtn").removeAttr("disabled");
+                $("#addFacultySpinner").hide();
+                if (errorMsg.toLowerCase().includes("duplicate entry")) {
+                    $("#addNewFacultyError").html("Faculty ID is already exist");
+                    $("#addNewFacultyError").fadeIn();
+                } else {
+                    $("#addNewFacultyError").html(response.responseText);
+                    $("#addNewFacultyError").fadeIn();
+                }
             }
         });
     });
