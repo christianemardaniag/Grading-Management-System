@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     let subjects;
+    $("#addSubjectError").hide();
     setSubjectsFromDB();
 
     function getFormData($form) {
@@ -180,18 +181,29 @@ $(document).ready(function () {
             data: data,
             dataType: "JSON",
             success: function (ADD_SUBJECT_RESP) {
+                console.log(ADD_SUBJECT_RESP);
                 if (ADD_SUBJECT_RESP.status) {
                     setSubjectsFromDB();
                     $("#addSubjectModal").trigger("reset");
                     $("#addSubjectModal").modal("hide");
                 } else {
-                    $("#errorAlert").removeClass("d-none");
-                    $("#errorAlert").html(ADD_SUBJECT_RESP.msg);
+                    if (ADD_SUBJECT_RESP.msg.toLowerCase().includes("duplicate entry")) {
+                        $("#addSubjectError").html("Subject Code is already exist");
+                        $("#addSubjectError").fadeIn();
+                    } else {
+                        $("#addSubjectError").html(ADD_FACULTY_RESP.msg);
+                        $("#addSubjectError").fadeIn();
+                    }
                 }
             }, error: function (response) {
                 console.error(response);
-                $("#errorAlert").removeClass("d-none");
-                $("#errorAlert").html(response.responseText);
+                if (response.responseText.toLowerCase().includes("duplicate entry")) {
+                    $("#addSubjectError").html("Subject Code is already exist");
+                    $("#addSubjectError").fadeIn();
+                } else {
+                    $("#addSubjectError").html(response.responseText);
+                    $("#addSubjectError").fadeIn();
+                }
             }
         });
     });
