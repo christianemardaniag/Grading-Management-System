@@ -26,7 +26,7 @@ if (isset($_POST['GET_STUDENTS_REQ'])) {
 		'specialization' => $_POST['add-specialization'],
 		'level' => $_POST['add-level'],
 		'section' => $_POST['add-section'],
-		'subjects' => $_POST['add-subjects'],
+		// 'subjects' => $_POST['add-subjects'],
 	];
 	echo json_encode((array)$student->addNewStudent($details));
 } elseif (isset($_POST['EDIT_STUDENT_REQ'])) {

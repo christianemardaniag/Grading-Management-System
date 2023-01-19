@@ -24,7 +24,7 @@ class Faculty extends dbHandler
         $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
         $status = array();
         $tempID = "";
-        $emailSendCtr = 5;
+        $emailSendCtr = 5; // WORK AROUND: Should be remove
         foreach ($data->body as $eachData) {
             if ($tempID != $eachData[FACULTY_ID]) {
                 $tempID = $eachData[FACULTY_ID];
@@ -73,10 +73,6 @@ class Faculty extends dbHandler
         } else {
             $query = "INSERT INTO faculty(id, fullName, username, email, password, contact_no) VALUES 
                 ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo')";
-            if (ENABLE_MAIL) {
-                $mail = new Mail(ADMIN);
-                $mail->sendCredentials($details->email, $username, $password);
-            }
             if (mysqli_query($this->conn, $query)) {
                 $sub_sec_sql = "INSERT INTO faculty_subject(faculty_id, subject_code, sections) VALUES ";
                 foreach ($details->sub_sec as $eachData) {
@@ -86,6 +82,10 @@ class Faculty extends dbHandler
                 }
                 $sub_sec_sql = rtrim($sub_sec_sql, ",");
                 if (mysqli_query($this->conn, $sub_sec_sql)) {
+                    if (ENABLE_MAIL) {
+                        $mail = new Mail(ADMIN);
+                        $mail->sendCredentials($details->email, $username, $password);
+                    }
                     return (object) ['status' => true, 'msg' => ''];
                 } else {
                     return (object) ['status' => false, 'sql' => $sub_sec_sql, 'msg' => "Error description: " . mysqli_error($this->conn)];

@@ -201,7 +201,7 @@ $(document).ready(function () {
                         $("#sub" + id).remove();
                         $("#edit-subCtr").val(subCtr);
                     });
-                    
+
                     $("#edit-subject").click(function (e) {
                         e.preventDefault();
                         subCtr++;
@@ -411,8 +411,13 @@ $(document).ready(function () {
                     $("#addFacultyModal").modal("hide");
                 } else {
                     console.error(ADD_FACULTY_RESP);
-                    $("#addNewFacultyError").html(ADD_FACULTY_RESP.msg);
-                    $("#addNewFacultyError").fadeIn();
+                    if (ADD_FACULTY_RESP.msg.toLowerCase().includes("duplicate entry")) {
+                        $("#addNewFacultyError").html("Faculty ID is already exist");
+                        $("#addNewFacultyError").fadeIn();
+                    } else {
+                        $("#addNewFacultyError").html(ADD_FACULTY_RESP.msg);
+                        $("#addNewFacultyError").fadeIn();
+                    }
                 }
                 displayFaculties();
             },
@@ -444,9 +449,9 @@ $(document).ready(function () {
                 //     $("#editNewFacultyError").fadeOut();
                 //     $("#editFacultyModal").modal("hide");
                 // } else {
-                    // $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
-                    // $("#editNewFacultyError").append(EDIT_FACULTY_RESP.sql);
-                    // $("#editNewFacultyError").fadeIn();
+                // $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
+                // $("#editNewFacultyError").append(EDIT_FACULTY_RESP.sql);
+                // $("#editNewFacultyError").fadeIn();
                 // }
                 $("#editFacultyForm").trigger('reset');
                 $("#editFacultyModal").modal("hide");

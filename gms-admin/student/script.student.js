@@ -40,7 +40,7 @@ $(document).ready(function () {
         );
     }
 
-    $("#promote").click(function (e) { 
+    $("#promote").click(function (e) {
         e.preventDefault();
         console.log("promote");
         $.ajax({
@@ -60,7 +60,7 @@ $(document).ready(function () {
         });
     });
 
-    $("#demote").click(function (e) { 
+    $("#demote").click(function (e) {
         e.preventDefault();
         console.log("promote");
         $.ajax({
@@ -151,7 +151,7 @@ $(document).ready(function () {
                         data: { UNBLOCK_STUDENT_REQ: id },
                         dataType: "JSON",
                         success: function (UNBLOCK_STUDENT_RESP) {
-                            if(UNBLOCK_STUDENT_RESP.status) {
+                            if (UNBLOCK_STUDENT_RESP.status) {
                                 $(".toast-body").html(id + " has been successfully unblocked")
                                 $("#liveToast").toast("show");
                                 displayBlockedStudent();
@@ -225,7 +225,7 @@ $(document).ready(function () {
                     $("#view-section").html(selectedStudent.section);
                     let subjects = ``;
                     $.each(selectedStudent.subjects, function (indexInArray, subject) {
-                        if (subject.level == selectedStudent.level.charAt(0)){
+                        if (subject.level == selectedStudent.level.charAt(0)) {
                             subjects += `
                             <tr>
                             <td>${subject.code}</td>
@@ -241,7 +241,7 @@ $(document).ready(function () {
                         $("#remove-studentNo").html(selectedStudent.studentNo);
                     })
 
-                    $("#remove-yes-btn").click(function (e) { 
+                    $("#remove-yes-btn").click(function (e) {
                         e.preventDefault();
                         $.ajax({
                             type: "POST",
@@ -416,8 +416,13 @@ $(document).ready(function () {
                     $("#addStudentForm").trigger('reset');
                     $("#addStudentModal").modal("hide");
                 } else {
-                    $("#addNewStudentError").html(ADD_STUDENT_RESP.msg);
-                    $("#addNewStudentError").fadeIn();
+                    if (ADD_STUDENT_RESP.msg.toLowerCase().includes("duplicate entry")) {
+                        $("#addNewStudentError").html("Student Number is already exist");
+                        $("#addNewStudentError").fadeIn();
+                    } else {
+                        $("#addNewStudentError").html(ADD_STUDENT_RESP.msg);
+                        $("#addNewStudentError").fadeIn();
+                    }
                 }
                 displayStudents();
             },

@@ -84,10 +84,6 @@ class Student extends dbHandler
         } else {
             $query = "INSERT INTO student(id, fullName, username, email, password, contact_no, gender, specialization, program, level, section) VALUES 
                 ('$details->id', '$details->fullName', '$username', '$details->email', '$password', '$details->contactNo', '$details->gender', '$details->specialization', '$details->program', '$details->level', '$details->section')";
-            if (ENABLE_MAIL) {
-                $mail = new Mail(ADMIN);
-                $mail->sendCredentials($details->email, $username, $password);
-            }
             $subjects = new Subject();
             $subs = $subjects->getAllSubject();
             if (mysqli_query($this->conn, $query)) {
@@ -99,6 +95,10 @@ class Student extends dbHandler
                 }
                 $sql = rtrim($sql, ",");
                 if (mysqli_query($this->conn, $sql)) {
+                    if (ENABLE_MAIL) {
+                        $mail = new Mail(ADMIN);
+                        $mail->sendCredentials($details->email, $username, $password);
+                    }
                     return (object) ['status' => true, 'msg' => ''];
                 } else {
                     return (object) ['status' => false, 'sql' => $query, 'msg' => "Error description: " . mysqli_error($this->conn)];

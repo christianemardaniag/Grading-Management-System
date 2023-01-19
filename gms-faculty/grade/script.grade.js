@@ -848,7 +848,7 @@ function unofficialDropStudent(json) {
                         $.each(student.scores[key_criteria].score, function (indexInArray, score) {
                             total_score += parseInt(score);
                         });
-                        let ave = (total_score / total_over) * 50 + 50;
+                        let ave = (total_score / total_over) * 100;
                         student.scores[key_criteria].average = ave;
 
                         // set grade
