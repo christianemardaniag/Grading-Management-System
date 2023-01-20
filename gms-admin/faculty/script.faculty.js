@@ -443,7 +443,10 @@ $(document).ready(function () {
         });
     });
 
-    $("#editNewFacultyError").hide();
+    $("#editFacultyModal").on("show.bs.modal", function () {
+        $("#editNewFacultyError").hide();
+    })
+
     $("#editFacultyForm").submit(function (e) {
         e.preventDefault();
         var data = $(this).serializeArray();  // Form Data
@@ -454,17 +457,24 @@ $(document).ready(function () {
             data: data,
             dataType: "json",
             success: function (EDIT_FACULTY_RESP) {
-                // if (EDIT_FACULTY_RESP.status) {
-                //     $("#editNewFacultyError").fadeOut();
-                //     $("#editFacultyModal").modal("hide");
-                // } else {
-                // $("#editNewFacultyError").html(EDIT_FACULTY_RESP.msg);
-                // $("#editNewFacultyError").append(EDIT_FACULTY_RESP.sql);
-                // $("#editNewFacultyError").fadeIn();
-                // }
-                $("#editFacultyForm").trigger('reset');
-                $("#editFacultyModal").modal("hide");
-                displayFaculties();
+                if (EDIT_FACULTY_RESP.status) {
+                    $("#editNewFacultyError").fadeOut();
+                    $("#editFacultyForm").trigger('reset');
+                    $("#editFacultyModal").modal("hide");
+                    displayFaculties();
+                } else {
+                    var msg = EDIT_FACULTY_RESP.msg;
+                    if (msg.toLowerCase().includes("uq_faculty_subject")) {
+                        var i = msg.indexOf('\'') + 1;
+                        var x = msg.indexOf('\'', i);
+                        $("#editNewFacultyError").html("The " + msg.substring(i, x) + " has already been assigned");
+                        $("#editNewFacultyError").fadeIn();
+                    } else if (msg.toLowerCase().includes("duplicate entry")) {
+                        $("#editNewFacultyError").html("The faculty ID has already been assigned.");
+                        $("#editNewFacultyError").fadeIn();
+                    }
+
+                }
             },
             error: function (response) {
                 console.error(response);
