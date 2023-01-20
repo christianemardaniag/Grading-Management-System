@@ -76,7 +76,7 @@ $(document).ready(function () {
             var score_td = ``;
             $.each(subject.scores, function (index_criteria, criteria) {
                 if (criteria.score.length == 0) {
-                    score_td += `<td><b>50.00</b></td>`;
+                    score_td += `<td><b>0</b></td>`;
                 }
                 for (let i = 0; i < criteria.score.length; i++) {
                     let isLock = subject.criteria[index_criteria].activities[i].isLock;
@@ -154,7 +154,7 @@ $(document).ready(function () {
                 total_score += parseInt(score);
             });
 
-            let ave = (total_score / total_over) * 50 + 50;
+            let ave = (total_score / total_over) * 100;
             subject.scores[i_criteria].average = ave;
 
             console.log(total_score);

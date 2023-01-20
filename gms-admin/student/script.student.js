@@ -100,7 +100,7 @@ $(document).ready(function () {
             content = ``;
             $.each(GET_ALUMNI_STUDENT_RESP, function (indexInArray, student) {
                 content += `
-                    <tr>
+                    <tr data-id="${student.studentNo}">
                         <td>${student.studentNo}</td>
                         <td>${student.fullName}</td>
                         <td>${student.program} ${student.section}</td>
@@ -113,6 +113,7 @@ $(document).ready(function () {
             $("#alumniStudentRecords").html(content);
             $("#alumniSpinner").hide();
             $("#alumniStudentsTable").DataTable();
+            viewStudentDetails(GET_ALUMNI_STUDENT_RESP);
         }
     });
 
@@ -204,75 +205,8 @@ $(document).ready(function () {
                     "pageLength": 10
                 });
 
-                var selectedStudent = "";
-                $("#studentRecords > tr").click(function (e) {
-                    e.preventDefault();
-                    studentNo = $(this).data("id");
-                    selectedStudent = GET_STUDENTS_RESP.filter(function (eachStudent) {
-                        return eachStudent.studentNo == studentNo;
-                    })[0];
-                    console.log(selectedStudent);
-                    $("#view-profile").attr("src", selectedStudent.profile_picture);
-                    $("#view-studentNo").html(selectedStudent.studentNo);
-                    $("#view-fullName").html(selectedStudent.fullName);
-                    $("#view-cys").html(selectedStudent.program + " " + selectedStudent.section);
-                    $("#view-email").html(selectedStudent.email);
-                    $("#view-contactNo").html(selectedStudent.contact_no);
-                    $("#view-gender").html(selectedStudent.gender);
-                    $("#view-specialization").html(selectedStudent.specialization);
-                    $("#view-program").html(selectedStudent.program);
-                    $("#view-level").html(selectedStudent.level);
-                    $("#view-section").html(selectedStudent.section);
-                    let subjects = ``;
-                    $.each(selectedStudent.subjects, function (indexInArray, subject) {
-                        if (subject.level == selectedStudent.level.charAt(0)) {
-                            subjects += `
-                            <tr>
-                            <td>${subject.code}</td>
-                            <td>${subject.description}</td>
-                            </tr>`;
-                        }
-                    });
-                    $("#view-subjects").html(subjects);
-                    $("#viewStudentModal").modal("show");
-                    $("#studentSubjectViewModal").DataTable();
-                    $("#removeStudentModal").on("show.bs.modal", function () {
-                        $("#remove-fullName").html(selectedStudent.fullName);
-                        $("#remove-studentNo").html(selectedStudent.studentNo);
-                    })
+                viewStudentDetails(GET_STUDENTS_RESP);
 
-                    $("#remove-yes-btn").click(function (e) {
-                        e.preventDefault();
-                        $.ajax({
-                            type: "POST",
-                            url: "../student/process.student.php",
-                            data: { REMOVE_STUDENT_REQ: selectedStudent.studentNo },
-                            dataType: "JSON",
-                            success: function (REMOVE_STUDENT_RESP) {
-                                displayStudents($("#filter-level").val(), $("#filter-section").val());
-                                $("#removeStudentModal").modal("hide");
-                            }
-                        });
-                    });
-                });
-
-                $("#editStudentModal").on("show.bs.modal", function () {
-                    $("#edit-oldStudentNo").val(selectedStudent.studentNo);
-                    $("#edit-studentNo").val(selectedStudent.studentNo);
-                    $("#edit-fullName").val(selectedStudent.fullName);
-                    $("#edit-email").val(selectedStudent.email);
-                    $("#edit-contactNo").val(selectedStudent.contact_no);
-                    $("input[name=edit-gender][value=" + selectedStudent.gender + "]").attr('checked', 'checked');
-                    $("#edit-specialization").val(selectedStudent.specialization);
-                    $("#edit-program").val(selectedStudent.program);
-                    $("#edit-level").val(selectedStudent.level);
-                    $("#edit-section").val(selectedStudent.section);
-                    let sub = ``;
-                    $.each(selectedStudent.subjects, function (indexInArray, subject) {
-                        sub += `${subject.code}, `;
-                    });
-                    $("#edit-subjects").val(sub.slice(0, -1));
-                });
                 $("#loadingScreen").modal("hide");
             }, error: function (response) {
                 console.error(response);
@@ -284,6 +218,222 @@ $(document).ready(function () {
         });
 
 
+    }
+
+    function viewStudentDetails(studentList) {
+        var selectedStudent = "";
+        $("#studentRecords > tr, #alumniStudentRecords > tr").click(function (e) {
+            e.preventDefault();
+            $("#gradesAccordion").html("");
+            studentNo = $(this).data("id");
+            selectedStudent = studentList.filter(function (eachStudent) {
+                return eachStudent.studentNo == studentNo;
+            })[0];
+            console.log(selectedStudent);
+            $("#view-profile").attr("src", selectedStudent.profile_picture);
+            $("#view-studentNo").html(selectedStudent.studentNo);
+            $("#view-fullName").html(selectedStudent.fullName);
+            $("#view-cys").html(selectedStudent.program + " " + selectedStudent.section);
+            $("#view-email").html(selectedStudent.email);
+            $("#view-contactNo").html(selectedStudent.contact_no);
+            $("#view-gender").html(selectedStudent.gender);
+            $("#view-specialization").html(selectedStudent.specialization);
+            $("#view-program").html(selectedStudent.program);
+            $("#view-level").html(selectedStudent.level);
+            $("#view-section").html(selectedStudent.section);
+
+            $("#year_sem").change(function (e) {
+                e.preventDefault();
+                var year_sem = $(this).val();
+                var year = year_sem.split('-')[0];
+                var sem = year_sem.split('-')[1];
+                var filtered = keepCloning(temp_subject);
+                filtered.subjects = filtered.subjects.filter(function (data) {
+                    return data.level == year && data.semester == sem;
+                });
+                displayStudentGrades(filtered);
+            });
+
+            var temp_subject = {};
+            $.ajax({
+                type: "POST",
+                url: "../student/process.student.php",
+                data: { GET_STUDENT_GRADES_REQ: studentNo },
+                dataType: "JSON",
+                success: function (GET_STUDENT_GRADES_RESP) {
+                    temp_subject = keepCloning(GET_STUDENT_GRADES_RESP);
+                    var year_sem = $("#year_sem").val();
+                    var year = year_sem.split('-')[0];
+                    var sem = year_sem.split('-')[1];
+                    var filtered = keepCloning(temp_subject);
+                    filtered.subjects = filtered.subjects.filter(function (data) {
+                        return data.level == year && data.semester == sem;
+                    });
+                    displayStudentGrades(filtered);
+                    $("#gradeSpinner").addClass("d-none");
+                }, error: function (response) {
+                    console.error(response);
+                    // $("#error").html(response.responseText);
+                }, beforeSend: function (response) {
+                    $("#gradeSpinner").removeClass("d-none");
+                }
+            });
+
+            function displayStudentGrades(temp_subject) {
+                var accordionContent = ``;
+                var grades = [];
+                $.each(temp_subject.subjects, function (subjectIndex, subject) {
+                    grades.push(subject.grade);
+
+                    // * SETUP SUBJECT CRITERIA
+                    let colGroup = ``;
+                    let criteria_th = ``;
+                    let activities_th = ``;
+                    let lockBtn_th = ``;
+                    let score_th = ``;
+                    $.each(subject.criteria, function (criteriaIndex, criteria) {
+                        let criteriaLength = criteria.activities.length;
+                        colGroup += `<col span="${criteriaLength}">
+                                <col style="background-color: #ffe5d0;">`;
+                        criteria_th += `<th colspan="${criteriaLength + 1}">${criteria.name}</th>`;
+                        $.each(criteria.activities, function (i, activity) {
+                            activity.isLock = (String(activity.isLock) === 'true');
+                            if (criteriaLength - 1 != i) {
+                                lockBtn_th += `<th data-criteria="${criteriaIndex}" data-act="${i}" class="lock-btn bg-light ${activity.isLock ? 'active' : ''}">
+                                    <i class="fas ${activity.isLock ? 'fa-lock' : 'fa-unlock-alt'}"></i></th>`;
+                                activities_th += `<th>${activity.name}</th>`;
+                                score_th += `<th>${activity.total}</th>`;
+                            } else {
+                                lockBtn_th += `<th data-criteria="${criteriaIndex}" data-act="${i}" class="lock-btn bg-light ${activity.isLock ? 'active' : ''}">
+                                    <i class="fas ${activity.isLock ? 'fa-lock' : 'fa-unlock-alt'}"></i></th>`;
+                                lockBtn_th += `<th rowspan='2'>Equiv</th>`;
+                                activities_th += `
+                                <th>${activity.name}</th>`;
+                                score_th += `
+                                    <th>${activity.total}</th>
+                                    <th>${criteria.equiv}%</th>`;
+                            }
+                        });
+                    });
+
+                    var score_td = ``;
+                    $.each(subject.scores, function (index_criteria, criteria) {
+                        if (criteria.score.length == 0) {
+                            score_td += `<td><b>0</b></td>`;
+                        }
+                        for (let i = 0; i < criteria.score.length; i++) {
+                            let isLock = subject.criteria[index_criteria].activities[i].isLock;
+                            isLock = (String(isLock) === 'true');
+                            const score = criteria.score[i];
+                            score_td += `<td data-score="${i}" data-criteria="${index_criteria}" data-subject="${subjectIndex}"
+                                    style="background-color: ${isLock ? 'rgb(170, 170, 170) !important' : '#feffe5'}">${score}</td>`;
+                            if (i == criteria.score.length - 1) {
+                                score_td += `<td><b>${parseFloat(criteria.average).toFixed(2)}</b></td>`;
+                            }
+                        }
+                    });
+                    var statusRemarks = subject.remarks;
+                    if (subject.isDrop) {
+                        statusRemarks = "DROP";
+                    }
+                    accordionContent += `
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="subjectAccordion-${subjectIndex}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#subjectPanel-${subjectIndex}" aria-expanded="true" aria-controls="subjectPanel-${subjectIndex}">
+                        <div class="w-100 d-flex justify-content-between">
+                            <div>${subject.code} - ${subject.description}</div>
+                            <div class="ms-auto">
+                                <span class="mx-2">
+                                    Grade: <span id="subjectGrade-${subjectIndex}" class="fw-bold">${parseFloat(subject.grade).toFixed(2)}</span>
+                                </span>
+                                <span class="mx-2">
+                                     Equiv: <span id="subjectEquiv-${subjectIndex}" class="fw-bold">${parseFloat(subject.equiv).toFixed(2)}</span>
+                                </span>
+                                <span class="mx-2">
+                                   Remarks: <span id="subjectRemarks-${subjectIndex}" class="fw-bold">${statusRemarks}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </button>
+                    </h2>
+                    <div id="subjectPanel-${subjectIndex}" class="accordion-collapse collapse show" aria-labelledby="subjectAccordion-${subjectIndex}">
+                    <div class="accordion-body px-0">
+                        <div class="me-2 table-responsive">
+                            <table class="table table-bordered border-secondary table-sm text-center" id="gradesTable-${subjectIndex}">
+                                <thead>
+                                    <colgroup>${colGroup}</colgroup>
+                                    <tr>${criteria_th}</tr>
+                                    <tr>${lockBtn_th}</tr>
+                                    <tr>${activities_th}</tr>
+                                    <tr>${score_th}</tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    <tr>${score_td}</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                `;
+                });
+
+                $("#gradesAccordion").html(accordionContent);
+                displayGWA(grades);
+
+            }  // END OF displayStudentGrades 
+
+            function displayGWA(grades) {
+                const finalGrade = getGrade(grades);
+                $("#finalGrade").html(getGrade(grades).toFixed(2));
+                $("#finalEquiv").html(getEquiv(finalGrade).toFixed(2));
+                $("#finalRemarks").html(getRemarks(finalGrade));
+            }
+
+            $("#studentList").addClass("d-none");
+            $("#studentDetails").removeClass("d-none");
+            $("#removeStudentModal").on("show.bs.modal", function () {
+                $("#remove-fullName").html(selectedStudent.fullName);
+                $("#remove-studentNo").html(selectedStudent.studentNo);
+            })
+
+            $("#remove-yes-btn").click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "../student/process.student.php",
+                    data: { REMOVE_STUDENT_REQ: selectedStudent.studentNo },
+                    dataType: "JSON",
+                    success: function (REMOVE_STUDENT_RESP) {
+                        displayStudents($("#filter-level").val(), $("#filter-section").val());
+                        $("#removeStudentModal").modal("hide");
+                    }
+                });
+            });
+            $("#editStudentModal").on("show.bs.modal", function () {
+                $("#edit-oldStudentNo").val(selectedStudent.studentNo);
+                $("#edit-studentNo").val(selectedStudent.studentNo);
+                $("#edit-fullName").val(selectedStudent.fullName);
+                $("#edit-email").val(selectedStudent.email);
+                $("#edit-contactNo").val(selectedStudent.contact_no);
+                $("input[name=edit-gender][value=" + selectedStudent.gender + "]").attr('checked', 'checked');
+                $("#edit-specialization").val(selectedStudent.specialization);
+                $("#edit-program").val(selectedStudent.program);
+                $("#edit-level").val(selectedStudent.level);
+                $("#edit-section").val(selectedStudent.section);
+                let sub = ``;
+                $.each(selectedStudent.subjects, function (indexInArray, subject) {
+                    sub += `${subject.code}, `;
+                });
+                $("#edit-subjects").val(sub.slice(0, -1));
+            });
+
+            $("#backBtn").click(function (e) {
+                e.preventDefault();
+                $("#studentDetails").addClass("d-none");
+                $("#studentList").removeClass("d-none");
+            });
+        });
     }
 
     var tempData = {};
@@ -477,4 +627,51 @@ $(document).ready(function () {
         });
     });
 
+    function keepCloning(objectpassed) {
+        if (objectpassed === null || typeof objectpassed !== 'object') {
+            return objectpassed;
+        }
+        var temporary_storage = objectpassed.constructor();
+        for (var key in objectpassed) {
+            temporary_storage[key] = keepCloning(objectpassed[key]);
+        }
+        return temporary_storage;
+    }
+
+    function getGrade(arr) {
+        return arr.reduce((a, b) => parseFloat(a) + parseFloat(b)) / arr.length
+    }
+
+    function getRemarks(grade) {
+        if (grade < 75) {
+            return "<span class='badge bg-danger'>FAILED</span>";
+        } else {
+            return "<span class='badge bg-success'>PASSED</span>";
+        }
+    }
+
+    function getEquiv(grade) {
+        grade = Math.floor(grade);
+        if (grade <= 74) {
+            return 5.00;
+        } else if (grade <= 75) {
+            return 3.00;
+        } else if (grade <= 78) {
+            return 2.75;
+        } else if (grade <= 81) {
+            return 2.50;
+        } else if (grade <= 84) {
+            return 2.25;
+        } else if (grade <= 87) {
+            return 2.00;
+        } else if (grade <= 90) {
+            return 1.75;
+        } else if (grade <= 93) {
+            return 1.50;
+        } else if (grade <= 96) {
+            return 1.25;
+        } else if (grade <= 100) {
+            return 1.00;
+        }
+    }
 });

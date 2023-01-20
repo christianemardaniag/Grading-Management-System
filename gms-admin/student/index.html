@@ -21,7 +21,7 @@
         </div>
     </header>
 
-    <div class="mx-3">
+    <div class="mx-3" id="studentList">
         <div id="error"></div>
 
         <div class="py-3 mt-3">
@@ -46,9 +46,7 @@
                         </select>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
         <table class="table table-light shadow-sm table-bordered table-striped table-hover display compact"
@@ -69,9 +67,10 @@
         </table>
 
         <div class="my-5">
-            <h3>Alumni Student <span class="spinner-border spinner-border-sm" id="alumniSpinner"
-                role="status"></span></h3>
-            <table class="table table-light shadow-sm table-bordered table-striped table-hover display compact" id="alumniStudentsTable">
+            <h3>Alumni Student <span class="spinner-border spinner-border-sm" id="alumniSpinner" role="status"></span>
+            </h3>
+            <table class="table table-light shadow-sm table-bordered table-striped table-hover display compact"
+                id="alumniStudentsTable">
                 <thead>
                     <tr>
                         <th>Student No</th>
@@ -116,6 +115,99 @@
                             aria-label="Close"></button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-light p-3 d-none" id="studentDetails">
+        <button class="btn btn-dark px-3 d-print-none" id="backBtn"><i class="fas fa-long-arrow-left"></i></button>
+        <div class="px-4">
+            <div class="row d-flex align-items-center">
+                <div class="col-3 d-print-none">
+                    <img id="view_profile" src="../../images/defaultUserImage.jpg"
+                        class="img-fluid rounded-circle border p-2">
+                </div>
+                <div class="col">
+                    <div class="d-flex justify-content-between">
+                        <h2 class="mb-2"><span id="view-fullName"></span></h2>
+                        <div class="dropdown d-print-none">
+                            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><button class="dropdown-item" onclick="window.print()"><i class="fal fa-print"></i>
+                                        Print</button></li>
+                                <li><button class="dropdown-item" data-bs-target="#editStudentModal"
+                                        data-bs-toggle="modal"><i class="fal fa-edit"></i> Edit</button></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><button class="dropdown-item" data-bs-target="#removeStudentModal"
+                                        data-bs-toggle="modal"><i class="fal fa-trash"></i> Remove</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col">
+                            <div class="mb-1"><i class="fal fa-hashtag me-2"></i> <span id="view-studentNo"></span>
+                            </div>
+                            <div class="mb-1"><i class="fal fa-envelope me-2"></i> <span id="view-email"></span></div>
+                            <div class="mb-1"><i class="far fa-phone-alt me-2"></i> <span id="view-contactNo"></span>
+                            </div>
+                            <div class="mb-1"><i class="fad fa-venus-mars me-2"></i> <span id="view-gender"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mx-3 fs-5">
+                                Grade: <span id="finalGrade" class="fw-bold badge text-bg-light"></span>
+                            </div>
+                            <div class="mx-3 fs-5">
+                                Equiv: <span id="finalEquiv" class="fw-bold badge text-bg-light"></span>
+                            </div>
+                            <div class="mx-3 fs-5">
+                                Remarks: <span id="finalRemarks" class="fw-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-cols-4 g-2 my-3">
+                        <div class="col"><b>Specialization: </b></div>
+                        <div class="col" id="view-specialization"></div>
+                        <div class="col"><b>Program:</b></div>
+                        <div class="col" id="view-program"></div>
+                        <div class="col"><b>Level:</b></div>
+                        <div class="col" id="view-level"></div>
+                        <div class="col"><b>Class Section:</b></div>
+                        <div class="col" id="view-section"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <hr>
+        <div>
+            <div class="d-flex justify-content-between">
+                <h3>Grades</h3>
+                <div class="mb-3" style="width: auto;">
+                    <select class="form-select" id="year_sem">
+                        <option value="1-1" selected>1ST YEAR - 1ST SEMESTER</option>
+                        <option value="1-2">1ST YEAR - 2ND SEMESTER</option>
+                        <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                        <option value="2-1">2ND YEAR - 1ST SEMESTER</option>
+                        <option value="2-2">2ND YEAR - 2ND SEMESTER</option>
+                        <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                        <option value="3-1">3RD YEAR - 1ST SEMESTER</option>
+                        <option value="3-2">3RD YEAR - 2ND SEMESTER</option>
+                        <option style="font-size: 1pt; background-color: #e4e4e4;" disabled>&nbsp;</option>
+                        <option value="4-1">4TH YEAR - 1ST SEMESTER</option>
+                        <option value="4-2">4TH YEAR - 2ND SEMESTER</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-center" id="gradeSpinner">
+                <strong>Fetching grades...</strong>
+                <div class="spinner-border ms-3" role="status" aria-hidden="true"></div>
+            </div>
+            <div class="accordion accordion-flush" id="gradesAccordion">
+
             </div>
         </div>
     </div>
@@ -278,71 +370,6 @@
                             role="status"></span></button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-<!-- VIEW STUDENT MODAL -->
-<div class="modal fade bg-dark" id="viewStudentModal" tabindex="-1" aria-labelledby="viewStudentLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
-        <div class="modal-content rounded-4 shadow">
-            <div class="modal-header border-bottom-0">
-                <h5 class="modal-title"><i class="fal fa-hashtag"></i> <span id="view-studentNo"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="px-4">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-3 d-print-none">
-                            <img id="view_profile" src="../../images/defaultUserImage.jpg"
-                                class="img-fluid rounded-circle border p-2">
-                        </div>
-                        <div class="col ">
-                            <h2 class="mb-2"><span id="view-fullName"></span></h2>
-                            <div class="mb-1"><i class="fal fa-envelope me-2"></i> <span id="view-email"></span></div>
-                            <div class="mb-1"><i class="far fa-phone-alt me-2"></i> <span id="view-contactNo"></span>
-                            </div>
-                            <div class="mb-1"><i class="fad fa-venus-mars me-2"></i> <span id="view-gender"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="offset-lg-3 offset-0 g-3">
-                    <div class="row row-cols-4 g-2 mb-3">
-                        <div class="col"><b>Specialization: </b></div>
-                        <div class="col" id="view-specialization"></div>
-                        <div class="col"><b>Program:</b></div>
-                        <div class="col" id="view-program"></div>
-                        <div class="col"><b>Level:</b></div>
-                        <div class="col" id="view-level"></div>
-                        <div class="col"><b>Class Section:</b></div>
-                        <div class="col" id="view-section"></div>
-                    </div>
-                    <hr>
-                    <h5>Enrolled Subjects</h5>
-                    <table class="table table-striped table-sm display compact" id="studentSubjectViewModal">
-                        <thead>
-                            <tr class="table-dark">
-                                <th>Subject Code</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody id="view-subjects">
-
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-            <div class="modal-footer d-print-none">
-                <button class="btn btn-danger px-3 " data-bs-target="#removeStudentModal" data-bs-toggle="modal"><i
-                        class="fal fa-trash"></i> Remove</button>
-                <button class="btn btn-dark px-4" onclick="window.print()"><i class="fal fa-print"></i>
-                    Print</button>
-                <button class="btn btn-dark px-3" data-bs-target="#editStudentModal" data-bs-toggle="modal"><i
-                        class="fal fa-edit"></i> Edit</button>
-            </div>
         </div>
     </div>
 </div>

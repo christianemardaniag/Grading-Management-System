@@ -59,4 +59,8 @@ if (isset($_POST['GET_STUDENTS_REQ'])) {
 	echo json_encode((array)$student->updateYearLevel(false));
 } elseif (isset($_POST['GET_ALUMNI_STUDENT_REQ'])) {
 	echo json_encode((array)$student->alumniStudent());
+} elseif (isset($_POST["GET_STUDENT_GRADES_REQ"])) {
+	$studentNo = $_POST["GET_STUDENT_GRADES_REQ"];
+	$student = new Student($studentNo);
+    echo json_encode((array)$student->getStudentInfo()[0]);
 }

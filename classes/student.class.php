@@ -314,6 +314,8 @@ class Student extends dbHandler
                     'program' => $row['program'],
                     'level' => $row['level'],
                     'section' => $row['section'],
+                    'gender' => $row['gender'],
+                    'profile_picture' => $row['profile_picture'],
                 ];
             }
         }
