@@ -417,7 +417,7 @@ $(document).ready(function () {
                     $("#addStudentModal").modal("hide");
                 } else {
                     if (ADD_STUDENT_RESP.msg.toLowerCase().includes("duplicate entry")) {
-                        $("#addNewStudentError").html("Student Number is already exist");
+                        $("#addNewStudentError").html("The student number has already been assigned.");
                         $("#addNewStudentError").fadeIn();
                     } else {
                         $("#addNewStudentError").html(ADD_STUDENT_RESP.msg);
@@ -438,7 +438,7 @@ $(document).ready(function () {
                 var errorMsg = response.responseText;
                 console.error(errorMsg);
                 if (errorMsg.toLowerCase().includes("duplicate entry")) {
-                    $("#addNewStudentError").html("Student Number is already exist");
+                    $("#addNewStudentError").html("The student number has already been assigned.");
                     $("#addNewStudentError").fadeIn();
                 } else {
                     $("#addNewStudentError").html(response.responseText);

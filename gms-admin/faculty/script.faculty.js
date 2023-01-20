@@ -412,7 +412,7 @@ $(document).ready(function () {
                 } else {
                     console.error(ADD_FACULTY_RESP);
                     if (ADD_FACULTY_RESP.msg.toLowerCase().includes("duplicate entry")) {
-                        $("#addNewFacultyError").html("Faculty ID is already exist");
+                        $("#addNewFacultyError").html("The faculty ID has already been assigned.");
                         $("#addNewFacultyError").fadeIn();
                     } else {
                         $("#addNewFacultyError").html(ADD_FACULTY_RESP.msg);
@@ -433,7 +433,7 @@ $(document).ready(function () {
                 $("#addFacultyBtn").removeAttr("disabled");
                 $("#addFacultySpinner").hide();
                 if (errorMsg.toLowerCase().includes("duplicate entry")) {
-                    $("#addNewFacultyError").html("Faculty ID is already exist");
+                    $("#addNewFacultyError").html("The faculty ID has already been assigned.");
                     $("#addNewFacultyError").fadeIn();
                 } else {
                     $("#addNewFacultyError").html(response.responseText);

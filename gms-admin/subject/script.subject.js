@@ -188,7 +188,7 @@ $(document).ready(function () {
                     $("#addSubjectModal").modal("hide");
                 } else {
                     if (ADD_SUBJECT_RESP.msg.toLowerCase().includes("duplicate entry")) {
-                        $("#addSubjectError").html("Subject Code already exist");
+                        $("#addSubjectError").html("Subject code already exists.");
                         $("#addSubjectError").fadeIn();
                     } else {
                         $("#addSubjectError").html(ADD_FACULTY_RESP.msg);
@@ -198,7 +198,7 @@ $(document).ready(function () {
             }, error: function (response) {
                 console.error(response);
                 if (response.responseText.toLowerCase().includes("duplicate entry")) {
-                    $("#addSubjectError").html("Subject Code already exist");
+                    $("#addSubjectError").html("Subject code already exists.");
                     $("#addSubjectError").fadeIn();
                 } else {
                     $("#addSubjectError").html(response.responseText);
