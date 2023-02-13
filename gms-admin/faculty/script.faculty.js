@@ -432,8 +432,8 @@ $(document).ready(function () {
                 $("#addLabel").html("Add New Faculty");
                 $("#addFacultyBtn").removeAttr("disabled");
                 $("#addFacultySpinner").hide();
-                if (errorMsg.toLowerCase().includes("duplicate entry")) {
-                    $("#addNewFacultyError").html("The faculty ID has already been assigned.");
+                if (errorMsg.toLowerCase().includes("uq_faculty_subject")) {
+                    $("#addNewFacultyError").html("The subject and section has already been assigned to other faculty");
                     $("#addNewFacultyError").fadeIn();
                 } else {
                     $("#addNewFacultyError").html(response.responseText);
